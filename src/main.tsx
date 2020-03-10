@@ -1,5 +1,6 @@
 import React from 'react';
-import {View, Text, TextInput, SafeAreaView} from 'react-native';
+import {TextInput} from 'react-native';
+import {View, Text, SafeAreaView} from './app/shared/tailwind';
 import {
   Route,
   Link,
@@ -10,7 +11,6 @@ import {
   Switch,
   Redirect,
 } from './earhart';
-import {styles} from './styles';
 import {Home} from './app/home/home';
 import {Library} from './app/library/library';
 
@@ -18,30 +18,29 @@ import {Library} from './app/library/library';
 // it contains the links to home, search, library
 function Main() {
   return (
-    <SafeAreaView style={{flex: 1}}>
-      <Switch keepAlive>
-        <Routes>
-          <Route path="home/*">
-            <Home />
-          </Route>
+    <Switch keepAlive>
+      <Routes>
+        <Route path="home/*">
+          <Home />
+        </Route>
 
-          <Route path="search/*">
-            <Screen>
-              <Text style={styles.title}>Search</Text>
-              <TextInput placeholder="Test" />
-            </Screen>
-          </Route>
+        <Route path="search/*">
+          <Screen>
+            <Text className="text-2xl font-semibold">Search</Text>
+            <TextInput placeholder="Test" />
+          </Screen>
+        </Route>
 
-          <Route path="library/*">
-            <Library />
-          </Route>
+        <Route path="library/*">
+          <Library />
+        </Route>
 
-          <Redirect to="library/playlists" />
-        </Routes>
+        <Redirect to="home/settings" />
+      </Routes>
 
-        <MainTabbar />
-      </Switch>
-    </SafeAreaView>
+      <MainTabbar />
+      <SafeAreaView />
+    </Switch>
   );
 }
 
@@ -109,7 +108,7 @@ function MainTab({children, to}: any) {
 }
 
 function Screen({children}: any) {
-  return <View style={styles.screen}>{children}</View>;
+  return <View className="flex-1">{children}</View>;
 }
 
 export {Main};

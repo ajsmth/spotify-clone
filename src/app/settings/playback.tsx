@@ -1,10 +1,10 @@
 import React from 'react';
-import {View, Switch, Text, Slider, ScrollView} from 'react-native';
-import {styles} from '../../styles';
+import {Switch, Slider} from 'react-native';
+import {View, Text, ScrollView} from '../shared/tailwind';
 
 function Playback() {
   return (
-    <ScrollView style={{flex: 1, backgroundColor: 'white', padding: 15}}>
+    <ScrollView className="p-4 flex-1 bg-white">
       <OptionSwitch
         title="Offline"
         description={`When you go offline, you'll only be able to play the music and podcasts you've downloaded`}
@@ -55,24 +55,14 @@ interface IOptionSwitch {
 
 function OptionSwitch({title, description}: IOptionSwitch) {
   return (
-    <View style={{marginVertical: 15}}>
-      <View
-        style={{
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-        }}>
-        <Text style={[styles.paragraph, styles.semibold]}>{title}</Text>
+    <View className="my-4">
+      <View className="flex-row justify-between">
+        <Text className="text-base font-semibold">{title}</Text>
         <Switch />
       </View>
 
       {description && (
-        <Text
-          style={[
-            styles.paragraph,
-            {color: 'gray', lineHeight: 20, padding: 5},
-          ]}>
-          {description}
-        </Text>
+        <Text className="p-1 text-base text-gray-700">{description}</Text>
       )}
     </View>
   );
@@ -81,13 +71,13 @@ function OptionSwitch({title, description}: IOptionSwitch) {
 function OptionSlider({title, labelLeft, labelRight}) {
   return (
     <View>
-      <Text style={[styles.h4, styles.bold]}>{title}</Text>
-      <View style={{flexDirection: 'row', alignItems: 'center'}}>
-        <Text style={[styles.small, {color: 'gray'}]}>{labelLeft}</Text>
-        <View style={{flex: 1, paddingHorizontal: 10}}>
+      <Text className="my-2 text-3xl font-bold">{title}</Text>
+      <View className="flex-row items-center">
+        <Text className="text-sm text-gray-700">{labelLeft}</Text>
+        <View className="flex-1 px-3">
           <Slider />
         </View>
-        <Text style={[styles.small, {color: 'gray'}]}>{labelRight}</Text>
+        <Text className="text-sm text-gray-700">{labelRight}</Text>
       </View>
     </View>
   );
@@ -101,21 +91,15 @@ interface IRadioSelect {
 function RadioSelect({title, options = []}: IRadioSelect) {
   return (
     <View>
-      <Text style={[styles.h4, styles.bold]}>{title}</Text>
+      <Text className="my-2 text-3xl font-bold">{title}</Text>
 
       {options.map((option: any, index) => {
         return (
-          <View
-            key={index}
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              paddingVertical: 10,
-            }}>
-            <Text style={[styles.paragraph, {marginRight: 5}]}>
+          <View key={index} className="py-2 flex-row items-center">
+            <Text className='mr-2 text-base'>
               {option.title}
             </Text>
-            <Text style={[styles.small, {color: 'gray'}]}>
+            <Text className='text-sm text-gray-500' style={{ lineHeight: 20 }}>
               {option.description}
             </Text>
           </View>

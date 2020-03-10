@@ -1,7 +1,6 @@
 import React from 'react';
-import {View, Text, ScrollView, Image} from 'react-native';
+import {View, Text, ScrollView, Image} from '../shared/tailwind';
 import {Link} from '../../earhart';
-import {styles} from '../../styles';
 import {useAlbumContext} from '../../providers/album-provider';
 import {api} from '../../services/api';
 
@@ -10,7 +9,7 @@ function Albums({to}) {
   const [albumIds, setAlbumIds] = React.useState([]);
 
   React.useEffect(() => {
-    api.get('/me/albums').then(albums => {
+    api.get('/albums/me').then(albums => {
       dispatch({
         type: 'UPDATE_MANY',
         data: albums,
@@ -21,7 +20,7 @@ function Albums({to}) {
   }, []);
 
   return (
-    <ScrollView style={{flex: 1, backgroundColor: 'white', padding: 15}}>
+    <ScrollView className="flex-1 bg-white p-4">
       {albumIds.map(id => {
         const album = state.lookup[id];
 
@@ -40,19 +39,16 @@ interface IAlbumRow {
 
 function AlbumRow({album, to}: IAlbumRow) {
   return (
-    <Link
-      to={to}
-      style={{flexDirection: 'row', alignItems: 'center', marginVertical: 10}}>
-      <Image
-        style={{width: 70, height: 70, marginRight: 10}}
-        source={{uri: album.images[0].url}}
-      />
+    <Link to={to}>
+      <View className="flex-row items-center my-3">
+        <Image className="w-16 h-16 mr-4" source={{uri: album.images[0].url}} />
 
-      <View>
-        <Text style={[styles.paragraph, styles.semibold]}>{album.name}</Text>
-        <Text style={[styles.small, {color: 'gray'}]}>
-          {album.artists[0]?.name}
-        </Text>
+        <View>
+          <Text className='text-base font-semibold'>{album.name}</Text>
+          <Text className='mt-1 text-sm text-gray-700'>
+            {album.artists[0]?.name}
+          </Text>
+        </View>
       </View>
     </Link>
   );

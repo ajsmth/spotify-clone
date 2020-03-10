@@ -1,25 +1,26 @@
 import React from 'react';
 import {
-  View,
   Animated,
-  SafeAreaView,
   TouchableOpacity,
   LayoutRectangle,
   LayoutChangeEvent,
   TextInput,
   StyleSheet,
-  Text,
   Switch,
   Button,
-  Image,
   InteractionManager,
 } from 'react-native';
+
 import {
-  useParams,
-  PagerGestureContainer,
-  Pager,
-  useNavigate,
-} from '../../earhart';
+  Image,
+  Text,
+  View,
+  SafeAreaView,
+  Pressable,
+  AnimatedText,
+} from '../shared/tailwind';
+
+import {useParams, PagerGestureContainer, Pager, Link} from '../../earhart';
 import {api} from '../../services/api';
 import {PerformantScreen} from '../home/home';
 import {usePlaylistContext} from '../../providers/playlist-provider';
@@ -36,7 +37,7 @@ function getLayout({nativeEvent: {layout}}: LayoutChangeEvent) {
   return layout;
 }
 
-function Playlist() {
+function Playlist({backUrl = ''}) {
   const params = useParams();
 
   const scrollY = React.useRef(new Animated.Value(0));
@@ -120,18 +121,16 @@ function Playlist() {
 
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
-      <Header>
-        <Animated.Text
+      <Header backUrl={backUrl}>
+        <AnimatedText
+          className="p-2 border-2 text-center text-2xl font-semibold"
           style={{
-            textAlign: 'center',
-            fontSize: 18,
-            fontWeight: '700',
             opacity: scrollY.current.interpolate({
               inputRange: [0, searchLayout.height, heroBottom],
               outputRange: [0, 0, 1],
               extrapolate: 'clamp',
             }),
-          }}>{`${playlist.name}`}</Animated.Text>
+          }}>{`${playlist.name}`}</AnimatedText>
       </Header>
       <Animated.ScrollView
         removeClippedSubviews
@@ -174,32 +173,21 @@ function TranslationContainer({children, translateY}: any) {
   );
 }
 
-// the following components are mean to be containers for content
-// ordinarily, the height of a view will be determined by its content (it's intrinsic height)
-// we're using preset heights here to get the approximate layout first
-
-// any calculations involving the intrinsic height of a view (in later steps) will be calculated using the onLayout prop
-// if this sounds confusing, it will be explained in a later step - dont worry about it for now
-
-function Header({children}: any) {
-  const navigate = useNavigate();
-
+function Header({backUrl = '../../../', children}: any) {
   return (
-    <View
-      style={{
-        height: 40,
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-around',
-        paddingHorizontal: 10,
-      }}>
-      <View style={{flex: 1, alignItems: 'flex-start'}}>
-        <Button title="Back" onPress={() => navigate(-1)} />
+    <View className="px-4 py-1 flex-row items-center">
+      <View>
+        <Link to={backUrl}>
+          <Text className="text-base font-bold">Back</Text>
+        </Link>
       </View>
 
-      <View style={{flex: 3}}>{children}</View>
-      <View style={{flex: 1, alignItems: 'flex-end'}}>
-        <Button title="..." onPress={console.log} />
+      <View className="flex-1">{children}</View>
+
+      <View>
+        <Pressable onPress={console.log}>
+          <Text className="px-2 text-sm">...</Text>
+        </Pressable>
       </View>
     </View>
   );
@@ -230,24 +218,19 @@ function PlaylistItems({
   children: React.ReactNode;
 }) {
   return (
-    <View style={{backgroundColor: 'white'}}>
-      <View style={{zIndex: 2}}>{children}</View>
+    <View className="bg-white">
+      <View className="z-20">{children}</View>
       <View
+        className="p-4 z-10"
         style={{
-          padding: 20,
-          zIndex: 1,
           transform: [{translateY: -SHUFFLE_PLAY_BUTTON_OFFSET}],
           marginBottom: -SHUFFLE_PLAY_BUTTON_OFFSET,
         }}>
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            marginBottom: 10,
-          }}>
-          <Text style={{fontSize: 16, fontWeight: 'bold'}}>Download</Text>
+        <View className="flex-row justify-between items-center mb-4">
+          <Text className="text-base font-bold">Download</Text>
           <Switch />
         </View>
+
         {tracks.slice(0, 5).map((track, index) => (
           <PlaylistRow track={track} key={`${track.id}-${index}`} />
         ))}
@@ -264,24 +247,14 @@ function PlaylistItems({
 
 function PlaylistRow({track}: {track: any}) {
   return (
-    <View style={{marginBottom: 20}}>
-      <Text style={{fontSize: 16, fontWeight: 'bold'}}>{track.name}</Text>
-      <View style={{flexDirection: 'row', alignItems: 'center'}}>
-        <Text style={{fontWeight: '500', color: 'rgba(0,0,0,0.6)'}}>
+    <View className="mb-6">
+      <Text className="text-base font-bold">{track.name}</Text>
+      <View className="flex-row items-center">
+        <Text className="font-medium text-gray-600">
           {track.artists[0].name}
         </Text>
-        <View
-          style={{
-            width: 4,
-            height: 4,
-            backgroundColor: 'rgba(0,0,0,0.6)',
-            borderRadius: 2,
-            marginHorizontal: 4,
-          }}
-        />
-        <Text
-          style={{fontWeight: '500', color: 'rgba(0,0,0,0.6)'}}
-          numberOfLines={1}>
+        <View className="mx-1 w-1 h-1 rounded-full bg-gray-600" />
+        <Text className="font-medium text-gray-600" numberOfLines={1}>
           {track.album.name}
         </Text>
       </View>
@@ -290,8 +263,6 @@ function PlaylistRow({track}: {track: any}) {
 }
 
 const SHUFFLE_PLAY_BUTTON_HEIGHT = 60;
-// offset is used to move the button slightly outside its container view
-// this gives it the effect of sitting halway between the hero section and the playlist items section
 const SHUFFLE_PLAY_BUTTON_OFFSET = SHUFFLE_PLAY_BUTTON_HEIGHT / 2;
 
 function ShufflePlayButton({children}: any) {
@@ -306,48 +277,34 @@ function ShufflePlayButton({children}: any) {
         ],
       }}>
       <View
+        className="absolute top-0 left-0 right-0 bg-white"
         style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
           height: '50%',
-          backgroundColor: 'white',
         }}
       />
-      <TouchableOpacity
+      <Pressable
+        className="w-64 items-center justify-center"
         style={{
           alignSelf: 'center',
-          justifyContent: 'center',
           height: SHUFFLE_PLAY_BUTTON_HEIGHT,
-          width: 240,
           borderRadius: 30,
           backgroundColor: '#1DB954',
         }}>
         <Text
+          className="text-lg font-bold uppercase text-white tracking-wide"
           style={{
-            textAlign: 'center',
-            textTransform: 'uppercase',
-            color: 'white',
-            fontWeight: '700',
-            fontSize: 18,
             letterSpacing: 1.25,
           }}>
           Shuffle Play
         </Text>
-      </TouchableOpacity>
+      </Pressable>
     </View>
   );
 }
 
 function SearchFilters({}) {
   return (
-    <View
-      style={{
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        paddingHorizontal: 20,
-      }}>
+    <View className="px-4 flex-row justify-between">
       <TextInput
         style={{
           flex: 1,
@@ -359,24 +316,9 @@ function SearchFilters({}) {
         }}
         placeholder="Find in playlist"
       />
-      <TouchableOpacity
-        style={{
-          borderRadius: 4,
-          borderWidth: StyleSheet.hairlineWidth,
-          borderColor: 'rgba(0,0,0,0.5)',
-          justifyContent: 'center',
-          paddingHorizontal: 10,
-          alignSelf: 'center',
-        }}>
-        <Text
-          style={{
-            fontSize: 16,
-            lineHeight: 32,
-            fontWeight: '600',
-          }}>
-          Filters
-        </Text>
-      </TouchableOpacity>
+      <Pressable className="px-2 h-10 justify-center rounded-lg border border-gray-700">
+        <Text className="text-base font-semibold">Filters</Text>
+      </Pressable>
     </View>
   );
 }
@@ -387,16 +329,9 @@ function AboutPlaylist({playlist}: {playlist: IPlaylist}) {
 
   return (
     <View>
-      <View style={{height: 200, marginHorizontal: 20}}>
+      <View className="justify-center items-center">
         <PagerGestureContainer>
-          <View
-            style={{
-              flex: 1,
-              overflow: 'hidden',
-              width: 200,
-              height: 200,
-              alignSelf: 'center',
-            }}>
+          <View className="overflow-hidden" style={{ width: 200, height: 200 }}>
             <Pager
               pageSize={200}
               activeIndex={activeIndex}
@@ -419,40 +354,21 @@ function AboutPlaylist({playlist}: {playlist: IPlaylist}) {
           </View>
         </PagerGestureContainer>
       </View>
-      <View style={{alignItems: 'center'}}>
-        <Text style={{fontSize: 20, fontWeight: '700', marginVertical: 10}}>
-          {playlist.name}
-        </Text>
-        <TouchableOpacity
+
+      <View className="items-center">
+        <Text className="mt-3 text-xl font-bold">{playlist.name}</Text>
+        <Pressable
+          className="px-8 py-2 my-3 border"
           style={{
             borderRadius: 30,
-            borderWidth: 1,
-            paddingVertical: 5,
-            paddingHorizontal: 30,
-            marginVertical: 10,
           }}>
-          <Text
-            style={{
-              fontSize: 14,
-              textTransform: 'uppercase',
-              fontWeight: '600',
-            }}>
-            Follow
-          </Text>
-        </TouchableOpacity>
+          <Text className="text-sm uppercase font-semibold">Follow</Text>
+        </Pressable>
 
-        <View style={{flexDirection: 'row', alignItems: 'center'}}>
-          <Text style={{color: 'gray', fontWeight: '500'}}>897 Followers</Text>
-          <View
-            style={{
-              width: 4,
-              height: 4,
-              backgroundColor: 'gray',
-              borderRadius: 2,
-              marginHorizontal: 5,
-            }}
-          />
-          <Text style={{color: 'gray', fontWeight: '500'}}>by Spotify</Text>
+        <View className="flex-row items-center">
+          <Text className="text-gray-600 font-normal">897 Followers</Text>
+          <View className="mx-2 w-1 h-1 bg-gray-600 rounded-full" />
+          <Text className="text-gray-600 font-normal">by Spotify</Text>
         </View>
       </View>
     </View>

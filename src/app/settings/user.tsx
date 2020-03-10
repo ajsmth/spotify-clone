@@ -1,67 +1,58 @@
 import React from 'react';
-import {View, Image, Text, StyleSheet} from 'react-native';
-import {Link, Stack, Routes, Route, Switch} from '../../earhart';
-import {styles} from '../../styles';
-import {TouchableOpacity, ScrollView} from 'react-native-gesture-handler';
+import {Link, Stack, Routes, Route} from '../../earhart';
+import {View, Image, Text, ScrollView} from '../shared/tailwind';
 import {Playlist} from '../profiles/playlist';
 import {useUser} from '../../providers/user-provider';
+import {api} from '../../services/api';
+import {usePlaylistContext} from '../../providers/playlist-provider';
 
 function User() {
-  const user = useUser();
-
   return (
     <Stack>
       <Routes>
-        <Route path="/">
-          <UserProfile user={user} />
+        <Route path="/*">
+          <SettingsHeader title="User Profile" />
+          <UserProfile />
         </Route>
-
-        <Route path="*">
-          <Switch>
-            <Routes>
-              <Route path="playlist/:id">
-                <Playlist />
-              </Route>
-
-              <Route path="*">
-                <NestedProfiles />
-              </Route>
-            </Routes>
-          </Switch>
+        <Route path="playlist/:id">
+          <Playlist backUrl='../../' />
         </Route>
       </Routes>
     </Stack>
   );
 }
 
-interface IUserProfile {
-  user: IUser;
-}
+function UserProfile() {
+  const user = useUser();
 
-function UserProfile({user}: IUserProfile) {
+  const [state, dispatch] = usePlaylistContext();
+  const [playlistIds, setPlaylistIds] = React.useState([]);
+
+  React.useEffect(() => {
+    api.get(`/users/${user.id}/playlists?public=true`).then(playlists => {
+      dispatch({
+        type: 'UPDATE_MANY',
+        data: playlists,
+      });
+
+      setPlaylistIds(playlists.map(playlist => playlist.id));
+    });
+  }, [user.id]);
+
+  const playlists = playlistIds
+    .map(id => state.lookup[id])
+    .filter(playlist => playlist.public);
+
   return (
-    <View style={{flex: 1, backgroundColor: 'white'}}>
-      <ProfileScreenHeader />
-
-      <ScrollView style={{flex: 1}}>
+    <View className="flex-1 bg-white">
+      <ScrollView className="flex-1">
         <UserProfileInfo user={user} />
-        <FindFriendsLink />
 
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-around',
-            marginBottom: 30,
-          }}>
-          <ProfileNavigationLink name="Playlists" to="playlists" count={2} />
-          <ProfileNavigationLink name="Followers" to="followers" count={9} />
-          <ProfileNavigationLink name="Following" to="following" count={10} />
-        </View>
-
-        <View style={{padding: 15}}>
-          <Text style={[styles.h4, styles.bold]}>Public Playlists</Text>
-          <PlaylistRow playlistId="37i9dQZF1DX76Wlfdnj7AP" name="james" />
-          <PlaylistRow playlistId="37i9dQZF1DX5gQonLbZD9s" name="bangers" />
+        <View className="p-4">
+          <Text className="text-2xl font-bold">Public Playlists</Text>
+          {playlists.map(playlist => {
+            return <PlaylistRow key={playlist.id} playlist={playlist} />;
+          })}
         </View>
       </ScrollView>
     </View>
@@ -70,182 +61,48 @@ function UserProfile({user}: IUserProfile) {
 
 function UserProfileInfo({user}) {
   return (
-    <View style={{alignItems: 'center', marginBottom: 10}}>
+    <View className="mb-3 items-center">
       <Image
+        className="w-24 h-24 rounded-full"
         source={{uri: user.images[0].url}}
-        style={{height: 100, width: 100, borderRadius: 50}}
       />
 
-      <Text style={[styles.h5, styles.bold]}>{user.display_name}</Text>
+      <Text className="mt-2 text-xl font-bold">{user.display_name}</Text>
     </View>
   );
 }
 
-function FindFriendsLink() {
+function SettingsHeader({title}) {
   return (
-    <TouchableOpacity
-      style={{
-        alignSelf: 'center',
-        borderWidth: StyleSheet.hairlineWidth,
-        paddingVertical: 5,
-        paddingHorizontal: 15,
-        borderRadius: 20,
-        marginBottom: 30,
-      }}>
-      <Text
-        style={[
-          styles.small,
-          styles.bold,
-          {
-            textTransform: 'uppercase',
-            letterSpacing: 1.2,
-          },
-        ]}>
-        Find Friends
-      </Text>
-    </TouchableOpacity>
-  );
-}
+    <View className="p-4 mb-4 bg-white">
+      <View className="justify-center">
+        <Text className="text-2xl font-bold text-center">{title}</Text>
 
-function ProfileScreenHeader({}) {
-  return (
-    <View style={{padding: 15}}>
-      <Link to="../">
-        <Text style={[styles.paragraph, styles.bold]}>Back</Text>
-      </Link>
-    </View>
-  );
-}
-
-function ProfileNavigationLink({to, name, count}) {
-  return (
-    <Link
-      to={to}
-      style={{
-        paddingHorizontal: 10,
-        paddingVertical: 5,
-        justifyContent: 'center',
-        alignItems: 'center',
-      }}>
-      <Text>{count}</Text>
-      <Text style={[styles.small, {textTransform: 'uppercase'}]}>{name}</Text>
-    </Link>
-  );
-}
-
-function NestedProfiles() {
-  return (
-    <Switch>
-      <Routes>
-        <Route path="playlists">
-          <UserPlaylists />
-        </Route>
-
-        <Route path="followers">
-          <ProfileScreenHeader />
-          <UserFollowers />
-        </Route>
-
-        <Route path="following">
-          <ProfileScreenHeader />
-          <UserFollowing />
-        </Route>
-      </Routes>
-    </Switch>
-  );
-}
-
-function UserPlaylists() {
-  return (
-    <Stack>
-      <Routes>
-        <Route path="/">
-          <ProfileScreenHeader />
-
-          <View style={{flex: 1, padding: 15, backgroundColor: 'white'}}>
-            <PlaylistRow playlistId="37i9dQZF1DX76Wlfdnj7AP" name="james" />
-            <PlaylistRow playlistId="37i9dQZF1DX5gQonLbZD9s" name="bangers" />
-          </View>
-        </Route>
-
-        <Route path="playlist/:id">
-          <Playlist />
-        </Route>
-      </Routes>
-    </Stack>
-  );
-}
-
-function UserFollowers() {
-  return (
-    <ScrollView style={{flex: 1, padding: 15, backgroundColor: 'white'}}>
-      <UserRow />
-      <UserRow />
-      <UserRow />
-      <UserRow />
-      <UserRow />
-      <UserRow />
-      <UserRow />
-      <UserRow />
-      <UserRow />
-    </ScrollView>
-  );
-}
-
-function UserFollowing() {
-  return (
-    <ScrollView style={{flex: 1, padding: 15, backgroundColor: 'white'}}>
-      <UserRow />
-      <UserRow />
-      <UserRow />
-      <UserRow />
-      <UserRow />
-      <UserRow />
-      <UserRow />
-    </ScrollView>
-  );
-}
-
-function UserRow({}) {
-  return (
-    <View style={{flexDirection: 'row', marginVertical: 15}}>
-      <View
-        style={{
-          height: 50,
-          width: 50,
-          borderRadius: 25,
-          backgroundColor: 'gray',
-          marginRight: 10,
-        }}
-      />
-
-      <View>
-        <Text style={[styles.paragraph, styles.bold]}>Andrew Smith</Text>
-        <Text style={[styles.small, {color: 'gray'}]}>24 Followers</Text>
+        <View className="absolute left-0">
+          <Link to="../">
+            <Text className="text-center text-lg font-medium">Back</Text>
+          </Link>
+        </View>
       </View>
     </View>
   );
 }
 
-function PlaylistRow({playlistId, name}) {
+function PlaylistRow({playlist}: {playlist: IPlaylist}) {
   return (
-    <Link
-      to={`playlist/${playlistId}`}
-      style={{flexDirection: 'row', marginVertical: 15}}>
-      <View
-        style={{
-          height: 50,
-          width: 50,
-          backgroundColor: 'gray',
-          marginRight: 10,
-        }}
-      />
+    <Link to={`playlist/${playlist.id}`}>
+      <View className="my-4 flex-row">
+        <Image
+          className="mr-3 w-12 h-12 rounded-full"
+          source={{uri: playlist.images[0]?.url}}
+        />
 
-      <View style={{justifyContent: 'center'}}>
-        <Text style={[styles.small, styles.bold]}>{name}</Text>
-        <Text style={[styles.small, {color: 'gray', lineHeight: 14}]}>
-          0 followers
-        </Text>
+        <View className='justify-center'>
+          <Text className='text-sm font-bold'>{playlist.name}</Text>
+          <Text className='mt-1 text-xs text-gray-600'>
+            0 followers
+          </Text>
+        </View>
       </View>
     </Link>
   );

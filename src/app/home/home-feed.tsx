@@ -1,21 +1,21 @@
 import React from 'react';
-import {View, Text, ScrollView, SafeAreaView, Image} from 'react-native';
+import {View, Text, ScrollView, Image, SafeAreaView} from '../shared/tailwind';
 import {Link} from '../../earhart';
-import {styles} from '../../styles';
 import {api} from '../../services/api';
 import {usePlaylistContext} from '../../providers/playlist-provider';
 
 function HomeFeed() {
   return (
-    <SafeAreaView style={{flex: 1}}>
+    <View className="flex flex-1 bg-white">
+      <SafeAreaView />
       <SettingsHeader />
-      <ScrollView style={{flex: 1}}>
+      <ScrollView className="py-4 bg-white">
         <Playlists feedId="featured" title="Editors Picks" />
         <Playlists feedId="toplists" title="Top" />
         <Playlists feedId="workout" title="Workout" />
         <Playlists feedId="party" title="Party" />
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 }
 
@@ -29,7 +29,7 @@ function Playlists({feedId, title}: IPlaylists) {
   const [playlistIds, setPlaylistIds] = React.useState([]);
 
   React.useEffect(() => {
-    api.get(`/home/playlists/${feedId}`).then(playlists => {
+    api.get(`/playlists/${feedId}`).then(playlists => {
       dispatch({
         type: 'UPDATE_MANY',
         data: playlists,
@@ -42,50 +42,38 @@ function Playlists({feedId, title}: IPlaylists) {
   const playlists = playlistIds.map(id => state.lookup[id]);
 
   return (
-    <View>
-      <Text style={[styles.h4, {margin: 15, fontWeight: 'bold'}]}>{title}</Text>
-      <View style={{height: 200, justifyContent: 'center'}}>
-        <ScrollView
-          style={{flex: 1}}
-          horizontal
-          showsHorizontalScrollIndicator={false}>
-          {playlists.map(playlist => {
-            if (!playlist) {
-              return null;
-            }
+    <View className='py-3'>
+      <Text className="px-4 text-3xl font-bold">{title}</Text>
+      <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+        {playlists.map(playlist => {
+          if (!playlist) {
+            return null;
+          }
 
-            return (
-              <Link
-                key={playlist.id}
-                to={`profile/playlists/${playlist.id}`}
-                style={{padding: 15}}>
+          return (
+            <View className="p-3" key={playlist.id}>
+              <Link to={`profile/playlists/${playlist.id}`}>
                 <Image
                   source={{uri: playlist.images[0].url}}
                   style={{height: 150, width: 150}}
                 />
 
-                <Text style={[styles.paragraph, {fontWeight: '500'}]}>
-                  {playlist.name}
-                </Text>
+                <Text className="py-2 text-sm">{playlist.name}</Text>
               </Link>
-            );
-          })}
-        </ScrollView>
-      </View>
+            </View>
+          );
+        })}
+      </ScrollView>
     </View>
   );
 }
 
 function SettingsHeader() {
   return (
-    <View
-      style={{
-        height: 60,
-        justifyContent: 'center',
-        paddingHorizontal: 10,
-      }}>
+    <View className='py-4 px-3 flex-row'>
+      <View className='flex-1' /> 
       <Link to={`settings`}>
-        <Text style={[styles.title, {textAlign: 'right'}]}>Settings</Text>
+        <Text className='text-2xl font-semibold text-right'>Settings</Text>
       </Link>
     </View>
   );

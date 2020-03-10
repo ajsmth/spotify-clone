@@ -1,6 +1,6 @@
 import React from 'react';
-import {ScrollView, Text, View, Switch} from 'react-native';
-import {styles} from '../../styles';
+import {Switch} from 'react-native';
+import {ScrollView, Text, View} from '../shared/tailwind';
 
 function Notifications() {
   return (
@@ -52,7 +52,7 @@ function Notifications() {
         <NotificationToggle title="Email Notification" />
       </View>
 
-      <View style={{ marginTop: 50 }} />
+      <View style={{marginTop: 50}} />
 
       <SectionHeader title="Spotify Updates" />
 
@@ -81,25 +81,17 @@ function Notifications() {
 
 function SectionHeader({title}) {
   return (
-    <View style={{marginVertical: 10 }}>
-      <Text style={[styles.h4, styles.bold, {textAlign: 'center'}]}>
-        {title}
-      </Text>
+    <View className="my-2">
+      <Text className="text-3xl font-extrabold text-center">{title}</Text>
     </View>
   );
 }
 
 function CategoryHeader({title, description}) {
   return (
-    <View style={{marginVertical: 15}}>
-      <Text style={[styles.paragraph, styles.bold, {textAlign: 'center'}]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.small,
-          {textAlign: 'center', color: 'gray', fontWeight: '600'},
-        ]}>
+    <View className="my-4">
+      <Text className="text-lg font-bold text-center">{title}</Text>
+      <Text className="mt-2 text-sm text-center text-gray-600 font-medium">
         {description}
       </Text>
     </View>
@@ -108,14 +100,9 @@ function CategoryHeader({title, description}) {
 
 function NotificationToggle({title}) {
   return (
-    <View style={{marginVertical: 5}}>
-      <View
-        style={{
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-        }}>
-        <Text style={[{fontWeight: '600'}]}>{title}</Text>
+    <View className="my-1">
+      <View className="flex-row justify-between items-center">
+        <Text className="font-semibold">{title}</Text>
         <Switch />
       </View>
     </View>

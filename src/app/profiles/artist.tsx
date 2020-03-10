@@ -1,9 +1,8 @@
 import React from 'react';
-import {ScrollView, ImageBackground, Text, View, Image} from 'react-native';
+import {ImageBackground} from 'react-native';
+import {ScrollView, Text, View, Image} from '../shared/tailwind';
 import {useArtistContext} from '../../providers/artist-provider';
 import {useParams} from '../../earhart/router';
-import {styles} from '../../styles';
-import {spotify} from '../../services/spotify-client';
 import {useTrackContext} from '../../providers/track-provider';
 import {api} from '../../services/api';
 import {useAlbumContext} from '../../providers/album-provider';
@@ -22,67 +21,44 @@ function Artist() {
   }
 
   return (
-    <ScrollView style={{flex: 1, backgroundColor: 'white'}}>
+    <ScrollView className="flex-1 bg-white">
       <ImageBackground
         style={{height: 400, padding: 15}}
         source={{uri: artist.images[0]?.url}}>
-        <View style={{flex: 1}} />
-        <Text
-          style={[styles.h2, styles.bold, {color: 'white', lineHeight: 40}]}>
-          {artist.name}
-        </Text>
+        <View className="flex-1" />
+        <Text className="text-4xl font-bold text-white">{artist.name}</Text>
       </ImageBackground>
 
-      <View style={{padding: 15}}>
+      <View className="p-4">
         <View>
-          <Text style={[styles.paragraph, styles.semibold]}>Popular</Text>
+          <Text className="mb-3 text-2xl font-semibold">Popular</Text>
           {tracks.map((track, index) => {
             return (
-              <View
-                key={track.id}
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  marginVertical: 10,
-                }}>
-                <Text style={[styles.paragraph, {marginRight: 10}]}>
-                  {index + 1}
-                </Text>
+              <View key={track.id} className="flex-row items-center my-3">
+                <Text className="text-base mr-3">{index + 1}</Text>
                 <Image
-                  style={{height: 50, width: 50, marginRight: 10}}
+                  className="w-12 h-12 mr-2"
                   source={{uri: track.album.images[0]?.url}}
                 />
 
-                <Text style={[styles.paragraph, styles.semibold]}>
-                  {track.name}
-                </Text>
+                <Text className="text-base font-semibold">{track.name}</Text>
               </View>
             );
           })}
         </View>
 
-        <View>
-          <Text style={[styles.paragraph, styles.semibold]}>Albums</Text>
+        <View className="mt-6">
+          <Text className="text-2xl font-semibold">Albums</Text>
           {albums.map((album, index) => {
             return (
-              <View
-                key={album.id}
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  marginVertical: 10,
-                }}>
-                <Text style={[styles.paragraph, {marginRight: 10}]}>
-                  {index + 1}
-                </Text>
+              <View key={album.id} className="flex-row items-center my-3">
+                <Text className="text-base mr-3">{index + 1}</Text>
                 <Image
-                  style={{height: 50, width: 50, marginRight: 10}}
+                  className="w-12 h-12 mr-2"
                   source={{uri: album.images[0]?.url}}
                 />
 
-                <Text style={[styles.paragraph, styles.semibold]}>
-                  {album.name}
-                </Text>
+                <Text className="text-base font-semibold">{album.name}</Text>
               </View>
             );
           })}

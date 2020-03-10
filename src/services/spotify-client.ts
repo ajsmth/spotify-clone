@@ -73,6 +73,10 @@ function spotify() {
   async function request(url: string, options: RequestInit = {}) {
     let credentials = await getOauthCredentials();
 
+    if (!credentials) {
+      return Promise.reject({ error: 'No credentials '})
+    }
+
     const currentDate = new Date();
     const expiryDate = new Date(credentials.accessTokenExpirationDate);
 
@@ -85,11 +89,7 @@ function spotify() {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${credentials.accessToken}`,
       },
-    })
-      .then(response => response.json())
-      .catch(error => {
-        console.log({error});
-      });
+    }).then(response => response.json());
   }
 
   function login() {

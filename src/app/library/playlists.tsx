@@ -1,7 +1,6 @@
 import React from 'react';
-import {View, Text, ScrollView, Image} from 'react-native';
+import {View, Text, ScrollView, Image} from '../shared/tailwind';
 import {Link} from '../../earhart';
-import {styles} from '../../styles';
 import {api} from '../../services/api';
 import {usePlaylistContext} from '../../providers/playlist-provider';
 
@@ -10,7 +9,7 @@ function Playlists({to}) {
   const [playlistIds, setPlaylistIds] = React.useState([]);
 
   React.useEffect(() => {
-    api.get('/me/playlists').then(playlists => {
+    api.get('/playlists/me').then(playlists => {
       dispatch({
         type: 'UPDATE_MANY',
         data: playlists,
@@ -21,7 +20,7 @@ function Playlists({to}) {
   }, [to]);
 
   return (
-    <ScrollView style={{flex: 1, backgroundColor: 'white', padding: 15}}>
+    <ScrollView className="p-4 flex-1 bg-white">
       {playlistIds.map(id => {
         const playlist = state.lookup[id];
 
@@ -42,18 +41,18 @@ interface IPlaylistRow {
 
 function PlaylistRow({playlist, to}: IPlaylistRow) {
   return (
-    <Link
-      to={to}
-      style={{flexDirection: 'row', alignItems: 'center', marginVertical: 10}}>
-      <Image
-        style={{width: 70, height: 70, marginRight: 10}}
-        source={{uri: playlist.images[0]?.url}}
-      />
+    <View className="my-3">
+      <Link to={to}>
+        <View className="flex-row items-center">
+          <Image
+            className="w-16 h-16 mr-3"
+            source={{uri: playlist.images[0]?.url}}
+          />
 
-      <View>
-        <Text style={[styles.paragraph, styles.semibold]}>{playlist.name}</Text>
-      </View>
-    </Link>
+          <Text className="text-base font-semibold">{playlist.name}</Text>
+        </View>
+      </Link>
+    </View>
   );
 }
 

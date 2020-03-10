@@ -1,45 +1,52 @@
 import React from 'react';
 import {Stack, Switch, Route, Routes, Link} from '../../earhart';
-import {Text, View, Image} from 'react-native';
+import {
+  Text,
+  View,
+  Image,
+  ScrollView,
+  SafeAreaView,
+  Pressable,
+} from '../shared/tailwind';
 import {useAuth} from '../../providers/auth-provider';
 import {User} from './user';
 import {Playback} from './playback';
-import {styles} from '../../styles';
 import {Notifications} from './notifications';
-import {TouchableOpacity, ScrollView} from 'react-native-gesture-handler';
 import {useUser} from '../../providers/user-provider';
 
 function Settings({}) {
   return (
     <Stack>
-      <View style={{flex: 1, backgroundColor: 'white'}}>
-        <Routes>
-          <Route path="/">
-            <SettingsHeader title='Settings' />
-            <Index />
-          </Route>
+      <SafeAreaView className="flex-1">
+        <View className="flex-1 bg-white">
+          <Routes>
+            <Route path="/">
+              <SettingsHeader title="Settings" />
+              <Index />
+            </Route>
 
-          <Route path="*">
-            <Switch>
-              <Routes>
-                <Route path="profile">
-                  <User />
-                </Route>
+            <Route path="*">
+              <Switch>
+                <Routes>
+                  <Route path="profile">
+                    <User />
+                  </Route>
 
-                <Route path="playback">
-                  <SettingsHeader title="Playback" />
-                  <Playback />
-                </Route>
+                  <Route path="playback">
+                    <SettingsHeader title="Playback" />
+                    <Playback />
+                  </Route>
 
-                <Route path="notifications">
-                  <SettingsHeader title="Notifications" />
-                  <Notifications />
-                </Route>
-              </Routes>
-            </Switch>
-          </Route>
-        </Routes>
-      </View>
+                  <Route path="notifications">
+                    <SettingsHeader title="Notifications" />
+                    <Notifications />
+                  </Route>
+                </Routes>
+              </Switch>
+            </Route>
+          </Routes>
+        </View>
+      </SafeAreaView>
     </Stack>
   );
 }
@@ -48,7 +55,7 @@ function Index() {
   const user = useUser();
 
   return (
-    <ScrollView style={{flex: 1, paddingBottom: 50, paddingHorizontal: 20}}>
+    <ScrollView className="flex-1 pb-12 px-4">
       <Link to="profile">
         <UserRow user={user} />
       </Link>
@@ -63,21 +70,16 @@ function Index() {
 
 function SettingsHeader({title}) {
   return (
-    <View
-      style={{
-        padding: 10,
-        backgroundColor: 'white',
-        justifyContent: 'center',
-      }}>
-      <Link to="../" style={{position: 'absolute', left: 10}}>
-        <Text style={{textAlign: 'center', fontSize: 20, fontWeight: '500'}}>
-          Back
-        </Text>
-      </Link>
+    <View className="py-2 px-4 bg-white justify-center">
+      <View>
+        <Text className="text-3xl font-bold text-center">{title}</Text>
 
-      <Text style={[styles.h3, styles.bold, {textAlign: 'center'}]}>
-        {title}
-      </Text>
+        <View className="absolute left-0">
+          <Link to="../">
+            <Text className="text-xl font-semibold text-center">Back</Text>
+          </Link>
+        </View>
+      </View>
     </View>
   );
 }
@@ -90,21 +92,13 @@ interface ISettingsLink {
 function SettingsLink({to, title}: ISettingsLink) {
   return (
     <Link to={`${to}`}>
-      <View
-        style={{
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          marginBottom: 30,
-          paddingVertical: 10,
-        }}>
-        <Text style={{fontSize: 20, fontWeight: '500'}}>{title}</Text>
-        <Text style={{fontSize: 20, fontWeight: '500'}}>→</Text>
+      <View className="mb-8 py-2 flex-row justify-between">
+        <Text className="text-xl font-semibold">{title}</Text>
+        <Text className="text-xl font-semibold">→</Text>
       </View>
     </Link>
   );
 }
-
-
 
 interface IUserRow {
   user: IUser;
@@ -112,19 +106,15 @@ interface IUserRow {
 
 function UserRow({user}: IUserRow) {
   return (
-    <View style={{flexDirection: 'row', marginBottom: 50, marginTop: 20}}>
+    <View className="flex-row mb-12 mt-8">
       <Image
-        style={{width: 100, height: 100, borderRadius: 50}}
+        className="w-20 h-20 rounded-full"
         source={{uri: user?.images[0].url}}
       />
 
-      <View style={{justifyContent: 'center', marginLeft: 15}}>
-        <Text style={{fontSize: 24, fontWeight: '600'}}>
-          {user?.display_name}
-        </Text>
-        <Text style={{fontSize: 18, fontWeight: '500', marginTop: 10}}>
-          View Profile
-        </Text>
+      <View className="ml-4 justify-center">
+        <Text className="text-2xl font-semibold">{user?.display_name}</Text>
+        <Text className="text-lg font-medium mt-2">View Profile</Text>
       </View>
     </View>
   );
@@ -135,24 +125,20 @@ function Logout() {
 
   return (
     <View style={{marginTop: 40, alignItems: 'center'}}>
-      <TouchableOpacity
+      <Pressable
+        className="px-6 py-3 border"
         onPress={logout}
         style={{
-          paddingHorizontal: 50,
-          paddingVertical: 20,
           borderRadius: 40,
-          borderWidth: 1,
         }}>
         <Text
+          className="text-lg font-medium uppercase"
           style={{
-            fontSize: 18,
-            fontWeight: '600',
             letterSpacing: 1.5,
-            textTransform: 'uppercase',
           }}>
           Log Out
         </Text>
-      </TouchableOpacity>
+      </Pressable>
     </View>
   );
 }

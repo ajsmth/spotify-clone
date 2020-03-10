@@ -9,8 +9,8 @@ import {
   Switch,
   useInterpolation,
 } from '../../earhart';
-import {Text, View, Animated} from 'react-native';
-import {styles} from '../../styles';
+
+import {Text, View, AnimatedText, SafeAreaView} from '../shared/tailwind';
 
 import {Playlists} from './playlists';
 import {Artists} from './artists';
@@ -22,7 +22,7 @@ import {Album} from '../profiles/album';
 
 function Library() {
   return (
-    <View style={{flex: 1}}>
+    <SafeAreaView className="flex-1">
       <Stack>
         <Routes>
           <Route path="/">
@@ -34,7 +34,7 @@ function Library() {
           </Route>
         </Routes>
       </Stack>
-    </View>
+    </SafeAreaView>
   );
 }
 
@@ -43,28 +43,28 @@ const baseUrl = `../`;
 function Music({}) {
   return (
     <Tabs>
-      <View style={{paddingHorizontal: 15}}>
-        <Text style={[styles.h2, {marginRight: 30, fontWeight: '700'}]}>
-          Music
-        </Text>
+      <View className="px-4">
+        <Text className="text-5xl font-extrabold">Music</Text>
       </View>
 
-      <Tabbar style={{paddingHorizontal: 15}}>
-        <SmallerTab to="playlists">Playlists</SmallerTab>
-        <SmallerTab to="artists">Artists</SmallerTab>
-        <SmallerTab to="albums">Albums</SmallerTab>
-      </Tabbar>
+      <View className="px-4">
+        <Tabbar>
+          <SmallerTab to="playlists/">Playlists</SmallerTab>
+          <SmallerTab to="artists/">Artists</SmallerTab>
+          <SmallerTab to="albums/">Albums</SmallerTab>
+        </Tabbar>
+      </View>
 
       <Routes>
         <Route path="playlists">
           <Playlists to={`${baseUrl}/profile/playlists`} />
         </Route>
 
-        <Route path="artists">
+        <Route path="artists/*">
           <Artists to={`${baseUrl}/profile/artists`} />
         </Route>
 
-        <Route path="albums">
+        <Route path="albums/*">
           <Albums to={`${baseUrl}/profile/albums`} />
         </Route>
       </Routes>
@@ -94,8 +94,8 @@ function Profiles({}) {
 
 function SmallerTab({children, to}) {
   return (
-    <Tab style={[styles.h5, styles.semibold]} to={to}>
-      {children}
+    <Tab to={to}>
+      <Text className="text-xl font-semibold">{children}</Text>
     </Tab>
   );
 }
@@ -108,14 +108,14 @@ const activeStyle = {
   },
 };
 
-function Tab({to, children, style}) {
+function Tab({to, children}) {
   const activeStyles = useInterpolation(activeStyle);
 
   return (
-    <Link to={to} style={activeStyles}>
-      <Animated.Text style={[{marginRight: 15, fontWeight: '600'}, style]}>
+    <Link to={to}>
+      <AnimatedText className="mr-4 font-semibold" style={[activeStyles]}>
         {children}
-      </Animated.Text>
+      </AnimatedText>
     </Link>
   );
 }

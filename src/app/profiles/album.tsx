@@ -1,13 +1,5 @@
 import React from 'react';
-import {
-  ScrollView,
-  Text,
-  View,
-  ImageBackground,
-  Image,
-  Animated,
-} from 'react-native';
-import {styles} from '../../styles';
+import {ScrollView, Text, View, Image} from '../shared/tailwind';
 import {useParams, PagerGestureContainer, Pager} from '../../earhart';
 import {useTrackContext} from '../../providers/track-provider';
 import {api} from '../../services/api';
@@ -19,7 +11,6 @@ function useTracks(params: any) {
 
   React.useEffect(() => {
     api.get(`/albums/${params.id}/tracks`).then((tracks: ITrack[]) => {
-      console.log({tracks});
       dispatch({
         type: 'UPDATE_MANY',
         data: tracks,
@@ -46,26 +37,21 @@ function Album() {
   }
 
   return (
-    <ScrollView style={{flex: 1, backgroundColor: 'white'}}>
-      <View style={{alignItems: 'center', padding: 15}}>
-        <Image
-          style={{height: 200, width: 200}}
-          source={{uri: album.images[0]?.url}}
-        />
+    <ScrollView className="flex-1 bg-white">
+      <View className="items-center py-4">
+        <Image className="w-56 h-56" source={{uri: album.images[0]?.url}} />
       </View>
 
-      <View style={{padding: 15}}>
-        <Text style={[styles.h3, styles.semibold]}>{album.name}</Text>
+      <View className="p-4">
+        <Text className="text-3xl font-semibold">{album.name}</Text>
         {tracks.map(track => {
           return (
-            <View key={track.id} style={{marginVertical: 10}}>
-              <Text style={[styles.h5, styles.semibold]}>{track.name}</Text>
+            <View key={track.id} className="my-3">
+              <Text className="text-xl font-semibold">{track.name}</Text>
 
-              <View>
-                <Text>
-                  {track.artists.map(artist => artist.name).join(', ')}
-                </Text>
-              </View>
+              <Text className="mt-1 text-sm text-gray-700 font-medium">
+                {track.artists.map(artist => artist.name).join(', ')}
+              </Text>
             </View>
           );
         })}

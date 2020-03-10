@@ -10,7 +10,7 @@ router.get('/me/artists', () => {
 });
 
 // ALBUMS ===========================================================================
-router.get('/me/albums', () => {
+router.get('/albums/me', () => {
   return spotify
     .request(`/me/albums`)
     .then(response => response.items.map(item => item.album) as IAlbum[]);
@@ -23,7 +23,6 @@ router.get('/artists/:id/albums', options => {
 });
 
 // TRACKS ===========================================================================
-
 router.get('/artists/:id/tracks', options => {
   return spotify
     .request(`/artists/${options.params.id}/top-tracks?country=CA`)
@@ -46,23 +45,31 @@ router.get('/albums/:id/tracks', options => {
       return response.items;
     });
 });
-// PLAYLISTS ===========================================================================
 
-router.get('/home/playlists/featured', () => {
+// PLAYLISTS ===========================================================================
+router.get('/playlists/featured', () => {
   return spotify
     .request(`/browse/featured-playlists`)
     .then(response => response.playlists.items as IPlaylist[]);
 });
 
-router.get('/home/playlists/:id', options => {
+router.get('/playlists/me', () => {
+  return spotify
+    .request(`/me/playlists`)
+    .then(response => response.items as IPlaylist[]);
+});
+
+router.get('/playlists/:id', options => {
   return spotify
     .request(`/browse/categories/${options.params.id}/playlists`)
     .then(response => response.playlists.items as IPlaylist[]);
 });
 
-router.get('/me/playlists', () => {
+// USER PROFILES =======================================================================
+
+router.get('/users/:id/playlists', options => {
   return spotify
-    .request(`/me/playlists`)
+    .request(`/users/${options.params.id}/playlists?${options.query}`)
     .then(response => response.items as IPlaylist[]);
 });
 

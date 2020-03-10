@@ -6745,6 +6745,11 @@ table@^5.2.3:
     slice-ansi "^2.1.0"
     string-width "^3.0.0"
 
+tailwind-rn@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/tailwind-rn/-/tailwind-rn-1.0.0.tgz#6c3bc42780db73b41658af632873d04dadefc5e5"
+  integrity sha512-m0TB9K6pwbKPAovo/w2ELonZOe7s016ZppG0pBcbbcOnyZMRl92uuGGM0KjTCNGFw+iGKAEkYTF0e1cPi4T0iw==
+
 temp@0.8.3:
   version "0.8.3"
   resolved "https://registry.yarnpkg.com/temp/-/temp-0.8.3.tgz#e0c6bc4d26b903124410e4fed81103014dfc1f59"

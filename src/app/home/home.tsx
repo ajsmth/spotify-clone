@@ -44,7 +44,7 @@ function Profiles() {
     <Switch>
       <Routes>
         <Route path="playlists/:id">
-          <Playlist />
+          <Playlist backUrl="../../../" />
         </Route>
       </Routes>
     </Switch>

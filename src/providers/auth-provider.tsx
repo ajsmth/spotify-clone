@@ -2,11 +2,12 @@ import React from 'react';
 import {ActivityIndicator} from 'react-native';
 import {useNavigate} from '../earhart';
 import {api} from '../services/api';
+import {View} from '../app/shared/tailwind';
 
 interface IAuthContext {
   user?: IUser;
   setUser: (user: IUser) => void;
-  login: () => void;
+  login: () => Promise<any>;
   logout: () => void;
   refresh: () => void;
 }
@@ -21,19 +22,19 @@ function AuthProvider({children}) {
   React.useEffect(() => {
     setLoading(true);
 
-    api.get('/me')
+    api
+      .get('/me')
       .then((user: IUser) => {
         setUser(user);
         setLoading(false);
       })
       .catch(error => {
-        console.log({error});
         setLoading(false);
         setUser(undefined);
       });
   }, []);
 
-  function login() {
+  function login(): Promise<any> {
     setLoading(true);
 
     return api
@@ -74,8 +75,16 @@ function AuthProvider({children}) {
 
   return (
     <AuthContext.Provider value={{user, setUser, login, logout, refresh}}>
-      {loading ? <ActivityIndicator /> : children({user})}
+      {loading ? <LoadingScreen /> : children({user})}
     </AuthContext.Provider>
+  );
+}
+
+function LoadingScreen({}) {
+  return (
+    <View className="flex-1 bg-gray-300 items-center justify-center">
+      <ActivityIndicator />
+    </View>
   );
 }
 
