@@ -2360,6 +2360,11 @@ earhart-native@^0.1.2:
   resolved "https://registry.yarnpkg.com/earhart-native/-/earhart-native-0.1.2.tgz#e12138f1796091c90990bb28a10b30a7e12ed29f"
   integrity sha512-Zaro/jt6gGo8luI3NOKJRz2DKlFRX7ZXV5kVuB1DKGvrIIui8KDIfZKni2vKtOPaBxh8MB7bjI+wjGKmJJKHUg==
 
+earhart-shared-elements@^0.1.2:
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/earhart-shared-elements/-/earhart-shared-elements-0.1.2.tgz#2b5ce1acd8285f8603eca0f8c248460d90e2c068"
+  integrity sha512-ctH3k5X6rM6wdVoTLlVIneYfQ+ZaxE420kALuO+QJ1WFgmfN8R2inWrsXKR2yWRJ/iIS3U8l3Kvto46weCWXqw==
+
 earhart@^0.0.7:
   version "0.0.7"
   resolved "https://registry.yarnpkg.com/earhart/-/earhart-0.0.7.tgz#88f590d619bc9344c107daf5da4a7949a8af0a33"
@@ -5798,6 +5803,11 @@ react-native-screens@^2.3.0:
   integrity sha512-b+zazYedHPZoDzeKOE4RF/rPpJX8AAITazZCsVFUtw5Qn2QNHvAi0xbzWvQFNgqfvET0TLuu8F2HfBDh1WSqdQ==
   dependencies:
     debounce "^1.2.0"
+
+react-native-shared-element@^0.5.6:
+  version "0.5.6"
+  resolved "https://registry.yarnpkg.com/react-native-shared-element/-/react-native-shared-element-0.5.6.tgz#f0efac19aac50d495cd4b8caedae758cb9752503"
+  integrity sha512-4e3mFtrmqVHqmRum9xFTpY3JrteEP78oOIMM2I3ygu1sHcemYlyOq1BRoHk4vjHKzIckYuSXt8GAPYv1U5vosg==
 
 react-native@0.61.5:
   version "0.61.5"

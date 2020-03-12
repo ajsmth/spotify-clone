@@ -1,4 +1,4 @@
-import create from '../winona';
+import create from 'winona';
 import {spotify} from './spotify-client';
 const [router, client] = create();
 

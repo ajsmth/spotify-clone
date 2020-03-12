@@ -1,5 +1,5 @@
 import React from 'react';
-import {Stack, Switch, Route, Routes, Link} from 'earhart';
+import {Stack, Switch, Route, Routes, Link, useInterpolation} from 'earhart';
 import {
   Text,
   View,
@@ -15,41 +15,46 @@ import {Notifications} from './notifications';
 import {useUser} from '../../providers/user-provider';
 
 import {Stack as NativeStack, Route as NativeRoute} from 'earhart-native';
+import {
+  SharedElement,
+  SharedElements,
+  useSharedElementInterpolation,
+} from 'earhart-shared-elements';
+import {Animated} from 'react-native';
 
 function Settings({}) {
   return (
-    <NativeStack>
-      <SafeAreaView className="flex-1">
-        <View className="flex-1 bg-white">
-          <Routes>
-            <NativeRoute path="/">
-              <SettingsHeader title="Settings" />
-              <Index />
-            </NativeRoute>
+    <SafeAreaView className="flex-1 bg-white">
+      <NativeStack>
+        <Routes>
+          <Route path="/*">
+            <SharedElements>
+              <Routes>
+                <Route path="/">
+                  <SettingsHeader title="Settings" />
+                  <Index />
+                </Route>
 
-            <Route path="*">
-              <Switch>
-                <Routes>
-                  <Route path="profile">
-                    <User />
-                  </Route>
+                <Route path="profile">
+                  <SettingsHeader title="Settings" />
+                  <User />
+                </Route>
+              </Routes>
+            </SharedElements>
+          </Route>
 
-                  <Route path="playback">
-                    <SettingsHeader title="Playback" />
-                    <Playback />
-                  </Route>
+          <Route path="playback">
+            <SettingsHeader title="Playback" />
+            <Playback />
+          </Route>
 
-                  <Route path="notifications">
-                    <SettingsHeader title="Notifications" />
-                    <Notifications />
-                  </Route>
-                </Routes>
-              </Switch>
-            </Route>
-          </Routes>
-        </View>
-      </SafeAreaView>
-    </NativeStack>
+          <Route path="notifications">
+            <SettingsHeader title="Notifications" />
+            <Notifications />
+          </Route>
+        </Routes>
+      </NativeStack>
+    </SafeAreaView>
   );
 }
 
@@ -107,18 +112,31 @@ interface IUserRow {
 }
 
 function UserRow({user}: IUserRow) {
-  return (
-    <View className="flex-row mb-12 mt-8">
-      <Image
-        className="w-20 h-20 rounded-full"
-        source={{uri: user?.images[0].url}}
-      />
+  const style = useSharedElementInterpolation({
+    opacity: {
+      inputRange: [-0.5, 0, 1],
+      outputRange: [0, 1, 0],
+    },
+  });
 
-      <View className="ml-4 justify-center">
-        <Text className="text-2xl font-semibold">{user?.display_name}</Text>
-        <Text className="text-lg font-medium mt-2">View Profile</Text>
+  return (
+    <Animated.View style={style}>
+      <View className="flex-row mb-12 mt-8">
+        <SharedElement id="user-profile-image">
+          <Image
+            style={{height: 80, width: 80, borderRadius: 40}}
+            source={{uri: user?.images[0].url}}
+          />
+        </SharedElement>
+
+        <View className="ml-4 justify-center">
+          <SharedElement id="user-name">
+            <Text className="text-2xl font-semibold">{user?.display_name}</Text>
+          </SharedElement>
+          <Text className="text-lg font-medium mt-2">View Profile</Text>
+        </View>
       </View>
-    </View>
+    </Animated.View>
   );
 }
 
