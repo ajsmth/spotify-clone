@@ -1,5 +1,5 @@
 import React from 'react';
-import {Navigator, Tabs, useNavigate, Route, Routes} from '../../earhart';
+import {Navigator, Tabs, useNavigate, Route, Routes} from 'earhart';
 import {View, Text, Pressable} from '../shared/tailwind';
 import {useAuth} from '../../providers/auth-provider';
 import {SafeAreaView} from 'react-native';

@@ -1,6 +1,6 @@
 import React from 'react';
 import {View, Text, ScrollView, Image} from '../shared/tailwind';
-import {Link} from '../../earhart';
+import {Link} from 'earhart';
 import {api} from '../../services/api';
 import {usePlaylistContext} from '../../providers/playlist-provider';
 

@@ -1,8 +1,8 @@
 import React from 'react';
 import {ImageBackground} from 'react-native';
+import {useParams} from 'earhart';
 import {ScrollView, Text, View, Image} from '../shared/tailwind';
 import {useArtistContext} from '../../providers/artist-provider';
-import {useParams} from '../../earhart/router';
 import {useTrackContext} from '../../providers/track-provider';
 import {api} from '../../services/api';
 import {useAlbumContext} from '../../providers/album-provider';

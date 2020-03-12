@@ -7,35 +7,50 @@ import {
   useRoute,
   Routes,
   useFocusLazy,
-} from '../../earhart';
+} from 'earhart';
 import {Playlist} from '../profiles/playlist';
 import {HomeFeed} from './home-feed';
 import {Settings} from '../settings/settings';
 import {View} from 'react-native';
+import {
+  Stack as NativeStack,
+  Route as NativeRoute,
+} from 'earhart-native';
+
+import {ScreenStackHeaderConfig} from 'react-native-screens';
+import {SafeAreaView} from '../shared/tailwind';
 
 function Home() {
   return (
-    <Stack>
+    <NativeStack>
       <Routes>
         <Route path="/">
-          <Stack>
-            <Routes>
-              <Route path="/">
-                <HomeFeed />
-              </Route>
-
-              <Route path="settings/*">
-                <Settings />
-              </Route>
-            </Routes>
-          </Stack>
+          <HomeNavigation />
         </Route>
 
         <Route path="profile/*">
           <Profiles />
         </Route>
       </Routes>
-    </Stack>
+    </NativeStack>
+  );
+}
+
+function HomeNavigation() {
+  return (
+    <NativeStack>
+      <Routes>
+        <NativeRoute path="/" screenProps={{stackPresentation: 'push'}}>
+          <HomeFeed />
+        </NativeRoute>
+
+        <NativeRoute
+          path="settings/*"
+          screenProps={{stackPresentation: 'push'}}>
+          <Settings />
+        </NativeRoute>
+      </Routes>
+    </NativeStack>
   );
 }
 

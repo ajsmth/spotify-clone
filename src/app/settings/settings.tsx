@@ -1,5 +1,5 @@
 import React from 'react';
-import {Stack, Switch, Route, Routes, Link} from '../../earhart';
+import {Stack, Switch, Route, Routes, Link} from 'earhart';
 import {
   Text,
   View,
@@ -14,16 +14,18 @@ import {Playback} from './playback';
 import {Notifications} from './notifications';
 import {useUser} from '../../providers/user-provider';
 
+import {Stack as NativeStack, Route as NativeRoute} from 'earhart-native';
+
 function Settings({}) {
   return (
-    <Stack>
+    <NativeStack>
       <SafeAreaView className="flex-1">
         <View className="flex-1 bg-white">
           <Routes>
-            <Route path="/">
+            <NativeRoute path="/">
               <SettingsHeader title="Settings" />
               <Index />
-            </Route>
+            </NativeRoute>
 
             <Route path="*">
               <Switch>
@@ -47,7 +49,7 @@ function Settings({}) {
           </Routes>
         </View>
       </SafeAreaView>
-    </Stack>
+    </NativeStack>
   );
 }
 

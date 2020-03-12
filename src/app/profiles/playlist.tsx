@@ -20,7 +20,7 @@ import {
   AnimatedText,
 } from '../shared/tailwind';
 
-import {useParams, PagerGestureContainer, Pager, Link} from '../../earhart';
+import {useParams, PagerGestureContainer, Pager, Link} from 'earhart';
 import {api} from '../../services/api';
 import {PerformantScreen} from '../home/home';
 import {usePlaylistContext} from '../../providers/playlist-provider';
@@ -331,7 +331,7 @@ function AboutPlaylist({playlist}: {playlist: IPlaylist}) {
     <View>
       <View className="justify-center items-center">
         <PagerGestureContainer>
-          <View className="overflow-hidden" style={{ width: 200, height: 200 }}>
+          <View className="overflow-hidden" style={{width: 200, height: 200}}>
             <Pager
               pageSize={200}
               activeIndex={activeIndex}

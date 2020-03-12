@@ -1,6 +1,6 @@
 import React from 'react';
 import {ActivityIndicator} from 'react-native';
-import {useNavigate} from '../earhart';
+import {useNavigate} from 'earhart';
 import {api} from '../services/api';
 import {View} from '../app/shared/tailwind';
 

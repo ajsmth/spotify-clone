@@ -1,21 +1,22 @@
 import React from 'react';
-import {Link, Stack, Routes, Route} from '../../earhart';
+import {Link, Routes} from 'earhart';
 import {View, Image, Text, ScrollView} from '../shared/tailwind';
 import {Playlist} from '../profiles/playlist';
 import {useUser} from '../../providers/user-provider';
 import {api} from '../../services/api';
 import {usePlaylistContext} from '../../providers/playlist-provider';
+import {Stack, Route} from 'earhart-native';
 
 function User() {
   return (
     <Stack>
       <Routes>
-        <Route path="/*">
+        <Route path="/*" screenProps={{stackPresentation: 'modal'}}>
           <SettingsHeader title="User Profile" />
           <UserProfile />
         </Route>
-        <Route path="playlist/:id">
-          <Playlist backUrl='../../' />
+        <Route path="playlist/:id" screenProps={{stackPresentation: 'modal'}}>
+          <Playlist backUrl="../../" />
         </Route>
       </Routes>
     </Stack>
@@ -97,11 +98,9 @@ function PlaylistRow({playlist}: {playlist: IPlaylist}) {
           source={{uri: playlist.images[0]?.url}}
         />
 
-        <View className='justify-center'>
-          <Text className='text-sm font-bold'>{playlist.name}</Text>
-          <Text className='mt-1 text-xs text-gray-600'>
-            0 followers
-          </Text>
+        <View className="justify-center">
+          <Text className="text-sm font-bold">{playlist.name}</Text>
+          <Text className="mt-1 text-xs text-gray-600">0 followers</Text>
         </View>
       </View>
     </Link>

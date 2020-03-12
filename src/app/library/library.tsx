@@ -8,7 +8,8 @@ import {
   Tabbar,
   Switch,
   useInterpolation,
-} from '../../earhart';
+  Redirect,
+} from 'earhart';
 
 import {Text, View, AnimatedText, SafeAreaView} from '../shared/tailwind';
 
@@ -25,13 +26,14 @@ function Library() {
     <SafeAreaView className="flex-1">
       <Stack>
         <Routes>
-          <Route path="/">
+          <Route path="*">
             <Music />
           </Route>
 
           <Route path="profile/*">
             <Profiles />
           </Route>
+
         </Routes>
       </Stack>
     </SafeAreaView>
@@ -60,11 +62,11 @@ function Music({}) {
           <Playlists to={`${baseUrl}/profile/playlists`} />
         </Route>
 
-        <Route path="artists/*">
+        <Route path="artists">
           <Artists to={`${baseUrl}/profile/artists`} />
         </Route>
 
-        <Route path="albums/*">
+        <Route path="albums">
           <Albums to={`${baseUrl}/profile/albums`} />
         </Route>
       </Routes>

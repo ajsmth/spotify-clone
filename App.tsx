@@ -4,7 +4,7 @@
 
 import React from 'react';
 import {Text} from 'react-native';
-import {NativeRouter as Router, useRouter} from './src/earhart';
+import {NativeRouter as Router, useRouter} from 'earhart';
 
 import {Login} from './src/app/auth/login';
 import {Main} from './src/main';
@@ -14,6 +14,9 @@ import {AlbumProvider} from './src/providers/album-provider';
 import {TrackProvider} from './src/providers/track-provider';
 import {UserProvider} from './src/providers/user-provider';
 import {ArtistProvider} from './src/providers/artist-provider';
+import {enableScreens} from 'react-native-screens'
+
+enableScreens()
 
 function App() {
   return (

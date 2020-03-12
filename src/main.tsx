@@ -1,24 +1,14 @@
 import React from 'react';
 import {TextInput} from 'react-native';
 import {View, Text, SafeAreaView} from './app/shared/tailwind';
-import {
-  Route,
-  Link,
-  Tabs,
-  Routes,
-  useInterpolation,
-  Tabbar,
-  Switch,
-  Redirect,
-} from './earhart';
+import {Route, Link, Routes, useInterpolation, Tabbar, Redirect} from 'earhart';
 import {Home} from './app/home/home';
 import {Library} from './app/library/library';
+import {Switch as NativeSwitch} from 'earhart-native';
 
-// the main navigator is the central tabs component that sits over top of the whole app
-// it contains the links to home, search, library
 function Main() {
   return (
-    <Switch keepAlive>
+    <NativeSwitch>
       <Routes>
         <Route path="home/*">
           <Home />
@@ -35,12 +25,12 @@ function Main() {
           <Library />
         </Route>
 
-        <Redirect to="home/settings" />
+        <Redirect to="/home/" />
       </Routes>
 
       <MainTabbar />
       <SafeAreaView />
-    </Switch>
+    </NativeSwitch>
   );
 }
 
@@ -99,16 +89,14 @@ function MainTab({children, to}: any) {
   const activeStyles = useInterpolation(activeTabs);
 
   return (
-    <Link
-      to={to}
-      style={{flex: 1, height: 65, justifyContent: 'center', ...activeStyles}}>
+    <Link to={to} style={{flex: 1, height: 65, justifyContent: 'center'}}>
       {children}
     </Link>
   );
 }
 
 function Screen({children}: any) {
-  return <View className="flex-1">{children}</View>;
+  return <View className="flex-1 justify-center items-center">{children}</View>;
 }
 
 export {Main};

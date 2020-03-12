@@ -1,6 +1,6 @@
 import React from 'react';
 import {ScrollView, Text, View, Image} from '../shared/tailwind';
-import {useParams, PagerGestureContainer, Pager} from '../../earhart';
+import {useParams, PagerGestureContainer, Pager} from 'earhart';
 import {useTrackContext} from '../../providers/track-provider';
 import {api} from '../../services/api';
 import {useAlbumContext} from '../../providers/album-provider';
