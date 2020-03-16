@@ -30,6 +30,7 @@
     "react-native-gesture-handler": "^1.5.6",
     "react-native-keychain": "^4.0.5",
     "react-native-screens": "^2.3.0",
+    "react-native-svg": "^12.0.3",
     "tailwind-rn": "^1.0.0",
     "typescript": "^3.7.5",
     "winona": "^0.1.3"

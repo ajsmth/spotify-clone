@@ -5,6 +5,7 @@ import {Route, Link, Routes, useInterpolation, Tabbar, Redirect} from 'earhart';
 import {Home} from './app/home/home';
 import {Library} from './app/library/library';
 import {Switch as NativeSwitch} from 'earhart-native';
+import {Search} from './app/search/search';
 
 function Main() {
   return (
@@ -15,17 +16,14 @@ function Main() {
         </Route>
 
         <Route path="search/*">
-          <Screen>
-            <Text className="text-2xl font-semibold">Search</Text>
-            <TextInput placeholder="Test" />
-          </Screen>
+          <Search />
         </Route>
 
         <Route path="library/*">
           <Library />
         </Route>
 
-        <Redirect to="/library/artists" />
+        <Redirect to="/home/*" />
       </Routes>
 
       <MainTabbar />

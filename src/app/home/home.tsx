@@ -1,31 +1,18 @@
 import React from 'react';
-import {
-  Navigator,
-  Switch,
-  Stack,
-  Route,
-  useRoute,
-  Routes,
-  useFocusLazy,
-} from 'earhart';
+import {Switch, Route, Routes, useFocusLazy} from 'earhart';
 import {Playlist} from '../profiles/playlist';
 import {HomeFeed} from './home-feed';
 import {Settings} from '../settings/settings';
 import {View} from 'react-native';
-import {
-  Stack as NativeStack,
-  Route as NativeRoute,
-} from 'earhart-native';
+import {Stack as NativeStack, Route as NativeRoute} from 'earhart-native';
 
-import {ScreenStackHeaderConfig} from 'react-native-screens';
-import {SafeAreaView} from '../shared/tailwind';
 
 function Home() {
   return (
     <NativeStack>
       <Routes>
-        <Route path="/*">
-          <HomeNavigation />
+        <Route path="/">
+          <Index />
         </Route>
 
         <Route path="profile/*">
@@ -36,7 +23,7 @@ function Home() {
   );
 }
 
-function HomeNavigation() {
+function Index() {
   return (
     <NativeStack>
       <Routes>
