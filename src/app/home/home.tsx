@@ -24,7 +24,7 @@ function Home() {
   return (
     <NativeStack>
       <Routes>
-        <Route path="/">
+        <Route path="/*">
           <HomeNavigation />
         </Route>
 
@@ -40,7 +40,7 @@ function HomeNavigation() {
   return (
     <NativeStack>
       <Routes>
-        <NativeRoute path="/" screenProps={{stackPresentation: 'push'}}>
+        <NativeRoute path="/*" screenProps={{stackPresentation: 'push'}}>
           <HomeFeed />
         </NativeRoute>
 

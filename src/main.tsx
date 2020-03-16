@@ -25,7 +25,7 @@ function Main() {
           <Library />
         </Route>
 
-        <Redirect to="/home/" />
+        <Redirect to="/library/artists" />
       </Routes>
 
       <MainTabbar />

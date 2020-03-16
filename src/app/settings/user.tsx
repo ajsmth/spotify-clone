@@ -9,7 +9,7 @@ import {Stack, Route} from 'earhart-native';
 import {
   SharedElement,
   useSharedElementInterpolation,
-} from 'earhart-shared-elements';
+} from 'earhart-shared-element';
 import {Animated, StyleSheet} from 'react-native';
 
 function User() {

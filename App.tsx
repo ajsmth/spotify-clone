@@ -3,8 +3,8 @@
  */
 
 import React from 'react';
-import {Text} from 'react-native';
-import {NativeRouter as Router, useRouter} from 'earhart';
+import {Text, Linking} from 'react-native';
+import {NativeRouter as Router, useRouter, useDeepLinking, Link} from 'earhart';
 
 import {Login} from './src/app/auth/login';
 import {Main} from './src/main';
@@ -14,9 +14,9 @@ import {AlbumProvider} from './src/providers/album-provider';
 import {TrackProvider} from './src/providers/track-provider';
 import {UserProvider} from './src/providers/user-provider';
 import {ArtistProvider} from './src/providers/artist-provider';
-import {enableScreens} from 'react-native-screens'
+import {enableScreens} from 'react-native-screens';
 
-enableScreens()
+enableScreens();
 
 function App() {
   return (
@@ -34,8 +34,15 @@ function App() {
       </AuthProvider>
 
       <Location />
+      <DeepLinking />
     </AppProviders>
   );
+}
+
+function DeepLinking() {
+  useDeepLinking();
+
+  return null;
 }
 
 function AppProviders({children}) {
@@ -54,6 +61,8 @@ function AppProviders({children}) {
 
 function Location() {
   const {location} = useRouter();
+
+  console.log({location: location.pathname});
   return (
     <Text style={{position: 'absolute', bottom: 50, left: 20}}>
       {location.pathname}

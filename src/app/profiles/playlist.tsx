@@ -25,6 +25,7 @@ import {api} from '../../services/api';
 import {PerformantScreen} from '../home/home';
 import {usePlaylistContext} from '../../providers/playlist-provider';
 import {useTrackContext} from '../../providers/track-provider';
+import { useSharedElementInterpolation } from 'earhart-shared-element';
 
 const EMPTY_RECT = {
   x: 0,
@@ -36,6 +37,24 @@ const EMPTY_RECT = {
 function getLayout({nativeEvent: {layout}}: LayoutChangeEvent) {
   return layout;
 }
+
+const transitionBottomStyle = {
+  transform: [
+    {
+      translateY: {
+        inputRange: [-1, 0, 1],
+        outputRange: [-1000, 0, 600],
+      },
+    },
+  ],
+};
+
+function TransitionBottom({children}) {
+  const styles = useSharedElementInterpolation(transitionBottomStyle);
+
+  return <Animated.View style={styles}>{children}</Animated.View>;
+}
+
 
 function Playlist({backUrl = ''}) {
   const params = useParams();

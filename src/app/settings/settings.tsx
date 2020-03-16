@@ -19,7 +19,7 @@ import {
   SharedElement,
   SharedElements,
   useSharedElementInterpolation,
-} from 'earhart-shared-elements';
+} from 'earhart-shared-element';
 import {Animated} from 'react-native';
 
 function Settings({}) {

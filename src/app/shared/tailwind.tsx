@@ -2,7 +2,6 @@ import React from 'react';
 import {
   View,
   Text,
-  ScrollView,
   Image,
   ViewProps,
   TextProps,
@@ -13,6 +12,7 @@ import {
   SafeAreaView,
   Animated,
 } from 'react-native';
+import {ScrollView} from 'react-native-gesture-handler';
 import tailwind from 'tailwind-rn';
 
 interface ITailwindViewProps extends ViewProps {
@@ -55,11 +55,7 @@ interface ITailwindAnimatedTextProps extends Animated.AnimatedComponent<Text> {
   style?: any;
 }
 
-function TailwindAnimatedText({
-  className = '',
-  style,
-  ...rest
-}: any) {
+function TailwindAnimatedText({className = '', style, ...rest}: any) {
   const styles = generateStyles(className);
   return <Animated.Text style={[styles, style]} {...rest} />;
 }

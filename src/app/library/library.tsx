@@ -6,12 +6,18 @@ import {
   Tabs,
   Link,
   Tabbar,
-  Switch,
   useInterpolation,
   Redirect,
+  Switch,
 } from 'earhart';
 
-import {Text, View, AnimatedText, SafeAreaView} from '../shared/tailwind';
+import {
+  Text,
+  View,
+  AnimatedText,
+  SafeAreaView,
+  Pressable,
+} from '../shared/tailwind';
 
 import {Playlists} from './playlists';
 import {Artists} from './artists';
@@ -20,78 +26,113 @@ import {Albums} from './albums';
 import {Playlist} from '../profiles/playlist';
 import {Artist} from '../profiles/artist';
 import {Album} from '../profiles/album';
+import {
+  SharedElements,
+  useSharedElementInterpolation,
+} from 'earhart-shared-element';
+import {Animated} from 'react-native';
 
 function Library() {
   return (
     <SafeAreaView className="flex-1">
       <Stack>
         <Routes>
-          <Route path="*">
-            <Music />
-          </Route>
+          <Tabs path="/*">
+            <View className="px-4">
+              <Text className="text-5xl font-extrabold">Music</Text>
+            </View>
 
-          <Route path="profile/*">
-            <Profiles />
-          </Route>
+            <View className="px-4">
+              <Tabbar>
+                <SmallerTab to="artists/*">Artists</SmallerTab>
+                <SmallerTab to="albums/*">Albums</SmallerTab>
+                <SmallerTab to="playlists/*">Playlists</SmallerTab>
+              </Tabbar>
+            </View>
 
+            <Routes>
+              <Route path="artists/*">
+                <ArtistsShared />
+              </Route>
+              <Route path="albums/*">
+                <AlbumsShared />
+              </Route>
+
+              <Route path="playlists/*">
+                <Playlists to="../profile" />
+              </Route>
+            </Routes>
+          </Tabs>
+
+          <Route path="profile/:id">
+            <Playlist backUrl="../../" />
+          </Route>
         </Routes>
       </Stack>
     </SafeAreaView>
   );
 }
 
-const baseUrl = `../`;
-
-function Music({}) {
+function AlbumsShared() {
   return (
-    <Tabs>
-      <View className="px-4">
-        <Text className="text-5xl font-extrabold">Music</Text>
-      </View>
-
-      <View className="px-4">
-        <Tabbar>
-          <SmallerTab to="playlists/">Playlists</SmallerTab>
-          <SmallerTab to="artists/">Artists</SmallerTab>
-          <SmallerTab to="albums/">Albums</SmallerTab>
-        </Tabbar>
-      </View>
-
+    <SharedElements>
       <Routes>
-        <Route path="playlists">
-          <Playlists to={`${baseUrl}/profile/playlists`} />
+        <Route path="/">
+          <Albums to="profile" />
         </Route>
 
-        <Route path="artists">
-          <Artists to={`${baseUrl}/profile/artists`} />
-        </Route>
-
-        <Route path="albums">
-          <Albums to={`${baseUrl}/profile/albums`} />
-        </Route>
-      </Routes>
-    </Tabs>
-  );
-}
-
-function Profiles({}) {
-  return (
-    <Switch>
-      <Routes>
-        <Route path="playlists/:id">
-          <Playlist />
-        </Route>
-
-        <Route path="artists/:id">
-          <Artist />
-        </Route>
-
-        <Route path="albums/:id">
+        <Route path="profile/:id">
+          <SlideIn>
+            <View className="py-2 px-4 bg-white">
+              <Link to="../../">
+                <Text className="text-xl font-bold">Back</Text>
+              </Link>
+            </View>
+          </SlideIn>
           <Album />
         </Route>
       </Routes>
-    </Switch>
+    </SharedElements>
   );
+}
+
+function ArtistsShared() {
+  return (
+    <SharedElements>
+      <Routes>
+        <Route path="/">
+          <Artists to="profile" />
+        </Route>
+
+        <Route path="profile/:id">
+          <SlideIn>
+            <View className="py-2 px-4 bg-white">
+              <Link to="../../">
+                <Text className="text-xl font-bold">Back</Text>
+              </Link>
+            </View>
+          </SlideIn>
+          <Artist />
+        </Route>
+      </Routes>
+    </SharedElements>
+  );
+}
+
+const slideInStyle = {
+  transform: [
+    {
+      translateX: {
+        inputRange: [-1, 0, 1],
+        outputRange: [-600, 0, -600],
+      },
+    },
+  ],
+};
+
+function SlideIn({children}) {
+  const style = useSharedElementInterpolation(slideInStyle);
+  return <Animated.View style={style}>{children}</Animated.View>;
 }
 
 function SmallerTab({children, to}) {
