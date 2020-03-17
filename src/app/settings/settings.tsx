@@ -22,6 +22,8 @@ import {
 } from 'earhart-shared-element';
 import {Animated} from 'react-native';
 
+
+
 function Settings({}) {
   return (
     <SafeAreaView className="flex-1 bg-white">

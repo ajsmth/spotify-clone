@@ -21,7 +21,7 @@ function Main() {
     <NativeSwitch>
       <Routes>
         <Route path="home/*">
-          <Home />
+          {null}
         </Route>
 
         <Route path="search/*">
@@ -29,7 +29,7 @@ function Main() {
         </Route>
 
         <Route path="library/*">
-          <Library />
+          {null}
         </Route>
 
         <Redirect to="/search/*" />
@@ -92,8 +92,8 @@ const activeTabs = {
   ],
 };
 
+// const activeStyles = useInterpolation(activeTabs);
 function MainTab({children, to}: any) {
-  const activeStyles = useInterpolation(activeTabs);
 
   return (
     <Link to={to} style={{flex: 1, height: 65, justifyContent: 'center'}}>

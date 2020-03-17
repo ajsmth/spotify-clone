@@ -3,8 +3,9 @@ import {api} from '../../services/api';
 import {useCategoryContext} from '../../providers/category-provider';
 import {SafeAreaView, ScrollView, View, Text, Image} from '../shared/tailwind';
 import {ImageBackground} from 'react-native';
+import { Stack } from 'earhart-native'
 import {SharedElement, SharedElements} from 'earhart-shared-element';
-import {Routes, Route, useParams, Link, Stack} from 'earhart';
+import {Routes, Route, useParams, Link} from 'earhart';
 import {usePlaylistContext} from '../../providers/playlist-provider';
 import {Playlist} from '../profiles/playlist';
 
@@ -36,7 +37,6 @@ function usePlaylists(categoryId: string) {
   React.useEffect(() => {
     if (categoryId) {
       api.get(`/playlists/${categoryId}`).then(playlists => {
-        console.log({playlists});
         dispatch({
           type: 'UPDATE_MANY',
           data: playlists,

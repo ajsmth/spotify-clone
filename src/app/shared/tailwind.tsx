@@ -2,7 +2,6 @@ import React from 'react';
 import {
   View,
   Text,
-  Image,
   ViewProps,
   TextProps,
   ScrollViewProps,
@@ -11,9 +10,11 @@ import {
   TouchableOpacity,
   SafeAreaView,
   Animated,
+  Image,
 } from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
 import tailwind from 'tailwind-rn';
+import FastImage from 'react-native-fast-image'
 
 interface ITailwindViewProps extends ViewProps {
   className?: string;

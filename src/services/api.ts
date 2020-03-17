@@ -3,6 +3,7 @@ import {spotify} from './spotify-client';
 import {ICategory} from '../types';
 const [router, client] = create();
 
+
 // ARTISTS ===========================================================================
 router.get('/me/artists', () => {
   return spotify

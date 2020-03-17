@@ -142,7 +142,7 @@ function Playlist({backUrl = ''}) {
     <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
       <Header backUrl={backUrl}>
         <AnimatedText
-          className="p-2 border-2 text-center text-2xl font-semibold"
+          className="p-2 text-center text-2xl font-semibold"
           style={{
             opacity: scrollY.current.interpolate({
               inputRange: [0, searchLayout.height, heroBottom],
@@ -254,11 +254,11 @@ function PlaylistItems({
           <PlaylistRow track={track} key={`${track.id}-${index}`} />
         ))}
         {/* save some performance by delaying rendering of items off screen until after interactions */}
-        <PerformantScreen>
+        {/* <PerformantScreen>
           {tracks.slice(6).map((track, index) => (
             <PlaylistRow track={track} key={`${track.id}-${index}`} />
           ))}
-        </PerformantScreen>
+        </PerformantScreen> */}
       </View>
     </View>
   );
