@@ -58,6 +58,7 @@ interface IAlbum {
   total_tracks: number;
   tpye: string;
   uri: string;
+  tracks: ITrack[];
 }
 
 interface IArtist {

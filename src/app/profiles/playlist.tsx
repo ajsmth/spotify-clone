@@ -25,7 +25,8 @@ import {api} from '../../services/api';
 import {PerformantScreen} from '../home/home';
 import {usePlaylistContext} from '../../providers/playlist-provider';
 import {useTrackContext} from '../../providers/track-provider';
-import { useSharedElementInterpolation } from 'earhart-shared-element';
+import {useSharedElementInterpolation} from 'earhart-shared-element';
+import {useSetTrackId} from '../../providers/player-provider';
 
 const EMPTY_RECT = {
   x: 0,
@@ -54,7 +55,6 @@ function TransitionBottom({children}) {
 
   return <Animated.View style={styles}>{children}</Animated.View>;
 }
-
 
 function Playlist({backUrl = ''}) {
   const params = useParams();
@@ -265,18 +265,22 @@ function PlaylistItems({
 }
 
 function PlaylistRow({track}: {track: any}) {
+  const setTrackId = useSetTrackId();
+
   return (
     <View className="mb-6">
-      <Text className="text-base font-bold">{track.name}</Text>
-      <View className="flex-row items-center">
-        <Text className="font-medium text-gray-600">
-          {track.artists[0].name}
-        </Text>
-        <View className="mx-1 w-1 h-1 rounded-full bg-gray-600" />
-        <Text className="font-medium text-gray-600" numberOfLines={1}>
-          {track.album.name}
-        </Text>
-      </View>
+      <Pressable onPress={() => setTrackId(track.id)}>
+        <Text className="text-base font-bold">{track.name}</Text>
+        <View className="flex-row items-center">
+          <Text className="font-medium text-gray-600">
+            {track.artists[0].name}
+          </Text>
+          <View className="mx-1 w-1 h-1 rounded-full bg-gray-600" />
+          <Text className="font-medium text-gray-600" numberOfLines={1}>
+            {track.album.name}
+          </Text>
+        </View>
+      </Pressable>
     </View>
   );
 }

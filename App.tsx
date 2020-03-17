@@ -16,6 +16,7 @@ import {UserProvider} from './src/providers/user-provider';
 import {ArtistProvider} from './src/providers/artist-provider';
 import {enableScreens} from 'react-native-screens';
 import {CategoryProvider} from './src/providers/category-provider';
+import {PlayerProvider} from './src/providers/player-provider';
 
 enableScreens();
 
@@ -52,9 +53,11 @@ function AppProviders({children}) {
       <PlaylistProvider>
         <AlbumProvider>
           <TrackProvider>
-            <CategoryProvider>
-              <ArtistProvider>{children}</ArtistProvider>
-            </CategoryProvider>
+            <PlayerProvider>
+              <CategoryProvider>
+                <ArtistProvider>{children}</ArtistProvider>
+              </CategoryProvider>
+            </PlayerProvider>
           </TrackProvider>
         </AlbumProvider>
       </PlaylistProvider>

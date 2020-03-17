@@ -47,6 +47,10 @@ router.get('/albums/:id/tracks', options => {
     });
 });
 
+router.get(`/tracks/:id`, options => {
+  return spotify.request(`/tracks/${options.params.id}`)
+})
+
 // PLAYLISTS ===========================================================================
 router.get('/playlists/featured', () => {
   return spotify

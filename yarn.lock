@@ -5819,6 +5819,11 @@ react-native-keychain@^4.0.5:
   resolved "https://registry.yarnpkg.com/react-native-keychain/-/react-native-keychain-4.0.5.tgz#6d3aef8f2789fc0dfa8149b8400d82ff77be361a"
   integrity sha512-TbiO8AO055EPjaxIuKxrCEOB4r81uQCVDFbtcs+e4pEOHxf6z3JgDC0UU0poJElKfCh37b+TFRxQhg6DbsYJBA==
 
+react-native-modalize@^1.3.7-rc.6:
+  version "1.3.7-rc.6"
+  resolved "https://registry.yarnpkg.com/react-native-modalize/-/react-native-modalize-1.3.7-rc.6.tgz#130434544cf498c4691c2e61a8a28615af7ef28c"
+  integrity sha512-nak4rZV/QI2pMQ3dlJXwYQTCabt33r87Vhg45cxDXdu7xfUR2dnooAEr8Z+GAluYvpP5S9YBLab0qYXLfNXd+w==
+
 react-native-rename@^2.4.1:
   version "2.4.1"
   resolved "https://registry.yarnpkg.com/react-native-rename/-/react-native-rename-2.4.1.tgz#54256367b0375ae49f5026b35914d5ba2a229221"

@@ -13,6 +13,8 @@ import {Home} from './app/home/home';
 import {Library} from './app/library/library';
 import {Switch as NativeSwitch} from 'earhart-native';
 import {Search} from './app/search/search';
+import {Player, PlayerFullScreen} from './app/player/player';
+import {SharedElements} from 'earhart-shared-element';
 
 function Main() {
   return (
@@ -32,7 +34,7 @@ function Main() {
 
         <Redirect to="/search/*" />
       </Routes>
-
+      <Player />
       <MainTabbar />
       <SafeAreaView />
     </NativeSwitch>

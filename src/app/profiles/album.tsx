@@ -32,12 +32,6 @@ function useTracks(params: any) {
   return tracks;
 }
 
-const fadeInStyle = {
-  opacity: {
-    inputRange: [-1, 0, 1],
-    outputRange: [0, 1, 0],
-  },
-};
 
 const fadeInWhite = {
   opacity: {
