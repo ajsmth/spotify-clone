@@ -1,5 +1,5 @@
 import React from 'react';
-import {Switch, Route, Routes, useFocusLazy} from 'earhart';
+import {Switch, Route, Routes, useFocusLazy, Redirect} from 'earhart';
 import {Playlist} from '../profiles/playlist';
 import {HomeFeed} from './home-feed';
 import {Settings} from '../settings/settings';
@@ -11,13 +11,14 @@ function Home() {
   return (
     <NativeStack>
       <Routes>
-        <Route path="/">
+        <Route path="/*">
           <Index />
         </Route>
 
         <Route path="profile/*">
           <Profiles />
         </Route>
+
       </Routes>
     </NativeStack>
   );

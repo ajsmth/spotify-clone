@@ -1,7 +1,14 @@
 import React from 'react';
-import {TextInput} from 'react-native';
 import {View, Text, SafeAreaView} from './app/shared/tailwind';
-import {Route, Link, Routes, useInterpolation, Tabbar, Redirect} from 'earhart';
+import {
+  Route,
+  Link,
+  Routes,
+  useInterpolation,
+  Tabbar,
+  Redirect,
+  Switch,
+} from 'earhart';
 import {Home} from './app/home/home';
 import {Library} from './app/library/library';
 import {Switch as NativeSwitch} from 'earhart-native';
@@ -23,7 +30,7 @@ function Main() {
           <Library />
         </Route>
 
-        <Redirect to="/home/*" />
+        <Redirect to="/search/*" />
       </Routes>
 
       <MainTabbar />

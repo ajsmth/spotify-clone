@@ -15,6 +15,7 @@ import {TrackProvider} from './src/providers/track-provider';
 import {UserProvider} from './src/providers/user-provider';
 import {ArtistProvider} from './src/providers/artist-provider';
 import {enableScreens} from 'react-native-screens';
+import {CategoryProvider} from './src/providers/category-provider';
 
 enableScreens();
 
@@ -51,7 +52,9 @@ function AppProviders({children}) {
       <PlaylistProvider>
         <AlbumProvider>
           <TrackProvider>
-            <ArtistProvider>{children}</ArtistProvider>
+            <CategoryProvider>
+              <ArtistProvider>{children}</ArtistProvider>
+            </CategoryProvider>
           </TrackProvider>
         </AlbumProvider>
       </PlaylistProvider>
@@ -62,7 +65,6 @@ function AppProviders({children}) {
 function Location() {
   const {location} = useRouter();
 
-  console.log({location: location.pathname});
   return (
     <Text style={{position: 'absolute', bottom: 50, left: 20}}>
       {location.pathname}

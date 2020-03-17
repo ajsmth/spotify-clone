@@ -1,5 +1,6 @@
 import create from 'winona';
 import {spotify} from './spotify-client';
+import {ICategory} from '../types';
 const [router, client] = create();
 
 // ARTISTS ===========================================================================
@@ -61,8 +62,15 @@ router.get('/playlists/me', () => {
 
 router.get('/playlists/:id', options => {
   return spotify
-    .request(`/browse/categories/${options.params.id}/playlists`)
-    .then(response => response.playlists.items as IPlaylist[]);
+    .request(`/browse/categories/${options.params.id}/playlists?country=CA`)
+    .then(response => {
+      // sometimes playlists is undefined
+      if (!response.playlists) {
+        return [];
+      }
+
+      return response.playlists.items as IPlaylist[];
+    });
 });
 
 // USER PROFILES =======================================================================
@@ -88,6 +96,13 @@ router.get('/auth/refresh', () => {
 
 router.get('/me', () => {
   return spotify.request('/me');
+});
+
+// SEARCH ===========================================================================
+router.get('/categories', () => {
+  return spotify.request(`/browse/categories`).then(response => {
+    return response.categories.items;
+  });
 });
 
 export {client as api};

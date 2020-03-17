@@ -1,3 +1,4 @@
+
 interface IPlaylist {
   collaborative: boolean;
   description: string;
@@ -115,4 +116,12 @@ interface IUser {
   product: 'premium' | 'free';
   type: 'user';
   uri: string;
+}
+
+
+interface ICategory {
+  href: string;
+  icons: IImage[];
+  id: string;
+  name: string;
 }
