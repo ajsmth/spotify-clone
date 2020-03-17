@@ -1,7 +1,7 @@
 import React from 'react';
 import {ImageBackground, Animated} from 'react-native';
 import {useParams} from 'earhart';
-import {ScrollView, Text, View, Image} from '../shared/tailwind';
+import {ScrollView, Text, View, Image, Pressable} from '../shared/tailwind';
 import {useArtistContext} from '../../providers/artist-provider';
 import {useTrackContext} from '../../providers/track-provider';
 import {api} from '../../services/api';
@@ -10,6 +10,7 @@ import {
   SharedElement,
   useSharedElementInterpolation,
 } from 'earhart-shared-element';
+import { useSetTrackId } from '../../providers/player-provider';
 
 const fadeInWhite = {
   opacity: {
@@ -31,7 +32,8 @@ function Artist() {
   const params = useParams();
   const [state] = useArtistContext();
 
-  const albums = useAlbums(params.id);
+  const setTrackId = useSetTrackId()
+
   const tracks = useTracks(params.id);
 
   const artist = state.lookup[params.id];
@@ -39,6 +41,7 @@ function Artist() {
   if (!artist) {
     return null;
   }
+
 
   return (
     <ScrollView className="flex-1">
@@ -66,13 +69,13 @@ function Artist() {
           <View className="p-4">
             {tracks.map(track => {
               return (
-                <View key={track.id} className="my-3">
+                <Pressable key={track.id} className="my-3" onPress={() => setTrackId(track.id)}>
                   <Text className="text-xl font-semibold">{track.name}</Text>
 
                   <Text className="mt-1 text-sm text-gray-700 font-medium">
                     {track.artists.map(artist => artist.name).join(', ')}
                   </Text>
-                </View>
+                </Pressable>
               );
             })}
           </View>

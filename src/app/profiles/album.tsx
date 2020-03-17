@@ -1,5 +1,5 @@
 import React from 'react';
-import {ScrollView, Text, View, Image} from '../shared/tailwind';
+import {ScrollView, Text, View, Image, Pressable} from '../shared/tailwind';
 import {useParams, PagerGestureContainer, Pager, useNavigator} from 'earhart';
 import {useTrackContext} from '../../providers/track-provider';
 import {api} from '../../services/api';
@@ -9,6 +9,7 @@ import {
   useSharedElementInterpolation,
 } from 'earhart-shared-element';
 import {Animated, StyleSheet} from 'react-native';
+import {useSetTrackId} from '../../providers/player-provider';
 
 function useTracks(params: any) {
   const [state, dispatch] = useTrackContext();
@@ -32,7 +33,6 @@ function useTracks(params: any) {
   return tracks;
 }
 
-
 const fadeInWhite = {
   opacity: {
     inputRange: [-1, 0, 1],
@@ -42,12 +42,18 @@ const fadeInWhite = {
 
 function Background({children}) {
   const style = useSharedElementInterpolation(fadeInWhite);
-  return <Animated.View style={{ backgroundColor: 'white', ...style}}>{children}</Animated.View>;
+  return (
+    <Animated.View style={{backgroundColor: 'white', ...style}}>
+      {children}
+    </Animated.View>
+  );
 }
 
 function Album() {
   const params = useParams();
   const [state] = useAlbumContext();
+
+  const setTrackId = useSetTrackId();
 
   const album = state.lookup[params.id];
   const tracks = useTracks(params);
@@ -86,13 +92,16 @@ function Album() {
           <View className="p-4">
             {tracks.map(track => {
               return (
-                <View key={track.id} className="my-3">
+                <Pressable
+                  key={track.id}
+                  className="my-3"
+                  onPress={() => setTrackId(track.id)}>
                   <Text className="text-xl font-semibold">{track.name}</Text>
 
                   <Text className="mt-1 text-sm text-gray-700 font-medium">
                     {track.artists.map(artist => artist.name).join(', ')}
                   </Text>
-                </View>
+                </Pressable>
               );
             })}
           </View>
