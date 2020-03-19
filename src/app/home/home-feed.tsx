@@ -3,7 +3,6 @@ import {Link} from 'earhart';
 import {View, Text, ScrollView, Image, SafeAreaView} from '../shared/tailwind';
 import {api} from '../../services/api';
 import {usePlaylistContext} from '../../providers/playlist-provider';
-import {PerformantScreen} from '../shared/performant-screen';
 
 function HomeFeed() {
   return (

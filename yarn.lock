@@ -2395,11 +2395,6 @@ earhart-shared-element@^0.1.7:
   resolved "https://registry.yarnpkg.com/earhart-shared-element/-/earhart-shared-element-0.1.7.tgz#2493e289937bfe7515bb11ccab7de9507568252c"
   integrity sha512-tRv9OA/w15VOtD/19MtJKMlw32Yw+W8FzXaA7bUkc06iURb93pvwHk0nb7GT0C9IO/+9qRIyhq6uMM+Y0/ACeA==
 
-earhart-shared-elements@^0.1.2:
-  version "0.1.2"
-  resolved "https://registry.yarnpkg.com/earhart-shared-elements/-/earhart-shared-elements-0.1.2.tgz#2b5ce1acd8285f8603eca0f8c248460d90e2c068"
-  integrity sha512-ctH3k5X6rM6wdVoTLlVIneYfQ+ZaxE420kALuO+QJ1WFgmfN8R2inWrsXKR2yWRJ/iIS3U8l3Kvto46weCWXqw==
-
 earhart@^0.0.7:
   version "0.0.7"
   resolved "https://registry.yarnpkg.com/earhart/-/earhart-0.0.7.tgz#88f590d619bc9344c107daf5da4a7949a8af0a33"

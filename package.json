@@ -20,7 +20,6 @@
     "earhart": "^0.0.7",
     "earhart-native": "^0.1.2",
     "earhart-shared-element": "^0.1.7",
-    "earhart-shared-elements": "^0.1.2",
     "history": "^5.0.0-beta.5",
     "immer": "^5.3.5",
     "path-to-regexp": "^6.1.0",

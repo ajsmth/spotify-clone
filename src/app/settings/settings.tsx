@@ -14,38 +14,22 @@ import {Playback} from './playback';
 import {Notifications} from './notifications';
 import {useUser} from '../../providers/user-provider';
 
-import {Stack as NativeStack, Route as NativeRoute} from 'earhart-native';
 import {
   SharedElement,
   SharedElements,
   useSharedElementInterpolation,
 } from 'earhart-shared-element';
+
 import {Animated} from 'react-native';
 import {PerformantScreen} from '../shared/performant-screen';
 
 function Settings({}) {
   return (
     <SafeAreaView className="flex-1 bg-white">
-      <NativeStack>
+      <Stack>
         <Routes>
-          <Route path="/*">
-            <SharedElements>
-              <Routes>
-                <Route path="/">
-                  <PerformantScreen>
-                    <SettingsHeader title="Settings" />
-                    <Index />
-                  </PerformantScreen>
-                </Route>
-
-                <Route path="profile">
-                  <SettingsHeader title="Settings" />
-                  <User />
-                </Route>
-              </Routes>
-            </SharedElements>
-          </Route>
-
+          <UserProfileTransition path="/*" />
+          
           <Route path="playback">
             <SettingsHeader title="Playback" />
             <Playback />
@@ -56,8 +40,30 @@ function Settings({}) {
             <Notifications />
           </Route>
         </Routes>
-      </NativeStack>
+      </Stack>
     </SafeAreaView>
+  );
+}
+
+
+
+function UserProfileTransition({path}) {
+  return (
+    <SharedElements>
+      <Routes>
+        <Route path="/">
+          <PerformantScreen>
+            <SettingsHeader title="Settings" />
+            <Index />
+          </PerformantScreen>
+        </Route>
+
+        <Route path="profile">
+          <SettingsHeader title="Settings" />
+          <User />
+        </Route>
+      </Routes>
+    </SharedElements>
   );
 }
 
