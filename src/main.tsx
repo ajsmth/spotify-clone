@@ -13,12 +13,11 @@ import {Home} from './app/home/home';
 import {Library} from './app/library/library';
 import {Switch as NativeSwitch} from 'earhart-native';
 import {Search} from './app/search/search';
-import {Player, PlayerFullScreen} from './app/player/player';
-import {SharedElements} from 'earhart-shared-element';
+import {Player} from './app/player/player';
 
 function Main() {
   return (
-    <Switch>
+    <NativeSwitch>
       <Routes>
         <Route path="home/*">
           <Home />
@@ -32,12 +31,12 @@ function Main() {
           <Library />
         </Route>
 
-        <Redirect to="/search/*" />
+        <Redirect to="/home/*" />
       </Routes>
       <Player />
       <MainTabbar />
       <SafeAreaView />
-    </Switch>
+    </NativeSwitch>
   );
 }
 

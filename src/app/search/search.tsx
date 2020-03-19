@@ -21,7 +21,9 @@ function Search() {
           <Category />
         </Route>
 
-        <Route path="category/:categoryId/:id">{null}</Route>
+        <Route path="category/:categoryId/:id">
+          <Playlist backUrl="../" />
+        </Route>
       </Routes>
     </Stack>
   );

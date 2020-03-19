@@ -1,59 +1,31 @@
 import React from 'react';
-import {Switch, Route, Routes, useFocusLazy, Redirect} from 'earhart';
+import {Routes} from 'earhart';
+import { Stack } from 'earhart-native'
+
 import {Playlist} from '../profiles/playlist';
 import {HomeFeed} from './home-feed';
 import {Settings} from '../settings/settings';
-import {View} from 'react-native';
-import {Stack as NativeStack, Route as NativeRoute} from 'earhart-native';
-
 
 function Home() {
   return (
-    <NativeStack>
+    <Stack>
       <Routes>
-        <Route path="/*">
-          <Index />
-        </Route>
-
-        <Route path="profile/*">
-          <Profiles />
-        </Route>
-
+        <Index path="/*" />
+        <Playlist path="profile/playlists/:id" backUrl="../../../" />
       </Routes>
-    </NativeStack>
+    </Stack>
   );
 }
 
-function Index() {
+function Index({path}) {
   return (
-    <NativeStack>
+    <Stack>
       <Routes>
-        <NativeRoute path="/*" screenProps={{stackPresentation: 'push'}}>
-          <HomeFeed />
-        </NativeRoute>
-
-        <NativeRoute
-          path="settings/*"
-          screenProps={{stackPresentation: 'push'}}>
-          <Settings />
-        </NativeRoute>
+        <HomeFeed path="/*" />
+        <Settings path="settings/*" />
       </Routes>
-    </NativeStack>
+    </Stack>
   );
 }
-
-function Profiles() {
-  return (
-    <Switch>
-      <Routes>
-        <Route path="playlists/:id">
-          <Playlist backUrl="../../../" />
-        </Route>
-      </Routes>
-    </Switch>
-  );
-}
-
-
 
 export {Home};

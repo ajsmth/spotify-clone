@@ -1,15 +1,12 @@
 import React from 'react';
 import {
   Animated,
-  TouchableOpacity,
   LayoutRectangle,
   LayoutChangeEvent,
   TextInput,
-  StyleSheet,
   Switch,
-  Button,
-  InteractionManager,
 } from 'react-native';
+import {useParams, PagerGestureContainer, Pager, Link} from 'earhart';
 
 import {
   Image,
@@ -20,12 +17,11 @@ import {
   AnimatedText,
 } from '../shared/tailwind';
 
-import {useParams, PagerGestureContainer, Pager, Link} from 'earhart';
 import {api} from '../../services/api';
-import {PerformantScreen} from '../home/home';
+
+import {PerformantScreen} from '../shared/performant-screen';
 import {usePlaylistContext} from '../../providers/playlist-provider';
 import {useTrackContext} from '../../providers/track-provider';
-import {useSharedElementInterpolation} from 'earhart-shared-element';
 import {useSetTrackId} from '../../providers/player-provider';
 
 const EMPTY_RECT = {
@@ -34,27 +30,6 @@ const EMPTY_RECT = {
   height: 0,
   width: 0,
 };
-
-function getLayout({nativeEvent: {layout}}: LayoutChangeEvent) {
-  return layout;
-}
-
-const transitionBottomStyle = {
-  transform: [
-    {
-      translateY: {
-        inputRange: [-1, 0, 1],
-        outputRange: [-1000, 0, 600],
-      },
-    },
-  ],
-};
-
-function TransitionBottom({children}) {
-  const styles = useSharedElementInterpolation(transitionBottomStyle);
-
-  return <Animated.View style={styles}>{children}</Animated.View>;
-}
 
 function Playlist({backUrl = ''}) {
   const params = useParams();
@@ -114,29 +89,13 @@ function Playlist({backUrl = ''}) {
   );
 
   const [state] = usePlaylistContext();
-  const [trackIds, setTrackIds] = React.useState([]);
-
-  const [tracksStore, update] = useTrackContext();
   const playlist = state.lookup[params.id];
 
-  React.useEffect(() => {
-    if (params.id) {
-      api.get(`/playlists/${params.id}/tracks`).then(tracks => {
-        update({
-          type: 'UPDATE_MANY',
-          data: tracks,
-        });
-
-        setTrackIds(tracks.map(track => track.id));
-      });
-    }
-  }, [params.id]);
+  const tracks = useTracks(params.id);
 
   if (!playlist) {
     return null;
   }
-
-  const tracks = trackIds.map(id => tracksStore.lookup[id]);
 
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
@@ -172,7 +131,7 @@ function Playlist({backUrl = ''}) {
             <AboutPlaylist playlist={playlist} />
           </PlaylistHero>
         </TranslationContainer>
-        <PlaylistItems tracks={tracks}>
+        <PlaylistItems tracks={tracks} key={params.id}>
           <TranslationContainer translateY={clampShuffleButton}>
             <ShufflePlayButton />
           </TranslationContainer>
@@ -253,15 +212,49 @@ function PlaylistItems({
         {tracks.slice(0, 5).map((track, index) => (
           <PlaylistRow track={track} key={`${track.id}-${index}`} />
         ))}
-        {/* save some performance by delaying rendering of items off screen until after interactions */}
-        {/* <PerformantScreen>
-          {tracks.slice(6).map((track, index) => (
+
+        <DelayRender timeout={500}>
+          <PerformantScreen>
+            {tracks.slice(6, 10).map((track, index) => (
+              <PlaylistRow track={track} key={`${track.id}-${index}`} />
+            ))}
+          </PerformantScreen>
+        </DelayRender>
+
+        <DelayRender timeout={1000}>
+          {tracks.slice(11, 20).map((track, index) => (
             <PlaylistRow track={track} key={`${track.id}-${index}`} />
           ))}
-        </PerformantScreen> */}
+        </DelayRender>
+
+        <DelayRender timeout={1500}>
+          {tracks.slice(20).map((track, index) => (
+            <PlaylistRow track={track} key={`${track.id}-${index}`} />
+          ))}
+        </DelayRender>
       </View>
     </View>
   );
+}
+
+function DelayRender({timeout, children}) {
+  let mounted = React.useRef(true);
+  const [active, setActive] = React.useState(false);
+
+  React.useEffect(() => {
+    const timerRef = setTimeout(() => {
+      if (mounted.current) {
+        setActive(true);
+      }
+    }, timeout);
+
+    return () => {
+      clearTimeout(timerRef);
+      mounted.current = false;
+    };
+  }, [timeout]);
+
+  return active ? children : null;
 }
 
 function PlaylistRow({track}: {track: any}) {
@@ -390,7 +383,7 @@ function AboutPlaylist({playlist}: {playlist: IPlaylist}) {
 
         <View className="flex-row items-center">
           <Text className="text-gray-600 font-normal">897 Followers</Text>
-          <View className="mx-2 w-1 h-1 bg-gray-600 rounded-full" />
+          <View className="mx-1 w-1 h-1 bg-gray-600 rounded-full" />
           <Text className="text-gray-600 font-normal">by Spotify</Text>
         </View>
       </View>
@@ -398,4 +391,41 @@ function AboutPlaylist({playlist}: {playlist: IPlaylist}) {
   );
 }
 
+const TRACK_CACHE = {};
+
+function useTracks(playlistId: string) {
+  const [state, dispatch] = useTrackContext();
+  const [trackIds, setTrackIds] = React.useState([]);
+
+  React.useEffect(() => {
+    if (playlistId) {
+      const cachedTracks = TRACK_CACHE[playlistId];
+      if (cachedTracks) {
+        setTrackIds(cachedTracks);
+      } else {
+        setTrackIds([]);
+
+        api.get(`/playlists/${playlistId}/tracks`).then(tracks => {
+          dispatch({
+            type: 'UPDATE_MANY',
+            data: tracks,
+          });
+
+          const trackIds = tracks.map(track => track.id);
+          TRACK_CACHE[playlistId] = trackIds;
+
+          setTrackIds(trackIds);
+        });
+      }
+    }
+  }, [playlistId]);
+
+  const tracks = trackIds.map(id => state.lookup[id]).filter(Boolean);
+  return tracks;
+}
+
 export {Playlist};
+
+function getLayout({nativeEvent: {layout}}: LayoutChangeEvent) {
+  return layout;
+}

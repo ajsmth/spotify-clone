@@ -87,7 +87,7 @@ interface ITailwindImageProps extends ImageProps {
 
 function TailwindImage({className, style, ...rest}: ITailwindImageProps) {
   const styles = className ? tailwind(className) : undefined;
-  return <Image style={[styles, style]} {...rest} />;
+  return <FastImage style={[styles, style]} {...rest} />;
 }
 
 interface ITailwindPressableProps extends TouchableOpacityProps {

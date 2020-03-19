@@ -1,16 +1,17 @@
 import React from 'react';
-import {Link, Routes, useInterpolation} from 'earhart';
-import {View, Image, Text, ScrollView} from '../shared/tailwind';
-import {Playlist} from '../profiles/playlist';
-import {useUser} from '../../providers/user-provider';
-import {api} from '../../services/api';
-import {usePlaylistContext} from '../../providers/playlist-provider';
+import {Animated} from 'react-native';
+import {Link, Routes} from 'earhart';
 import {Stack, Route} from 'earhart-native';
 import {
   SharedElement,
   useSharedElementInterpolation,
 } from 'earhart-shared-element';
-import {Animated, StyleSheet} from 'react-native';
+
+import {View, Image, Text, ScrollView} from '../shared/tailwind';
+import {Playlist} from '../profiles/playlist';
+import {useUser} from '../../providers/user-provider';
+import {api} from '../../services/api';
+import {usePlaylistContext} from '../../providers/playlist-provider';
 
 function User() {
   const user = useUser();
@@ -19,34 +20,18 @@ function User() {
       <UserProfileInfo user={user} />
 
       <Routes>
-        <Route path="/">
-          <UserProfile />
-        </Route>
-        <Route path="playlist/:id" screenProps={{stackPresentation: 'modal'}}>
-          <Playlist backUrl="../../" />
-        </Route>
+        <UserProfile path="/" />
+        <Playlist
+          backUrl="../../"
+          path="playlist/:id"
+          screenProps={{stackPresentation: 'modal'}}
+        />
       </Routes>
     </Stack>
   );
 }
 
-const bottomStyle = {
-  transform: [
-    {
-      translateY: {
-        inputRange: [-1, 0, 1],
-        outputRange: [-1000, 0, 1000],
-      },
-    },
-  ],
-};
-
-function TransitionBottom({children}) {
-  const styles = useSharedElementInterpolation(bottomStyle);
-  return <Animated.View style={{flex: 1, ...styles}}>{children}</Animated.View>;
-}
-
-function UserProfile() {
+function UserProfile({path}) {
   const user = useUser();
 
   const [state, dispatch] = usePlaylistContext();
@@ -85,6 +70,22 @@ function UserProfile() {
   );
 }
 
+const bottomStyle = {
+  transform: [
+    {
+      translateY: {
+        inputRange: [-1, 0, 1],
+        outputRange: [-1000, 0, 1000],
+      },
+    },
+  ],
+};
+
+function TransitionBottom({children}) {
+  const styles = useSharedElementInterpolation(bottomStyle);
+  return <Animated.View style={{flex: 1, ...styles}}>{children}</Animated.View>;
+}
+
 function UserProfileInfo({user}) {
   return (
     <View className="mb-3 items-center">
@@ -97,22 +98,6 @@ function UserProfileInfo({user}) {
       <SharedElement id="user-name">
         <Text className="mt-2 text-xl font-bold">{user.display_name}</Text>
       </SharedElement>
-    </View>
-  );
-}
-
-function SettingsHeader({title}) {
-  return (
-    <View className="p-4 mb-4 bg-white">
-      <View className="justify-center">
-        <Text className="text-2xl font-bold text-center">{title}</Text>
-
-        <View className="absolute left-0">
-          <Link to="../">
-            <Text className="text-center text-lg font-medium">Back</Text>
-          </Link>
-        </View>
-      </View>
     </View>
   );
 }
