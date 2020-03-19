@@ -3,11 +3,11 @@ import {api} from '../../services/api';
 import {useCategoryContext} from '../../providers/category-provider';
 import {SafeAreaView, ScrollView, View, Text, Image} from '../shared/tailwind';
 import {ImageBackground} from 'react-native';
-import { Stack } from 'earhart-native'
 import {SharedElement, SharedElements} from 'earhart-shared-element';
-import {Routes, Route, useParams, Link} from 'earhart';
+import {Routes, Route, useParams, Link, Stack} from 'earhart';
 import {usePlaylistContext} from '../../providers/playlist-provider';
 import {Playlist} from '../profiles/playlist';
+import {PerformantScreen} from '../shared/performant-screen';
 
 function Search() {
   return (
@@ -21,9 +21,7 @@ function Search() {
           <Category />
         </Route>
 
-        <Route path="category/:categoryId/:id">
-          <Playlist backUrl="../" />
-        </Route>
+        <Route path="category/:categoryId/:id">{null}</Route>
       </Routes>
     </Stack>
   );
@@ -68,21 +66,23 @@ function Category() {
           <Text className="text-4xl font-extrabold">{category.name}</Text>
         </View>
 
-        <View className="flex-1 flex-wrap flex-row p-2">
-          {playlists.map(playlist => {
-            return (
-              <View key={playlist.id} className="w-1/3 p-2">
-                <Link to={`${playlist.id}`}>
-                  <Image
-                    className="w-full"
-                    style={{aspectRatio: 1}}
-                    source={{uri: playlist.images[0]?.url}}
-                  />
-                </Link>
-              </View>
-            );
-          })}
-        </View>
+        <PerformantScreen>
+          <View className="flex-1 flex-wrap flex-row p-2">
+            {playlists.map(playlist => {
+              return (
+                <View key={playlist.id} className="w-1/3 p-2">
+                  <Link to={`${playlist.id}`}>
+                    <Image
+                      className="w-full"
+                      style={{aspectRatio: 1}}
+                      source={{uri: playlist.images[0]?.url}}
+                    />
+                  </Link>
+                </View>
+              );
+            })}
+          </View>
+        </PerformantScreen>
       </ScrollView>
     </SafeAreaView>
   );
@@ -126,11 +126,13 @@ function Index() {
           <Text className="text-lg font-semibold">Browse all</Text>
         </View>
 
-        <View className="flex-wrap flex-row -mx-2">
-          {all.map(category => {
-            return <CategoryItem key={category.id} category={category} />;
-          })}
-        </View>
+        <PerformantScreen>
+          <View className="flex-wrap flex-row -mx-2">
+            {all.map(category => {
+              return <CategoryItem key={category.id} category={category} />;
+            })}
+          </View>
+        </PerformantScreen>
       </ScrollView>
     </SafeAreaView>
   );

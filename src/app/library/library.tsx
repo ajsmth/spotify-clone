@@ -31,6 +31,7 @@ import {
   useSharedElementInterpolation,
 } from 'earhart-shared-element';
 import {Animated} from 'react-native';
+import {PerformantScreen} from '../shared/performant-screen';
 
 function Library() {
   return (
@@ -52,20 +53,29 @@ function Library() {
 
             <Routes>
               <Route path="artists/*">
-                <ArtistsShared />
+                <PerformantScreen>
+                  <ArtistsShared />
+                </PerformantScreen>
               </Route>
+
               <Route path="albums/*">
-                <AlbumsShared />
+                <PerformantScreen>
+                  <AlbumsShared />
+                </PerformantScreen>
               </Route>
 
               <Route path="playlists/*">
-                <Playlists to="../profile" />
+                <PerformantScreen>
+                  <Playlists to="../profile" />
+                </PerformantScreen>
               </Route>
             </Routes>
           </Tabs>
 
           <Route path="profile/:id">
-            <Playlist backUrl="../../" />
+            <PerformantScreen>
+              <Playlist backUrl="../../" />
+            </PerformantScreen>
           </Route>
         </Routes>
       </Stack>

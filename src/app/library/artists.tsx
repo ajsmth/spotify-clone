@@ -4,6 +4,7 @@ import {Link} from 'earhart';
 import {useArtistContext} from '../../providers/artist-provider';
 import {api} from '../../services/api';
 import {SharedElement} from 'earhart-shared-element';
+import {PerformantScreen} from '../shared/performant-screen';
 
 function Artists({to}) {
   const [state, dispatch] = useArtistContext();
@@ -21,18 +22,20 @@ function Artists({to}) {
   }, []);
 
   return (
-    <ScrollView className="p-4 flex-1 bg-white">
-      {artistIds.map(id => {
-        const artist = state.lookup[id];
-        return (
-          <ArtistRow
-            key={artist.id}
-            to={`${to}/${artist.id}`}
-            artist={artist}
-          />
-        );
-      })}
-    </ScrollView>
+    <PerformantScreen>
+      <ScrollView className="p-4 flex-1 bg-white">
+        {artistIds.map(id => {
+          const artist = state.lookup[id];
+          return (
+            <ArtistRow
+              key={artist.id}
+              to={`${to}/${artist.id}`}
+              artist={artist}
+            />
+          );
+        })}
+      </ScrollView>
+    </PerformantScreen>
   );
 }
 

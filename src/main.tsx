@@ -18,10 +18,10 @@ import {SharedElements} from 'earhart-shared-element';
 
 function Main() {
   return (
-    <NativeSwitch>
+    <Switch>
       <Routes>
         <Route path="home/*">
-          {null}
+          <Home />
         </Route>
 
         <Route path="search/*">
@@ -29,7 +29,7 @@ function Main() {
         </Route>
 
         <Route path="library/*">
-          {null}
+          <Library />
         </Route>
 
         <Redirect to="/search/*" />
@@ -37,7 +37,7 @@ function Main() {
       <Player />
       <MainTabbar />
       <SafeAreaView />
-    </NativeSwitch>
+    </Switch>
   );
 }
 
@@ -94,7 +94,6 @@ const activeTabs = {
 
 // const activeStyles = useInterpolation(activeTabs);
 function MainTab({children, to}: any) {
-
   return (
     <Link to={to} style={{flex: 1, height: 65, justifyContent: 'center'}}>
       {children}

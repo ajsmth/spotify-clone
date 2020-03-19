@@ -5,7 +5,7 @@
 import React from 'react';
 import {Text, Linking} from 'react-native';
 import {NativeRouter as Router, useRouter, useDeepLinking, Link} from 'earhart';
-
+  
 import {Login} from './src/app/auth/login';
 import {Main} from './src/main';
 import {AuthProvider} from './src/providers/auth-provider';

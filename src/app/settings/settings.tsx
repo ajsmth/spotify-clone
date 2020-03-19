@@ -21,8 +21,7 @@ import {
   useSharedElementInterpolation,
 } from 'earhart-shared-element';
 import {Animated} from 'react-native';
-
-
+import {PerformantScreen} from '../shared/performant-screen';
 
 function Settings({}) {
   return (
@@ -33,8 +32,10 @@ function Settings({}) {
             <SharedElements>
               <Routes>
                 <Route path="/">
-                  <SettingsHeader title="Settings" />
-                  <Index />
+                  <PerformantScreen>
+                    <SettingsHeader title="Settings" />
+                    <Index />
+                  </PerformantScreen>
                 </Route>
 
                 <Route path="profile">

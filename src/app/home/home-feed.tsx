@@ -3,6 +3,7 @@ import {Link} from 'earhart';
 import {View, Text, ScrollView, Image, SafeAreaView} from '../shared/tailwind';
 import {api} from '../../services/api';
 import {usePlaylistContext} from '../../providers/playlist-provider';
+import {PerformantScreen} from '../shared/performant-screen';
 
 function HomeFeed() {
   return (
@@ -41,11 +42,33 @@ function Playlists({feedId, title}: IPlaylists) {
 
   const playlists = playlistIds.map(id => state.lookup[id]);
 
+  const top = playlists.slice(0, 2);
+  const rest = playlists.slice(2);
+
   return (
-    <View className='py-3'>
+    <View className="py-3">
       <Text className="px-4 text-3xl font-bold">{title}</Text>
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-        {playlists.map(playlist => {
+        {top.map(playlist => {
+          if (!playlist) {
+            return null;
+          }
+
+          return (
+            <View className="p-3" key={playlist.id}>
+              <Link to={`profile/playlists/${playlist.id}`}>
+                <Image
+                  source={{uri: playlist.images[0].url}}
+                  style={{height: 150, width: 150}}
+                />
+
+                <Text className="py-2 text-sm">{playlist.name}</Text>
+              </Link>
+            </View>
+          );
+        })}
+
+        {rest.map(playlist => {
           if (!playlist) {
             return null;
           }
@@ -70,10 +93,10 @@ function Playlists({feedId, title}: IPlaylists) {
 
 function SettingsHeader() {
   return (
-    <View className='py-4 px-3 flex-row'>
-      <View className='flex-1' /> 
+    <View className="py-4 px-3 flex-row">
+      <View className="flex-1" />
       <Link to={`settings`}>
-        <Text className='text-2xl font-semibold text-right'>Settings</Text>
+        <Text className="text-2xl font-semibold text-right">Settings</Text>
       </Link>
     </View>
   );

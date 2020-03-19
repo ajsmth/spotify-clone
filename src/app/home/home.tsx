@@ -54,14 +54,6 @@ function Profiles() {
   );
 }
 
-function PerformantScreen({children}) {
-  const afterInteractions = useFocusLazy();
 
-  return afterInteractions ? (
-    children
-  ) : (
-    <View style={{flex: 1, backgroundColor: 'red'}} />
-  );
-}
 
-export {Home, PerformantScreen};
+export {Home};
