@@ -5,25 +5,37 @@ import {Playlist} from '../profiles/playlist';
 import {HomeFeed} from './home-feed';
 import {Settings} from '../settings/settings';
 
+import {NativeStack, Navigator, Route} from '../../earhart';
+
 function Home() {
   return (
-    <Stack>
-      <Routes>
-        <Index path="/*" />
-        <Playlist path="profile/playlists/:id" backUrl="../../../" />
-      </Routes>
-    </Stack>
+    <Navigator>
+      <NativeStack>
+        <Route path="/home">
+          <Index />
+        </Route>
+
+        <Route path="/home/playlists/:id">
+          <Playlist backUrl="/home" />
+        </Route>
+      </NativeStack>
+    </Navigator>
   );
 }
 
 function Index({path}) {
   return (
-    <Stack>
-      <Routes>
-        <HomeFeed path="/*" />
-        <Settings path="settings/*" />
-      </Routes>
-    </Stack>
+    <Navigator>
+      <NativeStack>
+        <Route path="/home">
+          <HomeFeed />
+        </Route>
+
+        <Route path="/home/settings">
+          <Settings />
+        </Route>
+      </NativeStack>
+    </Navigator>
   );
 }
 

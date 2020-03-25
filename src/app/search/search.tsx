@@ -2,30 +2,30 @@ import React from 'react';
 import {api} from '../../services/api';
 import {useCategoryContext} from '../../providers/category-provider';
 import {SafeAreaView, ScrollView, View, Text, Image} from '../shared/tailwind';
-import {ImageBackground} from 'react-native';
-import {SharedElement, SharedElements} from 'earhart-shared-element';
-import {Routes, Route, useParams, Link, Stack} from 'earhart';
+import {NativeStack, Route, Link, Navigator, useNavigator} from '../../earhart';
 import {usePlaylistContext} from '../../providers/playlist-provider';
 import {Playlist} from '../profiles/playlist';
 import {PerformantScreen} from '../shared/performant-screen';
 
 function Search() {
+  
   return (
-    <Stack>
-      <Routes>
-        <Route path="/">
+    <Navigator>
+      <NativeStack>
+        <Route path='/search'>
           <Index />
         </Route>
 
-        <Route path="category/:categoryId">
+        <Route path='/search/:categoryId'>
           <Category />
         </Route>
 
-        <Route path="category/:categoryId/:id">
-          <Playlist backUrl="../" />
+        <Route path='/search/:categoryId/:id'>
+           <Playlist backUrl={-1} />
         </Route>
-      </Routes>
-    </Stack>
+      </NativeStack>
+    </Navigator>
+
   );
 }
 
@@ -36,6 +36,7 @@ function usePlaylists(categoryId: string) {
 
   React.useEffect(() => {
     if (categoryId) {
+      
       api.get(`/playlists/${categoryId}`).then(playlists => {
         dispatch({
           type: 'UPDATE_MANY',
@@ -51,7 +52,7 @@ function usePlaylists(categoryId: string) {
 }
 
 function Category() {
-  const params = useParams();
+  const {params} = useNavigator();
   const [state] = useCategoryContext();
 
   const category = state.lookup[params.categoryId];
@@ -73,7 +74,7 @@ function Category() {
             {playlists.map(playlist => {
               return (
                 <View key={playlist.id} className="w-1/3 p-2">
-                  <Link to={`${playlist.id}`}>
+                  <Link to={`/search/${params.categoryId}/${playlist.id}`}>
                     <Image
                       className="w-full"
                       style={{aspectRatio: 1}}
@@ -147,7 +148,7 @@ interface ICategoryItem {
 function CategoryItem({category}: ICategoryItem) {
   return (
     <View className="my-1 w-1/3 h-32 items-center">
-      <Link to={`category/${category.id}`}>
+      <Link to={`/search/${category.id}`}>
         <View className="h-32 w-32 border pb-3">
           <View className="flex-1">
             <Image

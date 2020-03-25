@@ -3,7 +3,6 @@ import {spotify} from './spotify-client';
 import {ICategory} from '../types';
 const [router, client] = create();
 
-
 // ARTISTS ===========================================================================
 router.get('/me/artists', () => {
   return spotify
@@ -21,7 +20,8 @@ router.get('/albums/me', () => {
 router.get('/artists/:id/albums', options => {
   return spotify
     .request(`/artists/${options.params.id}/albums`)
-    .then(response => response.items as IAlbum[]);
+    .then(response => response.items as IAlbum[])
+    .catch(error => console.log({error}));
 });
 
 // TRACKS ===========================================================================
@@ -44,13 +44,15 @@ router.get('/albums/:id/tracks', options => {
   return spotify
     .request(`/albums/${options.params.id}/tracks`)
     .then(response => {
+      console.log({response});
       return response.items;
-    });
+    })
+    .catch(error => console.log({error}));
 });
 
 router.get(`/tracks/:id`, options => {
-  return spotify.request(`/tracks/${options.params.id}`)
-})
+  return spotify.request(`/tracks/${options.params.id}`);
+});
 
 // PLAYLISTS ===========================================================================
 router.get('/playlists/featured', () => {

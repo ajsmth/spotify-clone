@@ -34,9 +34,6 @@ function App() {
           )
         }
       </AuthProvider>
-
-      <Location />
-      <DeepLinking />
     </AppProviders>
   );
 }
@@ -50,17 +47,7 @@ function DeepLinking() {
 function AppProviders({children}) {
   return (
     <Router>
-      <PlaylistProvider>
-        <AlbumProvider>
-          <TrackProvider>
-            <PlayerProvider>
-              <CategoryProvider>
-                <ArtistProvider>{children}</ArtistProvider>
-              </CategoryProvider>
-            </PlayerProvider>
-          </TrackProvider>
-        </AlbumProvider>
-      </PlaylistProvider>
+      {children}
     </Router>
   );
 }

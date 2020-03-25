@@ -1,15 +1,15 @@
 import React from 'react';
 import {
+  Navigator,
   Stack,
-  Routes,
+  NativeStack,
+  NativeSwitch,
   Route,
   Tabs,
   Link,
   Tabbar,
-  useInterpolation,
-  Redirect,
   Switch,
-} from 'earhart';
+} from '../../earhart';
 
 import {
   Text,
@@ -36,113 +36,72 @@ import {PerformantScreen} from '../shared/performant-screen';
 function Library() {
   return (
     <SafeAreaView className="flex-1">
-      <Stack>
-        <Routes>
-          <Tabs path="/*">
-            <View className="px-4">
-              <Text className="text-5xl font-extrabold">Music</Text>
-            </View>
-
-            <View className="px-4">
-              <Tabbar>
-                <SmallerTab to="artists/*">Artists</SmallerTab>
-                <SmallerTab to="albums/*">Albums</SmallerTab>
-                <SmallerTab to="playlists/*">Playlists</SmallerTab>
-              </Tabbar>
-            </View>
-
-            <Routes>
-              <Route path="artists/*">
-                <PerformantScreen>
-                  <ArtistsShared />
-                </PerformantScreen>
-              </Route>
-
-              <Route path="albums/*">
-                <PerformantScreen>
-                  <AlbumsShared />
-                </PerformantScreen>
-              </Route>
-
-              <Route path="playlists/*">
-                <PerformantScreen>
-                  <Playlists to="../profile" />
-                </PerformantScreen>
-              </Route>
-            </Routes>
-          </Tabs>
-
-          <Route path="profile/:id">
-            <PerformantScreen>
-              <Playlist backUrl="../../" />
-            </PerformantScreen>
+      <Navigator>
+        <NativeStack>
+          <Route path="/library">
+            <Index />
           </Route>
-        </Routes>
-      </Stack>
+
+          <Route path="/library/:profile/:id">
+            <Link to="/library">
+              <Text className="text-xl font-semibold">Back</Text>
+            </Link>
+            <Profiles />
+          </Route>
+        </NativeStack>
+      </Navigator>
     </SafeAreaView>
   );
 }
 
-function AlbumsShared() {
+function Index() {
   return (
-    <SharedElements>
-      <Routes>
-        <Route path="/">
-          <Albums to="profile" />
+    <Navigator>
+      <View className="px-4">
+        <Text className="text-5xl font-extrabold">Music</Text>
+      </View>
+
+      <View className="px-4">
+        <Tabbar>
+          <SmallerTab to="/library/artists">Artists</SmallerTab>
+          <SmallerTab to="/library/albums">Albums</SmallerTab>
+          <SmallerTab to="/library/playlists">Playlists</SmallerTab>
+        </Tabbar>
+      </View>
+
+      <Tabs>
+        <Route path="/library/artists">
+          <Artists to="/library/artists" />
         </Route>
 
-        <Route path="profile/:id">
-          <SlideIn>
-            <View className="py-2 px-4 bg-white">
-              <Link to="../../">
-                <Text className="text-xl font-bold">Back</Text>
-              </Link>
-            </View>
-          </SlideIn>
-          <Album />
+        <Route path="/library/albums">
+          <Albums to="/library/albums" />
         </Route>
-      </Routes>
-    </SharedElements>
+
+        <Route path="/library/playlists">
+          <Playlists to="/library/playlists" />
+        </Route>
+      </Tabs>
+    </Navigator>
   );
 }
 
-function ArtistsShared() {
+function Profiles() {
   return (
-    <SharedElements>
-      <Routes>
-        <Route path="/">
-          <Artists to="profile" />
-        </Route>
-
-        <Route path="profile/:id">
-          <SlideIn>
-            <View className="py-2 px-4 bg-white">
-              <Link to="../../">
-                <Text className="text-xl font-bold">Back</Text>
-              </Link>
-            </View>
-          </SlideIn>
+    <Navigator initialIndex={-1}>
+      <Switch>
+        <Route path="/library/artists/:id">
           <Artist />
         </Route>
-      </Routes>
-    </SharedElements>
+        <Route path="/library/albums/:id">
+          <Album />
+        </Route>
+        <Route path="/library/playlists/:id">
+          <Playlist backUrl="/library/playlists" />
+        </Route>
+      </Switch>
+    </Navigator>
   );
-}
-
-const slideInStyle = {
-  transform: [
-    {
-      translateX: {
-        inputRange: [-1, 0, 1],
-        outputRange: [-600, 0, -600],
-      },
-    },
-  ],
-};
-
-function SlideIn({children}) {
-  const style = useSharedElementInterpolation(slideInStyle);
-  return <Animated.View style={style}>{children}</Animated.View>;
 }
 
 function SmallerTab({children, to}) {
@@ -162,11 +121,9 @@ const activeStyle = {
 };
 
 function Tab({to, children}) {
-  const activeStyles = useInterpolation(activeStyle);
-
   return (
     <Link to={to}>
-      <AnimatedText className="mr-4 font-semibold" style={[activeStyles]}>
+      <AnimatedText className="mr-4 font-semibold" style={[]}>
         {children}
       </AnimatedText>
     </Link>

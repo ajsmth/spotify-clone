@@ -6,7 +6,9 @@ import {
   TextInput,
   Switch,
 } from 'react-native';
-import {useParams, PagerGestureContainer, Pager, Link} from 'earhart';
+import {useParams, PagerGestureContainer, Pager} from 'earhart';
+
+import {useNavigator, Link} from '../../earhart'
 
 import {
   Image,
@@ -32,7 +34,7 @@ const EMPTY_RECT = {
 };
 
 function Playlist({backUrl = ''}) {
-  const params = useParams();
+  const {params} = useNavigator();
 
   const scrollY = React.useRef(new Animated.Value(0));
 
@@ -111,7 +113,7 @@ function Playlist({backUrl = ''}) {
           }}>{`${playlist.name}`}</AnimatedText>
       </Header>
       <Animated.ScrollView
-        removeClippedSubviews
+        
         contentOffset={{y: searchLayout.height}}
         onScroll={handleScroll}
         // prevent flash from initial layout + content offset scrolling
@@ -131,7 +133,7 @@ function Playlist({backUrl = ''}) {
             <AboutPlaylist playlist={playlist} />
           </PlaylistHero>
         </TranslationContainer>
-        <PlaylistItems tracks={tracks} key={params.id}>
+        <PlaylistItems tracks={tracks.slice(0, 5)} key={params.id}>
           <TranslationContainer translateY={clampShuffleButton}>
             <ShufflePlayButton />
           </TranslationContainer>

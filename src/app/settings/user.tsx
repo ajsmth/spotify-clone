@@ -1,11 +1,6 @@
 import React from 'react';
 import {Animated} from 'react-native';
-import {Link, Routes} from 'earhart';
-import {Stack, Route} from 'earhart-native';
-import {
-  SharedElement,
-  useSharedElementInterpolation,
-} from 'earhart-shared-element';
+import {Link, Navigator, Stack, Route} from '../../earhart';
 
 import {View, Image, Text, ScrollView} from '../shared/tailwind';
 import {Playlist} from '../profiles/playlist';
@@ -16,18 +11,17 @@ import {usePlaylistContext} from '../../providers/playlist-provider';
 function User() {
   const user = useUser();
   return (
-    <Stack>
+    <Navigator>
       <UserProfileInfo user={user} />
-
-      <Routes>
-        <UserProfile path="/" />
-        <Playlist
-          backUrl="../../"
-          path="playlist/:id"
-          screenProps={{stackPresentation: 'modal'}}
-        />
-      </Routes>
-    </Stack>
+      <Stack>
+        <Route path="/settings/user/profile">
+          <UserProfile />
+        </Route>
+        <Route path="/settings/user/profile/playlist/:id">
+          <Playlist backUrl="/settings/user/profile" />
+        </Route>
+      </Stack>
+    </Navigator>
   );
 }
 
@@ -55,49 +49,27 @@ function UserProfile({path}) {
   return (
     <View className="flex-1">
       <ScrollView className="flex-1">
-        <TransitionBottom>
-          <View className="flex-1 p-4 bg-white">
-            <Text className="text-2xl font-bold">Public Playlists</Text>
-            <View style={{minHeight: 500}}>
-              {playlists.map(playlist => {
-                return <PlaylistRow key={playlist.id} playlist={playlist} />;
-              })}
-            </View>
+        <View className="flex-1 p-4 bg-white">
+          <Text className="text-2xl font-bold">Public Playlists</Text>
+          <View style={{minHeight: 500}}>
+            {playlists.map(playlist => {
+              return <PlaylistRow key={playlist.id} playlist={playlist} />;
+            })}
           </View>
-        </TransitionBottom>
+        </View>
       </ScrollView>
     </View>
   );
 }
 
-const bottomStyle = {
-  transform: [
-    {
-      translateY: {
-        inputRange: [-1, 0, 1],
-        outputRange: [-1000, 0, 1000],
-      },
-    },
-  ],
-};
-
-function TransitionBottom({children}) {
-  const styles = useSharedElementInterpolation(bottomStyle);
-  return <Animated.View style={{flex: 1, ...styles}}>{children}</Animated.View>;
-}
-
 function UserProfileInfo({user}) {
   return (
     <View className="mb-3 items-center">
-      <SharedElement id="user-profile-image">
-        <Image
-          style={{height: 120, width: 120, borderRadius: 60}}
-          source={{uri: user.images[0].url}}
-        />
-      </SharedElement>
-      <SharedElement id="user-name">
-        <Text className="mt-2 text-xl font-bold">{user.display_name}</Text>
-      </SharedElement>
+      <Image
+        style={{height: 120, width: 120, borderRadius: 60}}
+        source={{uri: user.images[0].url}}
+      />
+      <Text className="mt-2 text-xl font-bold">{user.display_name}</Text>
     </View>
   );
 }
