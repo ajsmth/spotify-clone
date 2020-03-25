@@ -22,7 +22,7 @@ function Artist() {
   }
 
   return (
-    <ScrollView className="flex-1">
+    <ScrollView className="flex-1 bg-white">
       <View className="py-4 items-center">
         <View className="z-20">
           <Image className="w-56 h-56" source={{uri: artist.images[0]?.url}} />

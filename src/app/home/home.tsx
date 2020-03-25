@@ -23,7 +23,7 @@ function Home() {
   );
 }
 
-function Index({path}) {
+function Index() {
   return (
     <Navigator>
       <NativeStack>

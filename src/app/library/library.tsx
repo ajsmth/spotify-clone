@@ -43,9 +43,11 @@ function Library() {
           </Route>
 
           <Route path="/library/:profile/:id">
-            <Link to="/library">
-              <Text className="text-xl font-semibold">Back</Text>
-            </Link>
+            <View className="bg-white">
+              <Link to="/library">
+                <Text className="text-xl font-semibold">Back</Text>
+              </Link>
+            </View>
             <Profiles />
           </Route>
         </NativeStack>
