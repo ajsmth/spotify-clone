@@ -1,7 +1,7 @@
 import {Animated, ViewStyle} from 'react-native';
 
 function interpolate(
-  offset: Animated.Value,
+  offset: Animated.Value | Animated.AnimatedAddition | Animated.AnimatedSubtraction,
   pageInterpolation?: any,
 ): ViewStyle {
   if (!pageInterpolation) {

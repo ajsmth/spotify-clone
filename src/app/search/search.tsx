@@ -48,7 +48,7 @@ function Search() {
                   title={activePlaylist ? activePlaylist.name : ''}
                   largeTitle
                 />
-                <Playlist backUrl={-1} />
+                <Playlist />
               </Route>
             </Stack>
           </View>
@@ -91,23 +91,25 @@ function Category() {
   }
 
   return (
-    <ScrollView className="flex-1 bg-white">
-      <View className="flex-1 flex-wrap flex-row p-2">
-        {playlists.map(playlist => {
-          return (
-            <View key={playlist.id} className="w-1/3 p-2">
-              <Link to={`/search/${params.categoryId}/${playlist.id}`}>
-                <Image
-                  className="w-full bg-gray-300"
-                  style={{aspectRatio: 1}}
-                  source={{uri: playlist.images[0]?.url}}
-                />
-              </Link>
-            </View>
-          );
-        })}
-      </View>
-    </ScrollView>
+    <SafeAreaView className="flex-1">
+      <ScrollView className="flex-1 bg-white">
+        <View className="flex-1 flex-wrap flex-row p-2">
+          {playlists.map(playlist => {
+            return (
+              <View key={playlist.id} className="w-1/3 p-2">
+                <Link to={`/search/${params.categoryId}/${playlist.id}`}>
+                  <Image
+                    className="w-full bg-gray-300"
+                    style={{aspectRatio: 1}}
+                    source={{uri: playlist.images[0]?.url}}
+                  />
+                </Link>
+              </View>
+            );
+          })}
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 

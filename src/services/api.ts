@@ -44,7 +44,6 @@ router.get('/albums/:id/tracks', options => {
   return spotify
     .request(`/albums/${options.params.id}/tracks`)
     .then(response => {
-      console.log({response});
       return response.items;
     })
     .catch(error => console.log({error}));

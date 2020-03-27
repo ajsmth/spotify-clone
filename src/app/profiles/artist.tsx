@@ -58,11 +58,8 @@ function useTracks(id: string) {
 
   React.useEffect(() => {
     if (id) {
-      console.log({id});
       api.get(`/artists/${id}/tracks`).then(tracks => {
         if (tracks) {
-          console.log({ tracks })
-
           dispatch({
             type: 'UPDATE_MANY',
             data: tracks,

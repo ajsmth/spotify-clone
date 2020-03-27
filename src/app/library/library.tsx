@@ -56,7 +56,9 @@ function Library() {
         <Stack>
           <Route path="/library">
             <Header title="Music" largeTitle backgroundColor="transparent" />
-            <Index />
+            <SafeAreaView className="flex-1">
+              <Index />
+            </SafeAreaView>
           </Route>
 
           <Route path="/library/:profile/:id">
@@ -67,7 +69,9 @@ function Library() {
               largeTitle
               backgroundColor="transparent"
             />
-            <Profiles />
+            <SafeAreaView className="flex-1">
+              <Profiles />
+            </SafeAreaView>
           </Route>
         </Stack>
       </Navigator>
@@ -80,26 +84,26 @@ function Index() {
 
   return (
     <Navigator>
-      <View className="px-4 mt-24">
+      <View className="p-4">
         <View className="flex-row">
-          <FeedHeader
+          <Tab
             index={0}
             animatedValue={animatedIndex.current}
             to="/library/artists">
             Artists
-          </FeedHeader>
-          <FeedHeader
+          </Tab>
+          <Tab
             index={1}
             animatedValue={animatedIndex.current}
             to="/library/albums">
             Albums
-          </FeedHeader>
-          <FeedHeader
+          </Tab>
+          <Tab
             index={2}
             animatedValue={animatedIndex.current}
             to="/library/playlists">
             Playlists
-          </FeedHeader>
+          </Tab>
         </View>
       </View>
 
@@ -124,7 +128,7 @@ function Profiles() {
   return (
     <Navigator initialIndex={-1}>
       <View className="flex-1 bg-white">
-        <View className="mt-24 flex-1">
+        <View className="flex-1">
           <Switch keepAlive={false}>
             <Route path="/library/artist/:id">
               <Artist />
@@ -142,34 +146,7 @@ function Profiles() {
   );
 }
 
-function FeedHeader({children, to, animatedValue, index = 0}) {
-  const styles = interpolate(Animated.subtract(index, animatedValue), {
-    opacity: {
-      inputRange: [-1, 0, 1],
-      outputRange: [0.75, 1, 0.75],
-      extrapolate: 'clamp',
-    },
-  });
-
-  return (
-    <Link to={to}>
-      <Animated.Text
-        style={{fontSize: 24, fontWeight: '600', marginRight: 10, ...styles}}>
-        {children}
-      </Animated.Text>
-    </Link>
-  );
-}
-
-function SmallerTab({children, to}) {
-  return (
-    <Tab to={to}>
-      <Text className="text-xl font-semibold">{children}</Text>
-    </Tab>
-  );
-}
-
-const activeStyle = {
+const opacityStyles = {
   opacity: {
     inputRange: [-1, 0, 1],
     outputRange: [0.6, 1, 0.6],
@@ -177,12 +154,18 @@ const activeStyle = {
   },
 };
 
-function Tab({to, children}) {
+function Tab({children, to, animatedValue, index = 0}) {
+  const styles = interpolate(
+    Animated.subtract(index, animatedValue),
+    opacityStyles,
+  );
+
   return (
     <Link to={to}>
-      <AnimatedText className="mr-4 font-semibold" style={[]}>
+      <Animated.Text
+        style={{fontSize: 24, fontWeight: '600', marginRight: 10, ...styles}}>
         {children}
-      </AnimatedText>
+      </Animated.Text>
     </Link>
   );
 }

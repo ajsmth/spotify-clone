@@ -122,7 +122,7 @@ interface IPlayerFullScreen {
 
 function PlayerFullScreen({track, onBack}: IPlayerFullScreen) {
   return (
-    <View className="flex-1 p-4">
+    <View className="flex-1 p-4 z-50">
       <View className="flex-1">
         <Pressable className="py-4" onPress={onBack}>
           <Text className="text-xl font-semibold">Back</Text>

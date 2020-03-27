@@ -1,24 +1,9 @@
 import React from 'react';
-import {
-  Animated,
-  LayoutRectangle,
-  LayoutChangeEvent,
-  TextInput,
-  Switch,
-  SectionList,
-} from 'react-native';
+import {Animated, LayoutChangeEvent, Switch, SectionList} from 'react-native';
+
 
 import {Link, useParams} from '../../earhart';
-
-import {
-  Image,
-  Text,
-  View,
-  SafeAreaView,
-  Pressable,
-  AnimatedText,
-} from '../shared/tailwind';
-
+import {Image, Text, View, SafeAreaView, Pressable} from '../shared/tailwind';
 import {api} from '../../services/api';
 
 import {usePlaylistContext} from '../../providers/playlist-provider';
@@ -35,7 +20,7 @@ function Playlist({animatedValue}: IPlaylistView) {
   const scrollY = React.useRef(animatedValue || new Animated.Value(0));
 
   const [state] = usePlaylistContext();
-  const playlist = state.lookup[params.id];
+  const playlist = state.lookup[params.id || ''];
 
   const tracks = useTracks(params.id);
 

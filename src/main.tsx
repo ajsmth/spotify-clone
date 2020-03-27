@@ -48,6 +48,7 @@ function Main() {
           </Route>
         </Switch>
 
+        <Player />
         <MainTabbar />
         <SafeAreaView />
       </Navigator>

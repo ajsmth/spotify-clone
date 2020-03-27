@@ -15,25 +15,38 @@ import {Notifications} from './notifications';
 import {useUser} from '../../providers/user-provider';
 
 import {Animated} from 'react-native';
-import { Playlist } from '../profiles/playlist';
+import {Playlist} from '../profiles/playlist';
+import {usePlaylistContext} from '../../providers/playlist-provider';
 
 function Settings({}) {
+  const [state] = usePlaylistContext();
   return (
     <SafeAreaView className="flex-1 bg-white">
       <Navigator>
         <Stack>
-          <Route path="/home/settings/user">
-            <Header title="Settings" backgroundColor="transparent" />
+          <Route path="/home/settings">
+            <Header title="Settings" />
             <Index />
           </Route>
 
-          <Route path="/home/settings/preferences" >
-            <Profiles />
+          <Route path="/home/settings/*">
+            <Header title="Settings" />
+
+            <Navigator initialIndex={-1}>
+              <Switch keepAlive={false}>
+                <Route path="/home/settings/user">
+                  <User />
+                </Route>
+                <Route path="/home/settings/preferences">
+                  <Preferences />
+                </Route>
+              </Switch>
+            </Navigator>
           </Route>
 
-          <Route path='/home/settings/playlist/:id' stackPresentation="modal">
-            <Header title="Playlist" />
-            <Playlist backUrl={-1} />
+          <Route path="/home/settings/playlist/:id">
+            <Header title={({params}) => state.lookup[params.id]?.name || ''} />
+            <Playlist />
           </Route>
         </Stack>
       </Navigator>
@@ -41,23 +54,18 @@ function Settings({}) {
   );
 }
 
-function Profiles() {
+function Preferences() {
   return (
     <Navigator initialIndex={-1}>
       <Switch keepAlive={false}>
         <Route path="/home/settings/preferences/notifications">
-          <SettingsHeader title="Notifications" back="/home/settings" />
+          <SettingsHeader title="Notifications" />
           <Notifications />
         </Route>
 
         <Route path="/home/settings/preferences/playback">
-          <SettingsHeader title="Playback" back="/home/settings" />
+          <SettingsHeader title="Playback" />
           <Playback />
-        </Route>
-
-        <Route path="/home/settings/preferences/profile">
-          <SettingsHeader title="Settings" back="/home/settings" />
-          <User />
         </Route>
       </Switch>
     </Navigator>
@@ -69,29 +77,26 @@ function Index() {
 
   return (
     <ScrollView className="flex-1 pb-12 px-4">
-      <Link to="/home/settings/preferences/profile">
+      <Link to="/home/settings/user">
         <UserRow user={user} />
       </Link>
 
       <SettingsLink to="/home/settings/preferences/playback" title="Playback" />
-      <SettingsLink to="/home/settings/preferences/notifications" title="Notifications" />
+      <SettingsLink
+        to="/home/settings/preferences/notifications"
+        title="Notifications"
+      />
 
       <Logout />
     </ScrollView>
   );
 }
 
-function SettingsHeader({title, back}) {
+function SettingsHeader({title}) {
   return (
     <View className="py-2 px-4 bg-white justify-center">
       <View>
         <Text className="text-3xl font-bold text-center">{title}</Text>
-
-        <View className="absolute left-0">
-          <Link to={back}>
-            <Text className="text-xl font-semibold text-center">Back</Text>
-          </Link>
-        </View>
       </View>
     </View>
   );

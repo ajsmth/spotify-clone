@@ -1,6 +1,6 @@
 import React from 'react';
 import {Animated} from 'react-native';
-import {Link, Navigator, Stack, Route} from '../../earhart';
+import {Link, Navigator, Stack, Route, Header} from '../../earhart';
 
 import {View, Image, Text, ScrollView} from '../shared/tailwind';
 import {Playlist} from '../profiles/playlist';
@@ -8,17 +8,9 @@ import {useUser} from '../../providers/user-provider';
 import {api} from '../../services/api';
 import {usePlaylistContext} from '../../providers/playlist-provider';
 
-function User() {
-  const user = useUser();
-  return (
-    <Navigator>
-      <UserProfileInfo user={user} />
-      <UserProfile />
-    </Navigator>
-  );
-}
 
-function UserProfile({path}) {
+
+function User({}) {
   const user = useUser();
 
   const [state, dispatch] = usePlaylistContext();
@@ -40,7 +32,15 @@ function UserProfile({path}) {
     .filter(playlist => playlist.public);
 
   return (
-    <View className="flex-1">
+    <View className="flex-1 pt-4">
+      <View className="mb-3 items-center">
+        <Image
+          style={{height: 120, width: 120, borderRadius: 60}}
+          source={{uri: user.images[0].url}}
+        />
+        <Text className="mt-2 text-xl font-bold">{user.display_name}</Text>
+      </View>
+
       <ScrollView className="flex-1">
         <View className="flex-1 p-4 bg-white">
           <Text className="text-2xl font-bold">Public Playlists</Text>
@@ -51,18 +51,6 @@ function UserProfile({path}) {
           </View>
         </View>
       </ScrollView>
-    </View>
-  );
-}
-
-function UserProfileInfo({user}) {
-  return (
-    <View className="mb-3 items-center">
-      <Image
-        style={{height: 120, width: 120, borderRadius: 60}}
-        source={{uri: user.images[0].url}}
-      />
-      <Text className="mt-2 text-xl font-bold">{user.display_name}</Text>
     </View>
   );
 }
