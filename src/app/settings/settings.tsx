@@ -14,9 +14,12 @@ import {Playback} from './playback';
 import {Notifications} from './notifications';
 import {useUser} from '../../providers/user-provider';
 
-import {Animated} from 'react-native';
 import {Playlist} from '../profiles/playlist';
 import {usePlaylistContext} from '../../providers/playlist-provider';
+
+function capitalize(str = '') {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
 
 function Settings({}) {
   const [state] = usePlaylistContext();
@@ -25,26 +28,30 @@ function Settings({}) {
       <Navigator>
         <Stack>
           <Route path="/home/settings">
-            <Header title="Settings" />
-            <Index />
+            <Header title="Settings" largeTitle />
+            <SafeAreaView className="flex-1">
+              <Index />
+            </SafeAreaView>
           </Route>
 
-          <Route path="/home/settings/*">
-            <Header title="Settings" />
+          <Route path="/home/settings/:type">
+            <Header title={({params}) => capitalize(params.type) || ''} largeTitle />
 
-            <Navigator initialIndex={-1}>
-              <Switch keepAlive={false}>
-                <Route path="/home/settings/user">
-                  <User />
-                </Route>
-                <Route path="/home/settings/preferences">
-                  <Preferences />
-                </Route>
-              </Switch>
-            </Navigator>
+            <SafeAreaView className="flex-1">
+              <Navigator initialIndex={-1}>
+                <Switch keepAlive={false}>
+                  <Route path="/home/settings/profile">
+                    <User />
+                  </Route>
+                  <Route path="/home/settings/preferences">
+                    <Preferences />
+                  </Route>
+                </Switch>
+              </Navigator>
+            </SafeAreaView>
           </Route>
 
-          <Route path="/home/settings/playlist/:id">
+          <Route path="/home/*/playlist/:id">
             <Header title={({params}) => state.lookup[params.id]?.name || ''} />
             <Playlist />
           </Route>
@@ -77,7 +84,7 @@ function Index() {
 
   return (
     <ScrollView className="flex-1 pb-12 px-4">
-      <Link to="/home/settings/user">
+      <Link to="/home/settings/profile">
         <UserRow user={user} />
       </Link>
 
