@@ -33,7 +33,7 @@ function useTracks(albumId: string) {
 }
 
 function Album() {
-  const {params} = useNavigator();
+  const {params, activeIndex} = useNavigator();
   const [state] = useAlbumContext();
 
   const album = state.lookup[params.id];

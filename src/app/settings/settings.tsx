@@ -1,12 +1,5 @@
 import React from 'react';
-import {
-  Stack,
-  Switch,
-  Route,
-  Navigator,
-  Link,
-  NativeStack,
-} from '../../earhart';
+import {Switch, Route, Navigator, Link, Stack, Header} from '../../earhart';
 import {
   Text,
   View,
@@ -22,20 +15,27 @@ import {Notifications} from './notifications';
 import {useUser} from '../../providers/user-provider';
 
 import {Animated} from 'react-native';
+import { Playlist } from '../profiles/playlist';
 
 function Settings({}) {
   return (
     <SafeAreaView className="flex-1 bg-white">
       <Navigator>
-        <NativeStack>
-          <Route path="/home/settings">
-            <SettingsHeader title="Settings" back="/home" />
+        <Stack>
+          <Route path="/home/settings/user">
+            <Header title="Settings" backgroundColor="transparent" />
             <Index />
           </Route>
-          <Route path="/home/settings/*">
+
+          <Route path="/home/settings/preferences" >
             <Profiles />
           </Route>
-        </NativeStack>
+
+          <Route path='/home/settings/playlist/:id' stackPresentation="modal">
+            <Header title="Playlist" />
+            <Playlist backUrl={-1} />
+          </Route>
+        </Stack>
       </Navigator>
     </SafeAreaView>
   );
@@ -44,17 +44,18 @@ function Settings({}) {
 function Profiles() {
   return (
     <Navigator initialIndex={-1}>
-      <Switch>
-        <Route path="/home/settings/notifications">
+      <Switch keepAlive={false}>
+        <Route path="/home/settings/preferences/notifications">
           <SettingsHeader title="Notifications" back="/home/settings" />
           <Notifications />
         </Route>
-        <Route path="/home/settings/playback">
+
+        <Route path="/home/settings/preferences/playback">
           <SettingsHeader title="Playback" back="/home/settings" />
           <Playback />
         </Route>
 
-        <Route path="/home/settings/profile">
+        <Route path="/home/settings/preferences/profile">
           <SettingsHeader title="Settings" back="/home/settings" />
           <User />
         </Route>
@@ -68,12 +69,12 @@ function Index() {
 
   return (
     <ScrollView className="flex-1 pb-12 px-4">
-      <Link to="/home/settings/profile">
+      <Link to="/home/settings/preferences/profile">
         <UserRow user={user} />
       </Link>
 
-      <SettingsLink to="/home/settings/playback" title="Playback" />
-      <SettingsLink to="/home/settings/notifications" title="Notifications" />
+      <SettingsLink to="/home/settings/preferences/playback" title="Playback" />
+      <SettingsLink to="/home/settings/preferences/notifications" title="Notifications" />
 
       <Logout />
     </ScrollView>

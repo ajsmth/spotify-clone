@@ -14,7 +14,6 @@ function Artist() {
   const setTrackId = useSetTrackId();
 
   const tracks = useTracks(params.id);
-
   const artist = state.lookup[params.id];
 
   if (!artist) {
@@ -59,13 +58,18 @@ function useTracks(id: string) {
 
   React.useEffect(() => {
     if (id) {
+      console.log({id});
       api.get(`/artists/${id}/tracks`).then(tracks => {
-        dispatch({
-          type: 'UPDATE_MANY',
-          data: tracks,
-        });
+        if (tracks) {
+          console.log({ tracks })
 
-        setTrackIds(tracks.map(track => track.id));
+          dispatch({
+            type: 'UPDATE_MANY',
+            data: tracks,
+          });
+
+          setTrackIds(tracks.map(track => track.id));
+        }
       });
     }
   }, [id]);

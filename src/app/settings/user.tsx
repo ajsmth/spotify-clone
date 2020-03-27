@@ -13,14 +13,7 @@ function User() {
   return (
     <Navigator>
       <UserProfileInfo user={user} />
-      <Stack>
-        <Route path="/settings/user/profile">
-          <UserProfile />
-        </Route>
-        <Route path="/settings/user/profile/playlist/:id">
-          <Playlist backUrl="/settings/user/profile" />
-        </Route>
-      </Stack>
+      <UserProfile />
     </Navigator>
   );
 }
@@ -76,7 +69,7 @@ function UserProfileInfo({user}) {
 
 function PlaylistRow({playlist}: {playlist: IPlaylist}) {
   return (
-    <Link to={`playlist/${playlist.id}`}>
+    <Link to={`/home/settings/playlist/${playlist.id}`}>
       <View className="my-4 flex-row">
         <Image
           className="mr-3 w-12 h-12 rounded-full"

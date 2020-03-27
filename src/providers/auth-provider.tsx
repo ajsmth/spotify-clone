@@ -1,6 +1,6 @@
 import React from 'react';
 import {ActivityIndicator} from 'react-native';
-import {useNavigate} from 'earhart';
+import {useNavigator} from '../earhart';
 import {api} from '../services/api';
 import {View} from '../app/shared/tailwind';
 
@@ -16,7 +16,7 @@ const AuthContext = React.createContext<IAuthContext | undefined>(undefined);
 
 function AuthProvider({children}) {
   const [user, setUser] = React.useState<IUser | undefined>(undefined);
-  const navigate = useNavigate();
+  const {navigate} = useNavigator();
   const [loading, setLoading] = React.useState(true);
 
   React.useEffect(() => {
