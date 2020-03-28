@@ -32,7 +32,7 @@ function User({}) {
     .filter(playlist => playlist.public);
 
   return (
-    <View className="flex-1 pt-4">
+    <View className="flex-1 pt-4 bg-white">
       <View className="mb-3 items-center">
         <Image
           style={{height: 120, width: 120, borderRadius: 60}}
@@ -44,7 +44,7 @@ function User({}) {
       <ScrollView className="flex-1">
         <View className="flex-1 p-4 bg-white">
           <Text className="text-2xl font-bold">Public Playlists</Text>
-          <View style={{minHeight: 500}}>
+          <View>
             {playlists.map(playlist => {
               return <PlaylistRow key={playlist.id} playlist={playlist} />;
             })}

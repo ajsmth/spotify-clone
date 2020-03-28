@@ -28,7 +28,13 @@ function Settings({}) {
       <Navigator>
         <Stack>
           <Route path="/home/settings">
-            <Header title="Settings" largeTitle />
+            <Header title="Settings" largeTitle>
+              <Header.Left>
+                <Link to='/home'>
+                  <Text className='text-xl font-semibold'>Back</Text>
+                </Link>
+              </Header.Left>
+            </Header>
             <SafeAreaView className="flex-1">
               <Index />
             </SafeAreaView>
@@ -51,7 +57,7 @@ function Settings({}) {
             </SafeAreaView>
           </Route>
 
-          <Route path="/home/*/playlist/:id">
+          <Route path="/home/*/playlist/:id" stackPresentation="modal">
             <Header title={({params}) => state.lookup[params.id]?.name || ''} />
             <Playlist />
           </Route>

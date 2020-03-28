@@ -55,7 +55,7 @@ function Library() {
       <Navigator>
         <Stack>
           <Route path="/library">
-            <Header title="Music" largeTitle backgroundColor="transparent" />
+            <Header title="Music" largeTitle backgroundColor="white" />
             <SafeAreaView className="flex-1">
               <Index />
             </SafeAreaView>
@@ -67,7 +67,7 @@ function Library() {
                 lookup[params.profile]?.lookup[params.id]?.name || ''
               }
               largeTitle
-              backgroundColor="transparent"
+              backgroundColor="white"
             />
             <SafeAreaView className="flex-1">
               <Profiles />
