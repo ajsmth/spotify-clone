@@ -1,5 +1,5 @@
 import React from 'react';
-import {Stack, Switch, Route, Routes, Link, useInterpolation} from 'earhart';
+import {Switch, Route, Navigator, Link, Stack, Header} from '../../earhart';
 import {
   Text,
   View,
@@ -14,56 +14,74 @@ import {Playback} from './playback';
 import {Notifications} from './notifications';
 import {useUser} from '../../providers/user-provider';
 
-import {
-  SharedElement,
-  SharedElements,
-  useSharedElementInterpolation,
-} from 'earhart-shared-element';
+import {Playlist} from '../profiles/playlist';
+import {usePlaylistContext} from '../../providers/playlist-provider';
 
-import {Animated} from 'react-native';
-import {PerformantScreen} from '../shared/performant-screen';
+function capitalize(str = '') {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
 
 function Settings({}) {
+  const [state] = usePlaylistContext();
   return (
     <SafeAreaView className="flex-1 bg-white">
-      <Stack>
-        <Routes>
-          <UserProfileTransition path="/*" />
-          
-          <Route path="playback">
-            <SettingsHeader title="Playback" />
-            <Playback />
+      <Navigator>
+        <Stack>
+          <Route path="/home/settings">
+            <Header title="Settings" largeTitle>
+              <Header.Left>
+                <Link to='/home'>
+                  <Text className='text-xl font-semibold'>Back</Text>
+                </Link>
+              </Header.Left>
+            </Header>
+            <SafeAreaView className="flex-1">
+              <Index />
+            </SafeAreaView>
           </Route>
 
-          <Route path="notifications">
-            <SettingsHeader title="Notifications" />
-            <Notifications />
+          <Route path="/home/settings/:type">
+            <Header title={({params}) => capitalize(params.type) || ''} largeTitle />
+
+            <SafeAreaView className="flex-1">
+              <Navigator initialIndex={-1}>
+                <Switch keepAlive={false}>
+                  <Route path="/home/settings/profile">
+                    <User />
+                  </Route>
+                  <Route path="/home/settings/preferences">
+                    <Preferences />
+                  </Route>
+                </Switch>
+              </Navigator>
+            </SafeAreaView>
           </Route>
-        </Routes>
-      </Stack>
+
+          <Route path="/home/*/playlist/:id" stackPresentation="modal">
+            <Header title={({params}) => state.lookup[params.id]?.name || ''} />
+            <Playlist />
+          </Route>
+        </Stack>
+      </Navigator>
     </SafeAreaView>
   );
 }
 
-
-
-function UserProfileTransition({path}) {
+function Preferences() {
   return (
-    <SharedElements>
-      <Routes>
-        <Route path="/">
-          <PerformantScreen>
-            <SettingsHeader title="Settings" />
-            <Index />
-          </PerformantScreen>
+    <Navigator initialIndex={-1}>
+      <Switch keepAlive={false}>
+        <Route path="/home/settings/preferences/notifications">
+          <SettingsHeader title="Notifications" />
+          <Notifications />
         </Route>
 
-        <Route path="profile">
-          <SettingsHeader title="Settings" />
-          <User />
+        <Route path="/home/settings/preferences/playback">
+          <SettingsHeader title="Playback" />
+          <Playback />
         </Route>
-      </Routes>
-    </SharedElements>
+      </Switch>
+    </Navigator>
   );
 }
 
@@ -72,12 +90,15 @@ function Index() {
 
   return (
     <ScrollView className="flex-1 pb-12 px-4">
-      <Link to="profile">
+      <Link to="/home/settings/profile">
         <UserRow user={user} />
       </Link>
 
-      <SettingsLink to="playback" title="Playback" />
-      <SettingsLink to="notifications" title="Notifications" />
+      <SettingsLink to="/home/settings/preferences/playback" title="Playback" />
+      <SettingsLink
+        to="/home/settings/preferences/notifications"
+        title="Notifications"
+      />
 
       <Logout />
     </ScrollView>
@@ -89,12 +110,6 @@ function SettingsHeader({title}) {
     <View className="py-2 px-4 bg-white justify-center">
       <View>
         <Text className="text-3xl font-bold text-center">{title}</Text>
-
-        <View className="absolute left-0">
-          <Link to="../">
-            <Text className="text-xl font-semibold text-center">Back</Text>
-          </Link>
-        </View>
       </View>
     </View>
   );
@@ -121,31 +136,18 @@ interface IUserRow {
 }
 
 function UserRow({user}: IUserRow) {
-  const style = useSharedElementInterpolation({
-    opacity: {
-      inputRange: [-0.5, 0, 1],
-      outputRange: [0, 1, 0],
-    },
-  });
-
   return (
-    <Animated.View style={style}>
-      <View className="flex-row mb-12 mt-8">
-        <SharedElement id="user-profile-image">
-          <Image
-            style={{height: 80, width: 80, borderRadius: 40}}
-            source={{uri: user?.images[0].url}}
-          />
-        </SharedElement>
+    <View className="flex-row mb-12 mt-8">
+      <Image
+        style={{height: 80, width: 80, borderRadius: 40}}
+        source={{uri: user?.images[0].url}}
+      />
 
-        <View className="ml-4 justify-center">
-          <SharedElement id="user-name">
-            <Text className="text-2xl font-semibold">{user?.display_name}</Text>
-          </SharedElement>
-          <Text className="text-lg font-medium mt-2">View Profile</Text>
-        </View>
+      <View className="ml-4 justify-center">
+        <Text className="text-2xl font-semibold">{user?.display_name}</Text>
+        <Text className="text-lg font-medium mt-2">View Profile</Text>
       </View>
-    </Animated.View>
+    </View>
   );
 }
 

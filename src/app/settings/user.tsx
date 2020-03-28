@@ -1,37 +1,14 @@
 import React from 'react';
-import {Animated} from 'react-native';
-import {Link, Routes} from 'earhart';
-import {Stack, Route} from 'earhart-native';
-import {
-  SharedElement,
-  useSharedElementInterpolation,
-} from 'earhart-shared-element';
+import {Link} from '../../earhart';
 
 import {View, Image, Text, ScrollView} from '../shared/tailwind';
-import {Playlist} from '../profiles/playlist';
 import {useUser} from '../../providers/user-provider';
 import {api} from '../../services/api';
 import {usePlaylistContext} from '../../providers/playlist-provider';
 
-function User() {
-  const user = useUser();
-  return (
-    <Stack>
-      <UserProfileInfo user={user} />
 
-      <Routes>
-        <UserProfile path="/" />
-        <Playlist
-          backUrl="../../"
-          path="playlist/:id"
-          screenProps={{stackPresentation: 'modal'}}
-        />
-      </Routes>
-    </Stack>
-  );
-}
 
-function UserProfile({path}) {
+function User({}) {
   const user = useUser();
 
   const [state, dispatch] = usePlaylistContext();
@@ -53,58 +30,32 @@ function UserProfile({path}) {
     .filter(playlist => playlist.public);
 
   return (
-    <View className="flex-1">
-      <ScrollView className="flex-1">
-        <TransitionBottom>
-          <View className="flex-1 p-4 bg-white">
-            <Text className="text-2xl font-bold">Public Playlists</Text>
-            <View style={{minHeight: 500}}>
-              {playlists.map(playlist => {
-                return <PlaylistRow key={playlist.id} playlist={playlist} />;
-              })}
-            </View>
-          </View>
-        </TransitionBottom>
-      </ScrollView>
-    </View>
-  );
-}
-
-const bottomStyle = {
-  transform: [
-    {
-      translateY: {
-        inputRange: [-1, 0, 1],
-        outputRange: [-1000, 0, 1000],
-      },
-    },
-  ],
-};
-
-function TransitionBottom({children}) {
-  const styles = useSharedElementInterpolation(bottomStyle);
-  return <Animated.View style={{flex: 1, ...styles}}>{children}</Animated.View>;
-}
-
-function UserProfileInfo({user}) {
-  return (
-    <View className="mb-3 items-center">
-      <SharedElement id="user-profile-image">
+    <View className="flex-1 pt-4 bg-white">
+      <View className="mb-3 items-center">
         <Image
           style={{height: 120, width: 120, borderRadius: 60}}
           source={{uri: user.images[0].url}}
         />
-      </SharedElement>
-      <SharedElement id="user-name">
         <Text className="mt-2 text-xl font-bold">{user.display_name}</Text>
-      </SharedElement>
+      </View>
+
+      <ScrollView className="flex-1">
+        <View className="flex-1 p-4 bg-white">
+          <Text className="text-2xl font-bold">Public Playlists</Text>
+          <View>
+            {playlists.map(playlist => {
+              return <PlaylistRow key={playlist.id} playlist={playlist} />;
+            })}
+          </View>
+        </View>
+      </ScrollView>
     </View>
   );
 }
 
 function PlaylistRow({playlist}: {playlist: IPlaylist}) {
   return (
-    <Link to={`playlist/${playlist.id}`}>
+    <Link to={`/home/settings/playlist/${playlist.id}`}>
       <View className="my-4 flex-row">
         <Image
           className="mr-3 w-12 h-12 rounded-full"

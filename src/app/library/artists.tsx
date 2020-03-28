@@ -1,9 +1,8 @@
 import React from 'react';
 import {View, Text, ScrollView, Image} from '../shared/tailwind';
-import {Link} from 'earhart';
+import {Link} from '../../earhart';
 import {useArtistContext} from '../../providers/artist-provider';
 import {api} from '../../services/api';
-import {SharedElement} from 'earhart-shared-element';
 import {PerformantScreen} from '../shared/performant-screen';
 
 function Artists({to}) {
@@ -48,18 +47,12 @@ function ArtistRow({artist, to}: IArtistRow) {
   return (
     <Link to={to}>
       <View className="flex-row items-center my-3">
-        <SharedElement id={`artist-profile-image-${artist.id}`}>
-          <Image
-            className="w-16 h-16 mr-4 bg-gray-900"
-            source={{uri: artist.images[0].url}}
-          />
-        </SharedElement>
+        <Image
+          className="w-16 h-16 mr-4 bg-gray-900"
+          source={{uri: artist.images[0].url}}
+        />
         <View className="items-start">
-          <SharedElement
-            id={`artist-profile-name-${artist.id}`}
-            config={{animated: 'fade', resize: 'clip', align: 'left-center'}}>
-            <Text className="font-semibold text-xl w-full">{artist.name}</Text>
-          </SharedElement>
+          <Text className="font-semibold text-xl w-full">{artist.name}</Text>
         </View>
       </View>
     </Link>

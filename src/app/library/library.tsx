@@ -1,15 +1,13 @@
 import React from 'react';
 import {
+  Navigator,
   Stack,
-  Routes,
   Route,
   Tabs,
   Link,
-  Tabbar,
-  useInterpolation,
-  Redirect,
   Switch,
-} from 'earhart';
+  Header,
+} from '../../earhart';
 
 import {
   Text,
@@ -32,128 +30,123 @@ import {
 } from 'earhart-shared-element';
 import {Animated} from 'react-native';
 import {PerformantScreen} from '../shared/performant-screen';
+import {useArtistContext} from '../../providers/artist-provider';
+import {useAlbumContext} from '../../providers/album-provider';
+import {usePlaylistContext} from '../../providers/playlist-provider';
+import {interpolate} from '../shared/interpolate';
+
+function capitalize(str: string) {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
 
 function Library() {
+  const [artists] = useArtistContext();
+  const [albums] = useAlbumContext();
+  const [playlists] = usePlaylistContext();
+
+  const lookup = {
+    artist: artists,
+    album: albums,
+    playlist: playlists,
+  };
+
   return (
     <SafeAreaView className="flex-1">
-      <Stack>
-        <Routes>
-          <Tabs path="/*">
-            <View className="px-4">
-              <Text className="text-5xl font-extrabold">Music</Text>
-            </View>
-
-            <View className="px-4">
-              <Tabbar>
-                <SmallerTab to="artists/*">Artists</SmallerTab>
-                <SmallerTab to="albums/*">Albums</SmallerTab>
-                <SmallerTab to="playlists/*">Playlists</SmallerTab>
-              </Tabbar>
-            </View>
-
-            <Routes>
-              <Route path="artists/*">
-                <PerformantScreen>
-                  <ArtistsShared />
-                </PerformantScreen>
-              </Route>
-
-              <Route path="albums/*">
-                <PerformantScreen>
-                  <AlbumsShared />
-                </PerformantScreen>
-              </Route>
-
-              <Route path="playlists/*">
-                <PerformantScreen>
-                  <Playlists to="../profile" />
-                </PerformantScreen>
-              </Route>
-            </Routes>
-          </Tabs>
-
-          <Route path="profile/:id">
-            <PerformantScreen>
-              <Playlist backUrl="../../" />
-            </PerformantScreen>
+      <Navigator>
+        <Stack>
+          <Route path="/library">
+            <Header title="Music" largeTitle backgroundColor="white" />
+            <SafeAreaView className="flex-1">
+              <Index />
+            </SafeAreaView>
           </Route>
-        </Routes>
-      </Stack>
+
+          <Route path="/library/:profile/:id">
+            <Header
+              title={({params}) =>
+                lookup[params.profile]?.lookup[params.id]?.name || ''
+              }
+              largeTitle
+              backgroundColor="white"
+            />
+            <SafeAreaView className="flex-1">
+              <Profiles />
+            </SafeAreaView>
+          </Route>
+        </Stack>
+      </Navigator>
     </SafeAreaView>
   );
 }
 
-function AlbumsShared() {
+function Index() {
+  const animatedIndex = React.useRef(new Animated.Value(0));
+
   return (
-    <SharedElements>
-      <Routes>
-        <Route path="/">
-          <Albums to="profile" />
+    <Navigator>
+      <View className="p-4">
+        <View className="flex-row">
+          <Tab
+            index={0}
+            animatedValue={animatedIndex.current}
+            to="/library/artists">
+            Artists
+          </Tab>
+          <Tab
+            index={1}
+            animatedValue={animatedIndex.current}
+            to="/library/albums">
+            Albums
+          </Tab>
+          <Tab
+            index={2}
+            animatedValue={animatedIndex.current}
+            to="/library/playlists">
+            Playlists
+          </Tab>
+        </View>
+      </View>
+
+      <Tabs animatedValue={animatedIndex.current}>
+        <Route path="/library/artists">
+          <Artists to="/library/artist" />
         </Route>
 
-        <Route path="profile/:id">
-          <SlideIn>
-            <View className="py-2 px-4 bg-white">
-              <Link to="../../">
-                <Text className="text-xl font-bold">Back</Text>
-              </Link>
-            </View>
-          </SlideIn>
-          <Album />
+        <Route path="/library/albums">
+          <Albums to="/library/album" />
         </Route>
-      </Routes>
-    </SharedElements>
+
+        <Route path="/library/playlists">
+          <Playlists to="/library/playlist" />
+        </Route>
+      </Tabs>
+    </Navigator>
   );
 }
 
-function ArtistsShared() {
+function Profiles() {
   return (
-    <SharedElements>
-      <Routes>
-        <Route path="/">
-          <Artists to="profile" />
-        </Route>
-
-        <Route path="profile/:id">
-          <SlideIn>
-            <View className="py-2 px-4 bg-white">
-              <Link to="../../">
-                <Text className="text-xl font-bold">Back</Text>
-              </Link>
-            </View>
-          </SlideIn>
-          <Artist />
-        </Route>
-      </Routes>
-    </SharedElements>
+    <Navigator initialIndex={-1}>
+      <View className="flex-1 bg-white">
+        <View className="flex-1">
+          <Switch keepAlive={false}>
+            <Route path="/library/artist/:id">
+              <Artist />
+            </Route>
+            <Route path="/library/album/:id">
+              <Album />
+            </Route>
+            <Route path="/library/playlist/:id">
+              <Playlist />
+            </Route>
+          </Switch>
+        </View>
+      </View>
+    </Navigator>
   );
 }
 
-const slideInStyle = {
-  transform: [
-    {
-      translateX: {
-        inputRange: [-1, 0, 1],
-        outputRange: [-600, 0, -600],
-      },
-    },
-  ],
-};
-
-function SlideIn({children}) {
-  const style = useSharedElementInterpolation(slideInStyle);
-  return <Animated.View style={style}>{children}</Animated.View>;
-}
-
-function SmallerTab({children, to}) {
-  return (
-    <Tab to={to}>
-      <Text className="text-xl font-semibold">{children}</Text>
-    </Tab>
-  );
-}
-
-const activeStyle = {
+const opacityStyles = {
   opacity: {
     inputRange: [-1, 0, 1],
     outputRange: [0.6, 1, 0.6],
@@ -161,14 +154,18 @@ const activeStyle = {
   },
 };
 
-function Tab({to, children}) {
-  const activeStyles = useInterpolation(activeStyle);
+function Tab({children, to, animatedValue, index = 0}) {
+  const styles = interpolate(
+    Animated.subtract(index, animatedValue),
+    opacityStyles,
+  );
 
   return (
     <Link to={to}>
-      <AnimatedText className="mr-4 font-semibold" style={[activeStyles]}>
+      <Animated.Text
+        style={{fontSize: 24, fontWeight: '600', marginRight: 10, ...styles}}>
         {children}
-      </AnimatedText>
+      </Animated.Text>
     </Link>
   );
 }

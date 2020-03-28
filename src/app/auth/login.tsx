@@ -1,12 +1,12 @@
 import React from 'react';
-import {Navigator, Tabs, useNavigate, Route, Routes} from 'earhart';
+import {useNavigator} from '../../earhart';
 import {View, Text, Pressable} from '../shared/tailwind';
 import {useAuth} from '../../providers/auth-provider';
 import {SafeAreaView} from 'react-native';
 
 function Login() {
   const auth = useAuth();
-  const navigate = useNavigate();
+  const {navigate} = useNavigator();
 
   return (
     <View className="flex-1 bg-gray-400 justify-center p-4">

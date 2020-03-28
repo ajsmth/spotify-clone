@@ -1,5 +1,5 @@
 import React from 'react';
-import {Link} from 'earhart';
+import {Link, useNavigator} from '../../earhart';
 import {View, Text, ScrollView, Image, SafeAreaView} from '../shared/tailwind';
 import {api} from '../../services/api';
 import {usePlaylistContext} from '../../providers/playlist-provider';
@@ -55,7 +55,7 @@ function Playlists({feedId, title}: IPlaylists) {
 
           return (
             <View className="p-3" key={playlist.id}>
-              <Link to={`profile/playlists/${playlist.id}`}>
+              <Link to={`/home/playlists/${playlist.id}`}>
                 <Image
                   source={{uri: playlist.images[0].url}}
                   style={{height: 150, width: 150}}
@@ -74,7 +74,7 @@ function Playlists({feedId, title}: IPlaylists) {
 
           return (
             <View className="p-3" key={playlist.id}>
-              <Link to={`profile/playlists/${playlist.id}`}>
+              <Link to={`/home/playlists/${playlist.id}`}>
                 <Image
                   source={{uri: playlist.images[0].url}}
                   style={{height: 150, width: 150}}
@@ -94,7 +94,7 @@ function SettingsHeader() {
   return (
     <View className="py-4 px-3 flex-row">
       <View className="flex-1" />
-      <Link to={`settings`}>
+      <Link to={`/home/settings`}>
         <Text className="text-2xl font-semibold text-right">Settings</Text>
       </Link>
     </View>
