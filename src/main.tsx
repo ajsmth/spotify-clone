@@ -55,7 +55,6 @@ function MainTabbar() {
   );
 }
 
-// const activeStyles = useInterpolation(activeTabs);
 function MainTab({children, to}: any) {
   return (
     <Link
@@ -65,10 +64,6 @@ function MainTab({children, to}: any) {
       <View>{children}</View>
     </Link>
   );
-}
-
-function Screen({children}: any) {
-  return <View className="flex-1 justify-center items-center">{children}</View>;
 }
 
 export {Main};

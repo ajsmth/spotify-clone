@@ -1,43 +1,18 @@
 import React from 'react';
-import {
-  Navigator,
-  Stack,
-  Route,
-  Tabs,
-  Link,
-  Switch,
-  Header,
-} from '../../earhart';
-
-import {
-  Text,
-  View,
-  AnimatedText,
-  SafeAreaView,
-  Pressable,
-} from '../shared/tailwind';
-
+import {Animated} from 'react-native';
+import {Navigator, Stack, Route, Tabs, Link, Header} from '../../earhart';
+import {View, SafeAreaView} from '../shared/tailwind';
 import {Playlists} from './playlists';
 import {Artists} from './artists';
 import {Albums} from './albums';
-
 import {Playlist} from '../profiles/playlist';
 import {Artist} from '../profiles/artist';
 import {Album} from '../profiles/album';
-import {
-  SharedElements,
-  useSharedElementInterpolation,
-} from 'earhart-shared-element';
-import {Animated} from 'react-native';
-import {PerformantScreen} from '../shared/performant-screen';
 import {useArtistContext} from '../../providers/artist-provider';
 import {useAlbumContext} from '../../providers/album-provider';
 import {usePlaylistContext} from '../../providers/playlist-provider';
 import {interpolate} from '../shared/interpolate';
-
-function capitalize(str: string) {
-  return str.charAt(0).toUpperCase() + str.slice(1);
-}
+import {SwitchRouter} from '../shared/switch-router';
 
 function Library() {
   const [artists] = useArtistContext();
@@ -83,31 +58,10 @@ function Index() {
   const animatedIndex = React.useRef(new Animated.Value(0));
 
   return (
-    <Navigator>
-      <View className="p-4">
-        <View className="flex-row">
-          <Tab
-            index={0}
-            animatedValue={animatedIndex.current}
-            to="/library/artists">
-            Artists
-          </Tab>
-          <Tab
-            index={1}
-            animatedValue={animatedIndex.current}
-            to="/library/albums">
-            Albums
-          </Tab>
-          <Tab
-            index={2}
-            animatedValue={animatedIndex.current}
-            to="/library/playlists">
-            Playlists
-          </Tab>
-        </View>
-      </View>
+    <View className="flex-1">
+      <Tabbar animatedValue={animatedIndex.current} />
 
-      <Tabs animatedValue={animatedIndex.current}>
+      <TabNavigator animatedValue={animatedIndex.current}>
         <Route path="/library/artists">
           <Artists to="/library/artist" />
         </Route>
@@ -119,30 +73,42 @@ function Index() {
         <Route path="/library/playlists">
           <Playlists to="/library/playlist" />
         </Route>
-      </Tabs>
-    </Navigator>
+      </TabNavigator>
+    </View>
+  );
+}
+
+function Tabbar({animatedValue}) {
+  return (
+    <View className="p-4">
+      <View className="flex-row">
+        <Tab index={0} animatedValue={animatedValue} to="/library/artists">
+          Artists
+        </Tab>
+        <Tab index={1} animatedValue={animatedValue} to="/library/albums">
+          Albums
+        </Tab>
+        <Tab index={2} animatedValue={animatedValue} to="/library/playlists">
+          Playlists
+        </Tab>
+      </View>
+    </View>
   );
 }
 
 function Profiles() {
   return (
-    <Navigator initialIndex={-1}>
-      <View className="flex-1 bg-white">
-        <View className="flex-1">
-          <Switch keepAlive={false}>
-            <Route path="/library/artist/:id">
-              <Artist />
-            </Route>
-            <Route path="/library/album/:id">
-              <Album />
-            </Route>
-            <Route path="/library/playlist/:id">
-              <Playlist />
-            </Route>
-          </Switch>
-        </View>
-      </View>
-    </Navigator>
+    <SwitchRouter>
+      <Route path="/library/artist/:id">
+        <Artist />
+      </Route>
+      <Route path="/library/album/:id">
+        <Album />
+      </Route>
+      <Route path="/library/playlist/:id">
+        <Playlist />
+      </Route>
+    </SwitchRouter>
   );
 }
 
@@ -171,3 +137,11 @@ function Tab({children, to, animatedValue, index = 0}) {
 }
 
 export {Library};
+
+function TabNavigator({children, ...rest}) {
+  return (
+    <Navigator>
+      <Tabs {...rest}>{children}</Tabs>
+    </Navigator>
+  );
+}

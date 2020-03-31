@@ -1,6 +1,5 @@
 import React from 'react';
 import {View, Text, Image, Pressable} from '../shared/tailwind';
-
 import {Modalize} from 'react-native-modalize';
 import {useTrackContext} from '../../providers/track-provider';
 import {useTrackId} from '../../providers/player-provider';
@@ -52,7 +51,7 @@ function Player() {
         onPlayerPress={setPlaying}
       />
       <Modalize
-        ref={modalRef}
+        ref={modalRef as any}
         openAnimationConfig={modalAnimationConfig}
         closeAnimationConfig={modalAnimationConfig}>
         <PlayerFullScreen track={track} onBack={onClose} />

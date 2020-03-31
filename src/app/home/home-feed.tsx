@@ -1,5 +1,5 @@
 import React from 'react';
-import {Link, useNavigator} from '../../earhart';
+import {Link} from '../../earhart';
 import {View, Text, ScrollView, Image, SafeAreaView} from '../shared/tailwind';
 import {api} from '../../services/api';
 import {usePlaylistContext} from '../../providers/playlist-provider';
@@ -9,6 +9,7 @@ function HomeFeed() {
     <View className="flex flex-1 bg-white">
       <SafeAreaView />
       <SettingsHeader />
+      
       <ScrollView className="py-4 bg-white">
         <Playlists feedId="featured" title="Editors Picks" />
         <Playlists feedId="toplists" title="Top" />
@@ -25,49 +26,13 @@ interface IPlaylists {
 }
 
 function Playlists({feedId, title}: IPlaylists) {
-  const [state, dispatch] = usePlaylistContext();
-  const [playlistIds, setPlaylistIds] = React.useState([]);
-
-  React.useEffect(() => {
-    api.get(`/playlists/${feedId}`).then(playlists => {
-      dispatch({
-        type: 'UPDATE_MANY',
-        data: playlists,
-      });
-
-      setPlaylistIds(playlists.map(item => item.id));
-    });
-  }, []);
-
-  const playlists = playlistIds.map(id => state.lookup[id]);
-
-  const top = playlists.slice(0, 2);
-  const rest = playlists.slice(2);
+  const playlists = useFeedPlaylists(feedId);
 
   return (
     <View className="py-3">
       <Text className="px-4 text-3xl font-bold">{title}</Text>
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-        {top.map(playlist => {
-          if (!playlist) {
-            return null;
-          }
-
-          return (
-            <View className="p-3" key={playlist.id}>
-              <Link to={`/home/playlists/${playlist.id}`}>
-                <Image
-                  source={{uri: playlist.images[0].url}}
-                  style={{height: 150, width: 150}}
-                />
-
-                <Text className="py-2 text-sm">{playlist.name}</Text>
-              </Link>
-            </View>
-          );
-        })}
-
-        {rest.map(playlist => {
+        {playlists.map(playlist => {
           if (!playlist) {
             return null;
           }
@@ -99,6 +64,27 @@ function SettingsHeader() {
       </Link>
     </View>
   );
+}
+
+function useFeedPlaylists(feedId: string) {
+  const [state, dispatch] = usePlaylistContext();
+  const [playlistIds, setPlaylistIds] = React.useState([]);
+
+  React.useEffect(() => {
+    if (feedId) {
+      api.get(`/playlists/${feedId}`).then(playlists => {
+        dispatch({
+          type: 'UPDATE_MANY',
+          data: playlists,
+        });
+
+        setPlaylistIds(playlists.map(item => item.id));
+      });
+    }
+  }, []);
+
+  const playlists = playlistIds.map(id => state.lookup[id]);
+  return playlists;
 }
 
 export {HomeFeed};

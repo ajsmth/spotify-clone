@@ -1,7 +1,10 @@
 import {Animated, ViewStyle} from 'react-native';
 
 function interpolate(
-  offset: Animated.Value | Animated.AnimatedAddition | Animated.AnimatedSubtraction,
+  value:
+    | Animated.Value
+    | Animated.AnimatedAddition
+    | Animated.AnimatedSubtraction,
   pageInterpolation?: any,
 ): ViewStyle {
   if (!pageInterpolation) {
@@ -13,7 +16,7 @@ function interpolate(
 
     if (Array.isArray(currentStyle)) {
       const _style = currentStyle.map((interpolationConfig: any) =>
-        interpolate(offset, interpolationConfig),
+        interpolate(value, interpolationConfig),
       );
 
       styles[key] = _style;
@@ -21,7 +24,7 @@ function interpolate(
     }
 
     if (typeof currentStyle === 'object') {
-      styles[key] = offset.interpolate(currentStyle);
+      styles[key] = value.interpolate(currentStyle);
       return styles;
     }
 

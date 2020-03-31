@@ -21,13 +21,9 @@ import {User} from './user';
 import {Playback} from './playback';
 import {Notifications} from './notifications';
 import {useUser} from '../../providers/user-provider';
-
 import {Playlist} from '../profiles/playlist';
 import {usePlaylistContext} from '../../providers/playlist-provider';
-
-function capitalize(str = '') {
-  return str.charAt(0).toUpperCase() + str.slice(1);
-}
+import {SwitchRouter} from '../shared/switch-router';
 
 function Settings({}) {
   const [state] = usePlaylistContext();
@@ -36,7 +32,7 @@ function Settings({}) {
       <Navigator>
         <Stack>
           <Route path="/home/settings">
-            <Header title="Settings" largeTitle>
+            <Header title="Settings" largeTitle backgroundColor="white">
               <Header.Left>
                 <Link to="/home">
                   <Text className="text-xl font-semibold">Back</Text>
@@ -52,24 +48,26 @@ function Settings({}) {
             <Header
               title={({params}) => capitalize(params.type) || ''}
               largeTitle
+              backgroundColor="white"
             />
 
             <SafeAreaView className="flex-1">
-              <Navigator initialIndex={-1}>
-                <Switch keepAlive={false}>
-                  <Route path="/home/settings/profile">
-                    <User />
-                  </Route>
-                  <Route path="/home/settings/preferences">
-                    <Preferences />
-                  </Route>
-                </Switch>
-              </Navigator>
+              <SwitchRouter>
+                <Route path="/home/settings/profile">
+                  <User />
+                </Route>
+                <Route path="/home/settings/preferences">
+                  <Preferences />
+                </Route>
+              </SwitchRouter>
             </SafeAreaView>
           </Route>
 
           <Route path="/home/*/playlist/:id" stackPresentation="modal">
-            <Header title={({params}) => state.lookup[params.id]?.name || ''} />
+            <Header
+              title={({params}) => state.lookup[params.id]?.name || ''}
+              backgroundColor="white"
+            />
             <Playlist />
           </Route>
         </Stack>
@@ -80,29 +78,41 @@ function Settings({}) {
 
 function Preferences() {
   return (
-    <Navigator initialIndex={-1}>
-      <Switch keepAlive={false}>
-        <Route path="/home/settings/preferences/notifications">
-          <SettingsHeader title="Notifications" />
-          <Notifications />
-        </Route>
+    <SwitchRouter>
+      <Route path="/home/settings/preferences/notifications">
+        <SettingsHeader title="Notifications" />
+        <Notifications />
+      </Route>
 
-        <Route path="/home/settings/preferences/playback">
-          <SettingsHeader title="Playback" />
-          <Playback />
-        </Route>
-      </Switch>
-    </Navigator>
+      <Route path="/home/settings/preferences/playback">
+        <SettingsHeader title="Playback" />
+        <Playback />
+      </Route>
+    </SwitchRouter>
   );
 }
 
 function Index() {
   const {user} = useUser();
 
+  if (!user) {
+    return null;
+  }
+
   return (
     <ScrollView className="flex-1 pb-12 px-4">
       <Link to="/home/settings/profile">
-        <UserRow user={user} />
+        <View className="flex-row mb-12 mt-8">
+          <Image
+            style={{height: 80, width: 80, borderRadius: 40}}
+            source={{uri: user?.images[0].url}}
+          />
+
+          <View className="ml-4 justify-center">
+            <Text className="text-2xl font-semibold">{user?.display_name}</Text>
+            <Text className="text-lg font-medium mt-2">View Profile</Text>
+          </View>
+        </View>
       </Link>
 
       <SettingsLink to="/home/settings/preferences/playback" title="Playback" />
@@ -142,26 +152,6 @@ function SettingsLink({to, title}: ISettingsLink) {
   );
 }
 
-interface IUserRow {
-  user: IUser;
-}
-
-function UserRow({user}: IUserRow) {
-  return (
-    <View className="flex-row mb-12 mt-8">
-      <Image
-        style={{height: 80, width: 80, borderRadius: 40}}
-        source={{uri: user?.images[0].url}}
-      />
-
-      <View className="ml-4 justify-center">
-        <Text className="text-2xl font-semibold">{user?.display_name}</Text>
-        <Text className="text-lg font-medium mt-2">View Profile</Text>
-      </View>
-    </View>
-  );
-}
-
 function Logout() {
   const navigator = useNavigator();
   const {logout} = useAuth();
@@ -190,3 +180,7 @@ function Logout() {
 }
 
 export {Settings};
+
+function capitalize(str = '') {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}

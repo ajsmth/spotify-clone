@@ -4,7 +4,6 @@ import {ScrollView, Text, View, Image, Pressable} from '../shared/tailwind';
 import {useArtistContext} from '../../providers/artist-provider';
 import {useTrackContext} from '../../providers/track-provider';
 import {api} from '../../services/api';
-import {useAlbumContext} from '../../providers/album-provider';
 import {useSetTrackId} from '../../providers/player-provider';
 
 function Artist() {
@@ -13,7 +12,7 @@ function Artist() {
 
   const setTrackId = useSetTrackId();
 
-  const tracks = useTracks(params.id);
+  const tracks = useArtistTracks(params.id);
   const artist = state.lookup[params.id];
 
   if (!artist) {
@@ -52,7 +51,7 @@ function Artist() {
   );
 }
 
-function useTracks(id: string) {
+function useArtistTracks(id: string) {
   const [state, dispatch] = useTrackContext();
   const [trackIds, setTrackIds] = React.useState([]);
 
@@ -72,26 +71,6 @@ function useTracks(id: string) {
   }, [id]);
 
   return trackIds.map(id => state.lookup[id]);
-}
-
-function useAlbums(id: string) {
-  const [state, dispatch] = useAlbumContext();
-  const [albumIds, setAlbumIds] = React.useState([]);
-
-  React.useEffect(() => {
-    if (id) {
-      api.get(`/artists/${id}/albums`).then(albums => {
-        dispatch({
-          type: 'UPDATE_MANY',
-          data: albums,
-        });
-
-        setAlbumIds(albums.map(album => album.id));
-      });
-    }
-  }, [id]);
-
-  return albumIds.map(id => state.lookup[id]);
 }
 
 export {Artist};

@@ -5,39 +5,12 @@ import {useTrackContext} from '../../providers/track-provider';
 import {api} from '../../services/api';
 import {useAlbumContext} from '../../providers/album-provider';
 
-function useTracks(albumId: string) {
-  const [state, dispatch] = useTrackContext();
-  const [trackIds, setTrackIds] = React.useState<string[]>([]);
-
-  React.useEffect(() => {
-    if (albumId) {
-      api
-        .get(`/albums/${albumId}/tracks`)
-        .then((tracks: ITrack[]) => {
-          dispatch({
-            type: 'UPDATE_MANY',
-            data: tracks,
-          });
-
-          setTrackIds(tracks.map(track => track.id));
-        })
-        .catch(error => {
-          console.log({error});
-        });
-    }
-  }, [albumId]);
-
-  const tracks = trackIds.map(id => state.lookup[id]);
-
-  return tracks;
-}
-
 function Album() {
-  const {params, activeIndex} = useNavigator();
+  const {params} = useNavigator();
   const [state] = useAlbumContext();
 
   const album = state.lookup[params.id];
-  const tracks = useTracks(params.id);
+  const tracks = useAlbumTracks(params.id);
 
   if (!album) {
     return null;
@@ -75,5 +48,33 @@ function Album() {
     </ScrollView>
   );
 }
+
+function useAlbumTracks(albumId: string) {
+  const [state, dispatch] = useTrackContext();
+  const [trackIds, setTrackIds] = React.useState<string[]>([]);
+
+  React.useEffect(() => {
+    if (albumId) {
+      api
+        .get(`/albums/${albumId}/tracks`)
+        .then((tracks: ITrack[]) => {
+          dispatch({
+            type: 'UPDATE_MANY',
+            data: tracks,
+          });
+
+          setTrackIds(tracks.map(track => track.id));
+        })
+        .catch(error => {
+          console.log({error});
+        });
+    }
+  }, [albumId]);
+
+  const tracks = trackIds.map(id => state.lookup[id]);
+
+  return tracks;
+}
+
 
 export {Album};

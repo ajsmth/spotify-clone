@@ -1,76 +1,77 @@
 import React from 'react';
-
+import {Animated} from 'react-native';
+import {Stack, Navigator, Route, Header, useParams} from '../../earhart';
+import {usePlaylistContext} from '../../providers/playlist-provider';
 import {Playlist} from '../profiles/playlist';
 import {HomeFeed} from './home-feed';
 import {Settings} from '../settings/settings';
-
-import {Stack, Navigator, Route, Header, useParams} from '../../earhart';
-import {usePlaylistContext} from '../../providers/playlist-provider';
-import {Animated} from 'react-native';
+import {interpolate} from '../shared/interpolate';
 
 function Home() {
-  const [state] = usePlaylistContext();
   const scrollY = React.useRef(new Animated.Value(0));
 
   return (
-    <Navigator>
-      <Stack>
-        <Route path="/home">
-          <Index />
-        </Route>
+    <StackNavigator>
+      <Route path="/home">
+        <Header title="Home" hidden />
+        <Index />
+      </Route>
 
-        <Route path="/home/playlists/:id">
-          <Header backgroundColor="transparent">
-            {({params}) => {
-              return (
-                <Header.Center>
-                  <FadeInHeader scrollY={scrollY.current}>
-                    {state.lookup[params.id]?.name || ''}
-                  </FadeInHeader>
-                </Header.Center>
-              );
-            }}
-          </Header>
-          <Playlist animatedValue={scrollY.current} />
-        </Route>
-      </Stack>
+      <Route path="/home/playlists/:id">
+        <Header backgroundColor="white">
+          <FadeInHeader scrollY={scrollY.current} />
+        </Header>
+
+        <Playlist animatedValue={scrollY.current} />
+      </Route>
+    </StackNavigator>
+  );
+}
+
+function StackNavigator({children}) {
+  return (
+    <Navigator>
+      <Stack>{children}</Stack>
     </Navigator>
   );
 }
 
-function Index({path}) {
+function Index() {
   return (
-    <Navigator>
-      <Stack>
-        <Route path="/home">
-          <HomeFeed />
-        </Route>
+    <StackNavigator>
+      <Route path="/home">
+        <HomeFeed />
+      </Route>
 
-        <Route path="/home/settings">
-          <Settings />
-        </Route>
-      </Stack>
-    </Navigator>
+      <Route path="/home/settings">
+        <Settings />
+      </Route>
+    </StackNavigator>
   );
 }
 
 interface IFadeInHeader {
   scrollY: Animated.Value;
-  children: any;
 }
 
-function FadeInHeader({scrollY, children}: IFadeInHeader) {
-  const styles = {
-    opacity: scrollY.interpolate({
-      inputRange: [0, 200],
-      outputRange: [0, 1],
-    }),
-  };
+const fadeInHeader = {
+  opacity: {
+    inputRange: [0, 200],
+    outputRange: [0, 1],
+  },
+};
+
+function FadeInHeader({scrollY}: IFadeInHeader) {
+  const styles = interpolate(scrollY, fadeInHeader);
+  const [state] = usePlaylistContext();
+  const params = useParams();
 
   return (
-    <Animated.Text style={{fontSize: 24, fontWeight: '600', ...styles}}>
-      {children}
-    </Animated.Text>
+    <Header.Center>
+      <Animated.Text style={{fontSize: 24, fontWeight: '600', ...styles}}>
+        {state.lookup[params.id]?.name || ''}
+      </Animated.Text>
+    </Header.Center>
   );
 }
 

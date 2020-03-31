@@ -1,19 +1,15 @@
 import React from 'react';
 import {useNavigator} from '../../earhart';
-import {View, Text, Pressable} from '../shared/tailwind';
+import {View, Text, Pressable, SafeAreaView} from '../shared/tailwind';
 import {useAuth} from '../../providers/auth-provider';
-import {SafeAreaView} from 'react-native';
 
 function Login() {
   const auth = useAuth();
   const {navigate} = useNavigator();
 
   return (
-    <View className="flex-1 bg-gray-400 justify-center p-4">
-      <SafeAreaView />
+    <SafeAreaView className="flex-1 bg-white justify-center p-4">
       <Text className="p-8 text-3xl font-bold text-center">Login</Text>
-      <View className="flex-1" />
-
       <View className="px-8">
         <Pressable
           className="p-8 my-10 border-gray-700 border justify-center items-center rounded-lg"
@@ -27,9 +23,7 @@ function Login() {
           </Text>
         </Pressable>
       </View>
-
-      <SafeAreaView />
-    </View>
+    </SafeAreaView>
   );
 }
 
