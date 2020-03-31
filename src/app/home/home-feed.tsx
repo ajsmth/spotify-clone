@@ -9,7 +9,7 @@ function HomeFeed() {
     <View className="flex flex-1 bg-white">
       <SafeAreaView />
       <SettingsHeader />
-      
+
       <ScrollView className="py-4 bg-white">
         <Playlists feedId="featured" title="Editors Picks" />
         <Playlists feedId="toplists" title="Top" />
@@ -81,7 +81,7 @@ function useFeedPlaylists(feedId: string) {
         setPlaylistIds(playlists.map(item => item.id));
       });
     }
-  }, []);
+  }, [feedId]);
 
   const playlists = playlistIds.map(id => state.lookup[id]);
   return playlists;

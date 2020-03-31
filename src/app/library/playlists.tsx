@@ -5,30 +5,18 @@ import {api} from '../../services/api';
 import {usePlaylistContext} from '../../providers/playlist-provider';
 
 function Playlists({to}) {
-  const [state, dispatch] = usePlaylistContext();
-  const [playlistIds, setPlaylistIds] = React.useState([]);
-
-  React.useEffect(() => {
-    api.get('/playlists/me').then(playlists => {
-      dispatch({
-        type: 'UPDATE_MANY',
-        data: playlists,
-      });
-
-      setPlaylistIds(playlists.map(item => item.id));
-    });
-  }, [to]);
+  const playlists = usePlaylists();
 
   return (
     <ScrollView className="p-4 flex-1 bg-white">
-      {playlistIds.map(id => {
-        const playlist = state.lookup[id];
-
-        if (!playlist) {
-          return null;
-        }
-
-        return <PlaylistRow key={id} to={`${to}/${id}`} playlist={playlist} />;
+      {playlists.map(playlist => {
+        return (
+          <PlaylistRow
+            key={playlist.id}
+            to={`${to}/${playlist.id}`}
+            playlist={playlist}
+          />
+        );
       })}
     </ScrollView>
   );
@@ -54,6 +42,25 @@ function PlaylistRow({playlist, to}: IPlaylistRow) {
       </Link>
     </View>
   );
+}
+
+function usePlaylists() {
+  const [state, dispatch] = usePlaylistContext();
+  const [playlistIds, setPlaylistIds] = React.useState([]);
+
+  React.useEffect(() => {
+    api.get('/playlists/me').then(playlists => {
+      dispatch({
+        type: 'UPDATE_MANY',
+        data: playlists,
+      });
+
+      setPlaylistIds(playlists.map(item => item.id));
+    });
+  }, []);
+
+  const playlists = playlistIds.map(id => state.lookup[id]);
+  return playlists;
 }
 
 export {Playlists};

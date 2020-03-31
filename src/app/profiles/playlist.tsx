@@ -209,8 +209,6 @@ function usePlaylistTracks(playlistId?: string) {
 
   React.useEffect(() => {
     if (playlistId) {
-      setTrackIds([]);
-
       api.get(`/playlists/${playlistId}/tracks`).then(tracks => {
         dispatch({
           type: 'UPDATE_MANY',

@@ -3,38 +3,21 @@ import {View, Text, ScrollView, Image} from '../shared/tailwind';
 import {Link} from '../../earhart';
 import {useArtistContext} from '../../providers/artist-provider';
 import {api} from '../../services/api';
-import {PerformantScreen} from '../shared/performant-screen';
 
 function Artists({to}) {
-  const [state, dispatch] = useArtistContext();
-  const [artistIds, setArtistIds] = React.useState([]);
-
-  React.useEffect(() => {
-    api.get('/artists/me').then(artists => {
-      dispatch({
-        type: 'UPDATE_MANY',
-        data: artists,
-      });
-
-      setArtistIds(artists.map(item => item.id));
-    });
-  }, []);
-
+  const artists = useArtists();
   return (
-    <PerformantScreen>
-      <ScrollView className="p-4 flex-1 bg-white">
-        {artistIds.map(id => {
-          const artist = state.lookup[id];
-          return (
-            <ArtistRow
-              key={artist.id}
-              to={`${to}/${artist.id}`}
-              artist={artist}
-            />
-          );
-        })}
-      </ScrollView>
-    </PerformantScreen>
+    <ScrollView className="p-4 flex-1 bg-white">
+      {artists.map(artist => {
+        return (
+          <ArtistRow
+            key={artist.id}
+            to={`${to}/${artist.id}`}
+            artist={artist}
+          />
+        );
+      })}
+    </ScrollView>
   );
 }
 
@@ -57,6 +40,25 @@ function ArtistRow({artist, to}: IArtistRow) {
       </View>
     </Link>
   );
+}
+
+function useArtists() {
+  const [state, dispatch] = useArtistContext();
+  const [artistIds, setArtistIds] = React.useState([]);
+
+  React.useEffect(() => {
+    api.get('/artists/me').then(artists => {
+      dispatch({
+        type: 'UPDATE_MANY',
+        data: artists,
+      });
+
+      setArtistIds(artists.map(item => item.id));
+    });
+  }, []);
+
+  const artists = artistIds.map(id => state.lookup[id]);
+  return artists;
 }
 
 export {Artists};

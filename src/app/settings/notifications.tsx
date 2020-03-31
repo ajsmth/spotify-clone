@@ -4,7 +4,7 @@ import {ScrollView, Text, View} from '../shared/tailwind';
 
 function Notifications() {
   return (
-    <ScrollView style={{flex: 1, backgroundColor: 'white', padding: 15}}>
+    <ScrollView className='flex-1 bg-white p-4' contentContainerStyle={{ paddingBottom: 20 }}>
       <SectionHeader title="Your Music" />
 
       <View>

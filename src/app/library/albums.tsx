@@ -5,25 +5,11 @@ import {useAlbumContext} from '../../providers/album-provider';
 import {api} from '../../services/api';
 
 function Albums({to}) {
-  const [state, dispatch] = useAlbumContext();
-  const [albumIds, setAlbumIds] = React.useState([]);
-
-  React.useEffect(() => {
-    api.get('/albums/me').then(albums => {
-      dispatch({
-        type: 'UPDATE_MANY',
-        data: albums,
-      });
-
-      setAlbumIds(albums.map(album => album.id));
-    });
-  }, []);
+  const albums = useAlbums();
 
   return (
     <ScrollView className="flex-1 bg-white p-4">
-      {albumIds.map(id => {
-        const album = state.lookup[id];
-
+      {albums.map(album => {
         return (
           <AlbumRow key={album.id} to={`${to}/${album.id}`} album={album} />
         );
@@ -54,6 +40,26 @@ function AlbumRow({album, to}: IAlbumRow) {
       </View>
     </Link>
   );
+}
+
+function useAlbums() {
+  const [state, dispatch] = useAlbumContext();
+  const [albumIds, setAlbumIds] = React.useState([]);
+
+  React.useEffect(() => {
+    api.get('/albums/me').then(albums => {
+      dispatch({
+        type: 'UPDATE_MANY',
+        data: albums,
+      });
+
+      setAlbumIds(albums.map(album => album.id));
+    });
+  }, []);
+
+  const albums = albumIds.map(id => state.lookup[id]);
+
+  return albums;
 }
 
 export {Albums};

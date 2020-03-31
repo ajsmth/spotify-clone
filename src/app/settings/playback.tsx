@@ -4,7 +4,9 @@ import {View, Text, ScrollView} from '../shared/tailwind';
 
 function Playback() {
   return (
-    <ScrollView className="p-4 flex-1 bg-white">
+    <ScrollView
+      className="flex-1 bg-white p-4"
+      contentContainerStyle={{paddingBottom: 20}}>
       <OptionSwitch
         title="Offline"
         description={`When you go offline, you'll only be able to play the music and podcasts you've downloaded`}
@@ -96,10 +98,8 @@ function RadioSelect({title, options = []}: IRadioSelect) {
       {options.map((option: any, index) => {
         return (
           <View key={index} className="py-2 flex-row items-center">
-            <Text className='mr-2 text-base'>
-              {option.title}
-            </Text>
-            <Text className='text-sm text-gray-500' style={{ lineHeight: 20 }}>
+            <Text className="mr-2 text-base">{option.title}</Text>
+            <Text className="text-sm text-gray-500" style={{lineHeight: 20}}>
               {option.description}
             </Text>
           </View>
