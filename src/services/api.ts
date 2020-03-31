@@ -4,7 +4,7 @@ import {ICategory} from '../types';
 const [router, client] = create();
 
 // ARTISTS ===========================================================================
-router.get('/me/artists', () => {
+router.get('/artists/me', () => {
   return spotify
     .request(`/me/following?type=artist`)
     .then(response => response.artists.items as IArtist[]);
@@ -20,8 +20,7 @@ router.get('/albums/me', () => {
 router.get('/artists/:id/albums', options => {
   return spotify
     .request(`/artists/${options.params.id}/albums`)
-    .then(response => response.items as IAlbum[])
-    .catch(error => console.log({error}));
+    .then(response => response.items as IAlbum[]);
 });
 
 // TRACKS ===========================================================================
@@ -45,8 +44,7 @@ router.get('/albums/:id/tracks', options => {
     .request(`/albums/${options.params.id}/tracks`)
     .then(response => {
       return response.items;
-    })
-    .catch(error => console.log({error}));
+    });
 });
 
 router.get(`/tracks/:id`, options => {

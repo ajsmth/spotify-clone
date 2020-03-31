@@ -10,7 +10,7 @@ function Artists({to}) {
   const [artistIds, setArtistIds] = React.useState([]);
 
   React.useEffect(() => {
-    api.get('/me/artists').then(artists => {
+    api.get('/artists/me').then(artists => {
       dispatch({
         type: 'UPDATE_MANY',
         data: artists,
