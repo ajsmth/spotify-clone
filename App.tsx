@@ -4,44 +4,72 @@
 
 import React from 'react';
 import {Text} from 'react-native';
-import {Router, useDeepLinking, useHistory} from './src/earhart';
+import {
+  Router,
+  useDeepLinking,
+  useHistory,
+  Navigator,
+  Switch,
+  Route,
+} from './src/earhart';
 
-import {Login} from './src/app/auth/login';
 import {Main} from './src/main';
 import {AuthProvider} from './src/providers/auth-provider';
-import {UserProvider} from './src/providers/user-provider';
 import {enableScreens} from 'react-native-screens';
+import {PlaylistProvider} from './src/providers/playlist-provider';
+import {AlbumProvider} from './src/providers/album-provider';
+import {TrackProvider} from './src/providers/track-provider';
+import {PlayerProvider} from './src/providers/player-provider';
+import {CategoryProvider} from './src/providers/category-provider';
+import {ArtistProvider} from './src/providers/artist-provider';
+import {Login} from './src/app/auth/login';
+import {Startup} from './src/startup';
+import { UserProvider } from './src/providers/user-provider';
 
 enableScreens();
 
 function App() {
   return (
     <AppProviders>
-      <AuthProvider>
-        {({user}) =>
-          user ? (
-            <UserProvider user={user}>
+      <Navigator>
+        <Startup>
+          <Switch>
+            <Route path="/*">
               <Main />
-            </UserProvider>
-          ) : (
-            <Login />
-          )
-        }
-      </AuthProvider>
+            </Route>
+
+            <Route path="/auth/login">
+              <Login />
+            </Route>
+          </Switch>
+        </Startup>
+      </Navigator>
 
       <Location />
     </AppProviders>
   );
 }
 
-function DeepLinking() {
-  useDeepLinking();
-
-  return null;
-}
-
 function AppProviders({children}) {
-  return <Router>{children}</Router>;
+  return (
+    <Router>
+      <AuthProvider>
+        <UserProvider>
+          <PlaylistProvider>
+            <AlbumProvider>
+              <TrackProvider>
+                <PlayerProvider>
+                  <CategoryProvider>
+                    <ArtistProvider>{children}</ArtistProvider>
+                  </CategoryProvider>
+                </PlayerProvider>
+              </TrackProvider>
+            </AlbumProvider>
+          </PlaylistProvider>
+        </UserProvider>
+      </AuthProvider>
+    </Router>
+  );
 }
 
 function Location() {

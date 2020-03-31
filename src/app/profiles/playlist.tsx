@@ -1,7 +1,6 @@
 import React from 'react';
 import {Animated, LayoutChangeEvent, Switch, SectionList} from 'react-native';
 
-
 import {Link, useParams} from '../../earhart';
 import {Image, Text, View, SafeAreaView, Pressable} from '../shared/tailwind';
 import {api} from '../../services/api';
@@ -140,6 +139,11 @@ function PlaylistHeader({playlist}: {playlist: IPlaylist}) {
             source={{uri: playlist.images[0]?.url}}
             style={{height: 200, width: 200}}
           />
+        </View>
+        <View className="my-4">
+          <Text className="text-2xl font-semibold text-gray-800">
+            {playlist.name}
+          </Text>
         </View>
       </View>
     </View>

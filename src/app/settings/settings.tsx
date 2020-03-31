@@ -1,5 +1,13 @@
 import React from 'react';
-import {Switch, Route, Navigator, Link, Stack, Header} from '../../earhart';
+import {
+  Switch,
+  Route,
+  Navigator,
+  Link,
+  Stack,
+  Header,
+  useNavigator,
+} from '../../earhart';
 import {
   Text,
   View,
@@ -30,8 +38,8 @@ function Settings({}) {
           <Route path="/home/settings">
             <Header title="Settings" largeTitle>
               <Header.Left>
-                <Link to='/home'>
-                  <Text className='text-xl font-semibold'>Back</Text>
+                <Link to="/home">
+                  <Text className="text-xl font-semibold">Back</Text>
                 </Link>
               </Header.Left>
             </Header>
@@ -41,7 +49,10 @@ function Settings({}) {
           </Route>
 
           <Route path="/home/settings/:type">
-            <Header title={({params}) => capitalize(params.type) || ''} largeTitle />
+            <Header
+              title={({params}) => capitalize(params.type) || ''}
+              largeTitle
+            />
 
             <SafeAreaView className="flex-1">
               <Navigator initialIndex={-1}>
@@ -86,7 +97,7 @@ function Preferences() {
 }
 
 function Index() {
-  const user = useUser();
+  const {user} = useUser();
 
   return (
     <ScrollView className="flex-1 pb-12 px-4">
@@ -152,13 +163,17 @@ function UserRow({user}: IUserRow) {
 }
 
 function Logout() {
+  const navigator = useNavigator();
   const {logout} = useAuth();
 
   return (
     <View style={{marginTop: 40, alignItems: 'center'}}>
       <Pressable
         className="px-6 py-3 border"
-        onPress={logout}
+        onPress={() => {
+          logout();
+          navigator.navigate('/auth/login');
+        }}
         style={{
           borderRadius: 40,
         }}>

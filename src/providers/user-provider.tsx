@@ -1,18 +1,32 @@
 import React from 'react';
 
-const UserContext = React.createContext<IUser | undefined>(undefined);
+interface IUserContext {
+  user: IUser | undefined;
+  setUser: (user: IUser | undefined) => void;
+}
+
+const UserContext = React.createContext<IUserContext>({
+  user: undefined,
+  setUser: () => {},
+});
 
 interface IUserProvider {
   children: React.ReactNode;
-  user: IUser;
-}
-function UserProvider({user, children}: IUserProvider) {
-  return <UserContext.Provider value={user}>{children}</UserContext.Provider>;
 }
 
-function useUser(): IUser {
+function UserProvider({children}: IUserProvider) {
+  const [user, setUser] = React.useState<IUser | undefined>(undefined);
+
+  return (
+    <UserContext.Provider value={{user, setUser}}>
+      {children}
+    </UserContext.Provider>
+  );
+}
+
+function useUser(): IUserContext {
   const context = React.useContext(UserContext);
-  return context as IUser;
+  return context
 }
 
 export {useUser, UserProvider};

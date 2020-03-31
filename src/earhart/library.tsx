@@ -116,9 +116,9 @@ function Navigator({children, style, initialIndex = 0}: INavigator) {
           
 
           if (entry && entry.pathname.includes(to)) {
-            // already pushed this view - revert to original specified valu
+            // already pushed this view - revert to original specified value
             if (i === entries.length - 1) {
-              history.push(to)
+              history.go(i - history.index)
               return;
             }
 

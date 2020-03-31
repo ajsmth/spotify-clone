@@ -9,7 +9,7 @@ import {usePlaylistContext} from '../../providers/playlist-provider';
 
 
 function User({}) {
-  const user = useUser();
+  const {user} = useUser();
 
   const [state, dispatch] = usePlaylistContext();
   const [playlistIds, setPlaylistIds] = React.useState([]);
