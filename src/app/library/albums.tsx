@@ -1,6 +1,6 @@
 import React from 'react';
 import {View, Text, ScrollView, Image} from '../shared/tailwind';
-import {Link} from '../../earhart';
+import {Link, useFocus, useFocusLazy} from '../../earhart';
 import {useAlbumContext} from '../../providers/album-provider';
 import {api} from '../../services/api';
 
@@ -45,17 +45,20 @@ function AlbumRow({album, to}: IAlbumRow) {
 function useAlbums() {
   const [state, dispatch] = useAlbumContext();
   const [albumIds, setAlbumIds] = React.useState([]);
+  const focused = useFocusLazy();
 
   React.useEffect(() => {
-    api.get('/albums/me').then(albums => {
-      dispatch({
-        type: 'UPDATE_MANY',
-        data: albums,
-      });
+    if (focused) {
+      api.get('/albums/me').then(albums => {
+        dispatch({
+          type: 'UPDATE_MANY',
+          data: albums,
+        });
 
-      setAlbumIds(albums.map(album => album.id));
-    });
-  }, []);
+        setAlbumIds(albums.map(album => album.id));
+      });
+    }
+  }, [focused]);
 
   const albums = albumIds.map(id => state.lookup[id]);
 

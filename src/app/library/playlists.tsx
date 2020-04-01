@@ -1,6 +1,6 @@
 import React from 'react';
 import {View, Text, ScrollView, Image} from '../shared/tailwind';
-import {Link} from '../../earhart';
+import {Link, useFocusLazy} from '../../earhart';
 import {api} from '../../services/api';
 import {usePlaylistContext} from '../../providers/playlist-provider';
 
@@ -47,17 +47,20 @@ function PlaylistRow({playlist, to}: IPlaylistRow) {
 function usePlaylists() {
   const [state, dispatch] = usePlaylistContext();
   const [playlistIds, setPlaylistIds] = React.useState([]);
+  const focused = useFocusLazy();
 
   React.useEffect(() => {
-    api.get('/playlists/me').then(playlists => {
-      dispatch({
-        type: 'UPDATE_MANY',
-        data: playlists,
-      });
+    if (focused) {
+      api.get('/playlists/me').then(playlists => {
+        dispatch({
+          type: 'UPDATE_MANY',
+          data: playlists,
+        });
 
-      setPlaylistIds(playlists.map(item => item.id));
-    });
-  }, []);
+        setPlaylistIds(playlists.map(item => item.id));
+      });
+    }
+  }, [focused]);
 
   const playlists = playlistIds.map(id => state.lookup[id]);
   return playlists;

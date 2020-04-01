@@ -1,6 +1,6 @@
 import React from 'react';
 import {View, Text, ScrollView, Image} from '../shared/tailwind';
-import {Link} from '../../earhart';
+import {Link, useFocusLazy} from '../../earhart';
 import {useArtistContext} from '../../providers/artist-provider';
 import {api} from '../../services/api';
 
@@ -45,17 +45,20 @@ function ArtistRow({artist, to}: IArtistRow) {
 function useArtists() {
   const [state, dispatch] = useArtistContext();
   const [artistIds, setArtistIds] = React.useState([]);
+  const focused = useFocusLazy();
 
   React.useEffect(() => {
-    api.get('/artists/me').then(artists => {
-      dispatch({
-        type: 'UPDATE_MANY',
-        data: artists,
-      });
+    if (focused) {
+      api.get('/artists/me').then(artists => {
+        dispatch({
+          type: 'UPDATE_MANY',
+          data: artists,
+        });
 
-      setArtistIds(artists.map(item => item.id));
-    });
-  }, []);
+        setArtistIds(artists.map(item => item.id));
+      });
+    }
+  }, [focused]);
 
   const artists = artistIds.map(id => state.lookup[id]);
   return artists;

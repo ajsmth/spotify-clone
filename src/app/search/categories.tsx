@@ -2,17 +2,7 @@ import React from 'react';
 import {api} from '../../services/api';
 import {useCategoryContext} from '../../providers/category-provider';
 import {SafeAreaView, ScrollView, View, Text, Image} from '../shared/tailwind';
-import {
-  Stack,
-  Route,
-  Link,
-  Navigator,
-  useNavigator,
-  Header,
-  INavigatorState,
-} from '../../earhart';
-import {usePlaylistContext} from '../../providers/playlist-provider';
-import {Playlist} from '../profiles/playlist';
+import {Link, useFocus} from '../../earhart';
 
 function Categories() {
   const categories = useSearchCategories();
@@ -72,15 +62,18 @@ function CategoryItem({category}: ICategoryItem) {
 
 function useSearchCategories() {
   const [state, dispatch] = useCategoryContext();
+  const focused = useFocus();
 
   React.useEffect(() => {
-    api.get(`/categories`).then(categories => {
-      dispatch({
-        type: 'UPDATE_MANY',
-        data: categories,
+    if (focused) {
+      api.get(`/categories`).then(categories => {
+        dispatch({
+          type: 'UPDATE_MANY',
+          data: categories,
+        });
       });
-    });
-  }, []);
+    }
+  }, [focused]);
 
   const categories = state.ids.map(id => state.lookup[id]);
   return categories;
