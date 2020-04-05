@@ -1,5 +1,4 @@
 import {createProvider} from './create-provider';
-import {ICategory} from '../types';
 
 const {Provider, useContext} = createProvider<ICategory>('Category');
 

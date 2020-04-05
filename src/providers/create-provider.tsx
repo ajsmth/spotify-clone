@@ -1,5 +1,5 @@
-import React from 'react'
-import produce from 'immer'
+import React from 'react';
+import produce from 'immer';
 
 interface Entity {
   id: string;
@@ -126,7 +126,7 @@ function createProvider<T extends Entity>(name: string) {
       );
     }
 
-    return [store, dispatch] as [IStore<T>, Dispatch<T>]
+    return [store, dispatch] as [IStore<T>, Dispatch<T>];
   }
 
   return {
@@ -137,4 +137,96 @@ function createProvider<T extends Entity>(name: string) {
   };
 }
 
-export { createProvider }
+import create from 'zustand';
+import {createCache} from '../services/cache-data';
+
+type UpdateFn<T> = (item: T | T[]) => void;
+
+function createProvider2<T extends Entity>(name: string) {
+  const Store = React.createContext<IStore<T> | undefined>(undefined);
+  const Update = React.createContext<UpdateFn<T> | undefined>(undefined);
+
+  Store.displayName = `${name}Context`;
+
+  const [useStore, store] = create(set => {
+    const initialState = {
+      lookup: {},
+      ids: [],
+    };
+
+    return initialState;
+  });
+
+  const cache = createCache(name, () => Promise.resolve({}))
+
+  function Provider({children}) {
+    const set = store.setState;
+
+    React.useEffect(() => {
+      cache.load().then(data => {
+        store.setState(data);
+        setLoaded(true);
+      });
+    }, []);
+
+    const [loaded, setLoaded] = React.useState(false);
+
+    function update(data: T | T[]) {
+      if (Array.isArray(data)) {
+        set(state => {
+          data.forEach(item => {
+            if (state.ids.indexOf(item.id) === -1) {
+              state.ids.push(item.id);
+            }
+
+            state.lookup[item.id] = item;
+          });
+        });
+      } else {
+        let item = data;
+
+        set(state => {
+          if (state.ids.indexOf(item.id) === -1) {
+            state.ids.push(item.id);
+          }
+
+          state.lookup[item.id] = item;
+        });
+      }
+    }
+
+    const state = useStore(state => state);
+
+    if (!loaded) {
+      return null;
+    }
+
+    return (
+      <Store.Provider value={state}>
+        <Update.Provider value={update}>{children}</Update.Provider>
+      </Store.Provider>
+    );
+  }
+
+  Provider.displayName = `${name}Provider`;
+
+  function useContext() {
+    const state = React.useContext(Store);
+    const update = React.useContext(Update);
+
+    if (!store || !update) {
+      throw new Error(
+        `use${name}Context must be used within a ${Provider.displayName}`,
+      );
+    }
+    return [state, update];
+  }
+
+  return {
+    useContext,
+    store,
+    Provider,
+  };
+}
+
+export {createProvider, createProvider2};

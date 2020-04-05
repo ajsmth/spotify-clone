@@ -11,6 +11,7 @@
     "link:ios": "xcrun simctl openurl booted"
   },
   "dependencies": {
+    "@react-native-community/async-storage": "^1.8.1",
     "@types/history": "^4.7.5",
     "@types/jest": "^25.1.1",
     "@types/react": "^16.9.19",
@@ -33,9 +34,11 @@
     "react-native-modalize": "^1.3.7-rc.6",
     "react-native-screens": "^2.3.0",
     "react-native-svg": "^12.0.3",
+    "swr": "^0.2.0",
     "tailwind-rn": "^1.0.0",
     "typescript": "^3.7.5",
-    "winona": "^0.1.3"
+    "winona": "^0.1.3",
+    "zustand": "^2.2.3"
   },
   "devDependencies": {
     "@babel/core": "^7.8.4",
