@@ -2,11 +2,15 @@ import React from 'react';
 import {Link, useParams} from '../../earhart';
 import {api} from '../../services/api';
 import {SafeAreaView, ScrollView, View, Image} from '../shared/tailwind';
-import {usePlaylists, useCategories} from '../../providers/spotify-providers';
+import {
+  usePlaylists,
+  useCategories,
+  useCollections,
+} from '../../providers/spotify-providers';
 
 function Category() {
-  const params = useParams<{ categoryId: string }>()
-  const lookup = useCategories(state => state.lookup)
+  const params = useParams<{categoryId: string}>();
+  const lookup = useCategories((state) => state.lookup);
 
   const category = lookup[params.categoryId || ''];
   const playlists = useCategoryPlaylists(params.categoryId || '');
@@ -42,18 +46,26 @@ function useCategoryPlaylists(categoryId: string) {
   const lookup = usePlaylists((state) => state.lookup);
   const update = usePlaylists((state) => state.update);
 
-  const [playlistIds, setPlaylistIds] = React.useState([]);
+  const add = useCollections((state) => state.update);
 
   React.useEffect(() => {
     if (categoryId) {
       api.get(`/playlists/${categoryId}`).then((playlists) => {
-        const playlistIds = playlists.map((p) => p.id);
         update(playlists);
-        setPlaylistIds(playlistIds);
+
+        const collection = {
+          id: categoryId,
+          ids: playlists.map((p) => p.id),
+        };
+
+        add([collection]);
       });
     }
   }, [categoryId]);
 
+  const playlistIds = useCollections(
+    (state) => state.lookup[categoryId]?.ids || [],
+  );
   return playlistIds.map((id) => lookup[id]);
 }
 

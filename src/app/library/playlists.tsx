@@ -2,7 +2,7 @@ import React from 'react';
 import {View, Text, ScrollView, Image} from '../shared/tailwind';
 import {Link, useFocusLazy} from '../../earhart';
 import {api} from '../../services/api';
-import {usePlaylists} from '../../providers/spotify-providers';
+import {usePlaylists, useCollections} from '../../providers/spotify-providers';
 
 function Playlists({to}) {
   const playlists = useLibraryPlaylists();
@@ -44,24 +44,35 @@ function PlaylistRow({playlist, to}: IPlaylistRow) {
   );
 }
 
+const PLAYLISTS_COLLECTION_ID = 'library-playlists';
+
 function useLibraryPlaylists() {
   const lookup = usePlaylists((state) => state.lookup);
   const update = usePlaylists((state) => state.update);
 
-  const [playlistIds, setPlaylistIds] = React.useState([]);
+  const add = useCollections((state) => state.update);
 
   const focused = useFocusLazy();
 
   React.useEffect(() => {
     if (focused) {
       api.get('/playlists/me').then((playlists) => {
-        const playlistIds = playlists.filter(Boolean).map((p) => p.id);
         update(playlists);
-        setPlaylistIds(playlistIds);
+
+        const collection = {
+          id: PLAYLISTS_COLLECTION_ID,
+          ids: playlists.map((p) => p.id),
+        };
+
+        add([collection]);
       });
     }
   }, [focused]);
 
+  const playlistIds = useCollections(
+    (state) => state.lookup[PLAYLISTS_COLLECTION_ID]?.ids || [],
+  );
+  
   return playlistIds.map((id) => lookup[id]);
 }
 

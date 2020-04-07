@@ -5,7 +5,11 @@ import {Image, Text, View, SafeAreaView, Pressable} from '../shared/tailwind';
 import {api} from '../../services/api';
 
 import {useSetTrackId} from '../../providers/player-provider';
-import {usePlaylists, useTracks} from '../../providers/spotify-providers';
+import {
+  usePlaylists,
+  useTracks,
+  useCollections,
+} from '../../providers/spotify-providers';
 
 interface IPlaylistView {
   animatedValue?: Animated.Value;
@@ -17,7 +21,6 @@ function Playlist({animatedValue}: IPlaylistView) {
   const scrollY = React.useRef(animatedValue || new Animated.Value(0));
 
   const lookup = usePlaylists((state) => state.lookup);
-  console.log({ lookup })
   const playlist = lookup[params.id || ''];
 
   const tracks = usePlaylistTracks(params.id);
@@ -203,10 +206,11 @@ function ShufflePlayButton() {
   );
 }
 
-function usePlaylistTracks(playlistId?: string) {
+function usePlaylistTracks(playlistId: string) {
   const lookup = useTracks((state) => state.lookup);
   const update = useTracks((state) => state.update);
-  const [trackIds, setTrackIds] = React.useState([]);
+
+  const add = useCollections((state) => state.update);
 
   React.useEffect(() => {
     if (playlistId) {
@@ -214,13 +218,18 @@ function usePlaylistTracks(playlistId?: string) {
         const trackIds = tracks.map((track) => track.id);
 
         update(tracks);
-        setTrackIds(trackIds);
+
+        const collection: ICollection = {
+          id: playlistId,
+          ids: trackIds,
+        };
+
+        add([collection]);
       });
     }
   }, [playlistId]);
 
-  console.log({ lookup, trackIds })
-
+  const trackIds = useCollections((state) => state.lookup[playlistId]?.ids || []);
   return trackIds.map((id) => lookup[id]);
 }
 

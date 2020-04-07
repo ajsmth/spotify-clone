@@ -2,7 +2,7 @@ import React from 'react';
 import {Link} from '../../earhart';
 import {View, Text, ScrollView, Image, SafeAreaView} from '../shared/tailwind';
 import {api} from '../../services/api';
-import {usePlaylists} from '../../providers/spotify-providers';
+import {usePlaylists, useCollections} from '../../providers/spotify-providers';
 
 function HomeFeed() {
   return (
@@ -70,18 +70,28 @@ function useFeedPlaylists(feedId: string) {
   const update = usePlaylists((state) => state.update);
   const lookup = usePlaylists((state) => state.lookup);
 
-  const [playlistIds, setPlaylistIds] = React.useState([]);
+  const add = useCollections((state) => state.update);
 
   React.useEffect(() => {
     if (feedId) {
       api.get(`/playlists/${feedId}`).then((playlists) => {
         update(playlists);
         const playlistIds = playlists.map((p) => p.id);
-        setPlaylistIds(playlistIds);
+
+        const collection = {
+          id: feedId,
+          ids: playlistIds,
+        };
+
+        add([collection]);
       });
     }
   }, [feedId]);
 
+  const playlistIds = useCollections(
+    (state) => state.lookup[feedId]?.ids || [],
+  );
+  
   return playlistIds.map((id) => lookup[id]);
 }
 

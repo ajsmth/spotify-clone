@@ -47,10 +47,6 @@ const [useAlbums, albums] = createStore<IAlbum>();
 const [useArtists, artists] = createStore<IArtist>();
 const [useCategories, categories] = createStore<ICategory>();
 
-interface ICollection {
-  id: string;
-  ids: string[];
-}
 
 const [useCollections, collections] = createStore<ICollection>();
 
@@ -65,4 +61,6 @@ export {
   artists,
   useCategories,
   categories,
+  useCollections,
+  collections,
 };

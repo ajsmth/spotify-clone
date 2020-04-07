@@ -3,10 +3,14 @@ import {useParams} from '../../earhart';
 import {ScrollView, Text, View, Image, Pressable} from '../shared/tailwind';
 import {api} from '../../services/api';
 import {useSetTrackId} from '../../providers/player-provider';
-import {useTracks, useArtists} from '../../providers/spotify-providers';
+import {
+  useTracks,
+  useArtists,
+  useCollections,
+} from '../../providers/spotify-providers';
 
 function Artist() {
-  const params = useParams<{ id: string }>();
+  const params = useParams<{id: string}>();
   const lookup = useArtists((state) => state.lookup);
 
   const setTrackId = useSetTrackId();
@@ -53,17 +57,25 @@ function Artist() {
 function useArtistTracks(id: string) {
   const lookup = useTracks((state) => state.lookup);
   const update = useTracks((state) => state.update);
-  const [trackIds, setTrackIds] = React.useState([]);
+
+  const add = useCollections((state) => state.update);
 
   React.useEffect(() => {
     if (id) {
       api.get(`/artists/${id}/tracks`).then((tracks) => {
         update(tracks);
-        setTrackIds(tracks.map((track) => track.id));
+
+        const collection = {
+          id: id,
+          ids: tracks.map((t) => t.id),
+        };
+
+        add([collection]);
       });
     }
   }, [id]);
 
+  const trackIds = useCollections((state) => state.lookup[id]?.ids || []);
   return trackIds.map((id) => lookup[id]);
 }
 

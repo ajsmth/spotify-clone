@@ -2,7 +2,7 @@ import React from 'react';
 import {View, Text, ScrollView, Image} from '../shared/tailwind';
 import {Link, useFocusLazy} from '../../earhart';
 import {api} from '../../services/api';
-import {useArtists} from '../../providers/spotify-providers';
+import {useArtists, useCollections} from '../../providers/spotify-providers';
 
 function Artists({to}) {
   const artists = useLibraryArtists();
@@ -42,10 +42,13 @@ function ArtistRow({artist, to}: IArtistRow) {
   );
 }
 
+const ARTIST_COLLECTION_ID = 'library-artists';
+
 function useLibraryArtists() {
   const lookup = useArtists((state) => state.lookup);
   const update = useArtists((state) => state.update);
-  const [artistIds, setArtistIds] = React.useState([]);
+
+  const add = useCollections((state) => state.update);
 
   const focused = useFocusLazy();
 
@@ -53,14 +56,22 @@ function useLibraryArtists() {
     if (focused) {
       api.get('/artists/me').then((artists) => {
         update(artists);
-        setArtistIds(artists.map((item) => item.id));
+
+        const collection = {
+          id: ARTIST_COLLECTION_ID,
+          ids: artists.map((a) => a.id),
+        };
+
+        add([collection]);
       });
     }
   }, [focused]);
 
-  const artists = artistIds.map((id) => lookup[id]);
-
-  return artists;
+  const artistIds = useCollections(
+    (state) => state.lookup[ARTIST_COLLECTION_ID]?.ids || [],
+  );
+  
+  return artistIds.map((id) => lookup[id]);
 }
 
 export {Artists};

@@ -1,4 +1,3 @@
-
 interface IPlaylist {
   collaborative: boolean;
   description: string;
@@ -18,7 +17,6 @@ interface IPlaylist {
   tracks: ITrack[];
   type: string;
   uri: string;
-  trackIds: string[] | null
 }
 
 interface ITrack {
@@ -80,6 +78,11 @@ interface IPlaylistItem {
   album: string;
 }
 
+interface ICollection {
+  id: string;
+  ids: string[];
+}
+
 interface IPodcast {
   id: number;
   title: string;
@@ -119,7 +122,6 @@ interface IUser {
   type: 'user';
   uri: string;
 }
-
 
 interface ICategory {
   href: string;

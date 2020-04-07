@@ -2,7 +2,11 @@ import React from 'react';
 import {ScrollView, Text, View, Image, Pressable} from '../shared/tailwind';
 import {useNavigator} from '../../earhart';
 import {api} from '../../services/api';
-import {useAlbums, useTracks} from '../../providers/spotify-providers';
+import {
+  useAlbums,
+  useTracks,
+  useCollections,
+} from '../../providers/spotify-providers';
 
 function Album() {
   const {params} = useNavigator();
@@ -51,19 +55,26 @@ function Album() {
 function useAlbumTracks(albumId: string) {
   const lookup = useTracks((state) => state.lookup);
   const update = useTracks((state) => state.update);
-  const [trackIds, setTrackIds] = React.useState<string[]>([]);
+
+  const add = useCollections((state) => state.update);
 
   React.useEffect(() => {
     if (albumId) {
       api.get(`/albums/${albumId}/tracks`).then((tracks: ITrack[]) => {
         update(tracks);
-        setTrackIds(tracks.map((track) => track.id));
+
+        const collection = {
+          id: albumId,
+          ids: tracks.map((t) => t.id),
+        };
+
+        add([collection]);
       });
     }
   }, [albumId]);
 
-  const tracks = trackIds.map((id) => lookup[id]);
-  return tracks;
+  const trackIds = useCollections((state) => state.lookup[albumId]?.ids || []);
+  return trackIds.map((id) => lookup[id]);
 }
 
 export {Album};

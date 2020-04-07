@@ -3,10 +3,10 @@ import {Link} from '../../earhart';
 import {View, Image, Text, ScrollView} from '../shared/tailwind';
 import {useUser} from '../../providers/user-provider';
 import {api} from '../../services/api';
-import {usePlaylists} from '../../providers/spotify-providers';
+import {usePlaylists, useCollections} from '../../providers/spotify-providers';
 
 function User({}) {
-  const user = useUser(state => state.user);
+  const user = useUser((state) => state.user);
   const playlists = useUserPlaylists(user?.id || '');
 
   if (!user) {
@@ -58,17 +58,28 @@ function PlaylistRow({playlist}: {playlist: IPlaylist}) {
 function useUserPlaylists(userId: string) {
   const lookup = usePlaylists((state) => state.lookup);
   const update = usePlaylists((state) => state.update);
-  const [playlistIds, setPlaylistIds] = React.useState([]);
+
+  const add = useCollections((state) => state.update);
 
   React.useEffect(() => {
     if (userId) {
       api.get(`/users/${userId}/playlists?public=true`).then((playlists) => {
         update(playlists);
-        setPlaylistIds(playlists.map((playlist) => playlist.id));
+
+        const collection = {
+          id: `${userId}-playlists`,
+          ids: playlists.map((p) => p.id),
+        };
+
+        add([collection]);
       });
     }
   }, [userId]);
 
+  const playlistIds = useCollections(
+    (state) => state.lookup[`${userId}-playlists`]?.ids || [],
+  );
+  
   const playlists = playlistIds.map((id) => lookup[id]);
 
   return playlists;
