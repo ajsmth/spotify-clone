@@ -18,6 +18,7 @@ interface IPlaylist {
   tracks: ITrack[];
   type: string;
   uri: string;
+  trackIds: string[] | null
 }
 
 interface ITrack {

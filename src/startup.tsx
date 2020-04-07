@@ -19,19 +19,19 @@ import {useUser} from './providers/user-provider';
 function Startup({children}) {
   const navigator = useNavigator();
   const auth = useAuth();
-  const {setUser} = useUser();
+  const update = useUser((state) => state.update);
   const [loading, setLoading] = React.useState(true);
 
   React.useEffect(() => {
     api
       .get('/me')
-      .then(user => {
-        setUser(user);
+      .then((user) => {
+        update(user);
         navigator.navigate('/home');
         setLoading(false);
       })
-      .catch(error => {
-        setUser(undefined);
+      .catch((error) => {
+        update(null);
         navigator.navigate('/auth/login');
         setLoading(false);
       });
@@ -41,13 +41,13 @@ function Startup({children}) {
     if (auth.authorized) {
       api
         .get('/me')
-        .then(user => {
-          setUser(user);
+        .then((user) => {
+          update(user);
           navigator.navigate('/home');
           setLoading(false);
         })
-        .catch(error => {
-          setUser(undefined);
+        .catch((error) => {
+          update(null);
           navigator.navigate('/auth/login');
           setLoading(false);
         });

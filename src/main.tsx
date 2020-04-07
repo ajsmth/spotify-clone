@@ -8,7 +8,7 @@ import {Route, Navigator, Link, Switch} from './earhart';
 import {useUser} from './providers/user-provider';
 
 function Main() {
-  const {user} = useUser();
+  const user = useUser(state => state.user);
 
   if (!user) {
     return null;

@@ -3,11 +3,10 @@ import {Link} from '../../earhart';
 import {View, Image, Text, ScrollView} from '../shared/tailwind';
 import {useUser} from '../../providers/user-provider';
 import {api} from '../../services/api';
-import {usePlaylistContext} from '../../providers/playlist-provider';
+import {usePlaylists} from '../../providers/spotify-providers';
 
 function User({}) {
-  const {user} = useUser();
-
+  const user = useUser(state => state.user);
   const playlists = useUserPlaylists(user?.id || '');
 
   if (!user) {
@@ -28,7 +27,7 @@ function User({}) {
         <View className="flex-1 p-4 bg-white">
           <Text className="text-2xl font-bold">Public Playlists</Text>
           <View>
-            {playlists.map(playlist => {
+            {playlists.map((playlist) => {
               return <PlaylistRow key={playlist.id} playlist={playlist} />;
             })}
           </View>
@@ -57,25 +56,20 @@ function PlaylistRow({playlist}: {playlist: IPlaylist}) {
 }
 
 function useUserPlaylists(userId: string) {
-  const [state, dispatch] = usePlaylistContext();
+  const lookup = usePlaylists((state) => state.lookup);
+  const update = usePlaylists((state) => state.update);
   const [playlistIds, setPlaylistIds] = React.useState([]);
 
   React.useEffect(() => {
     if (userId) {
-      api.get(`/users/${userId}/playlists?public=true`).then(playlists => {
-        dispatch({
-          type: 'UPDATE_MANY',
-          data: playlists,
-        });
-
-        setPlaylistIds(playlists.map(playlist => playlist.id));
+      api.get(`/users/${userId}/playlists?public=true`).then((playlists) => {
+        update(playlists);
+        setPlaylistIds(playlists.map((playlist) => playlist.id));
       });
     }
   }, [userId]);
 
-  const playlists = playlistIds
-    .map(id => state.lookup[id])
-    .filter(playlist => playlist.public);
+  const playlists = playlistIds.map((id) => lookup[id]);
 
   return playlists;
 }

@@ -1,11 +1,10 @@
 import React from 'react';
 import {View, Text, Image, Pressable} from '../shared/tailwind';
 import {Modalize} from 'react-native-modalize';
-import {useTrackContext} from '../../providers/track-provider';
 import {useTrackId} from '../../providers/player-provider';
-import {api} from '../../services/api';
 import {PlayIcon} from './play-icon';
 import {PauseIcon} from './pause-icon';
+import {useTracks} from '../../providers/spotify-providers';
 
 const modalAnimationConfig = {
   timing: {
@@ -22,7 +21,7 @@ function Player() {
   const [playing, setPlaying] = React.useState(false);
 
   const trackId = useTrackId();
-  const track = useTrack(trackId);
+  const track = useTracks((state) => state.lookup[trackId]);
 
   const modalRef = React.useRef<Modalize>();
 
@@ -147,23 +146,6 @@ function PlayerFullScreen({track, onBack}: IPlayerFullScreen) {
       </View>
     </View>
   );
-}
-
-function useTrack(trackId: string) {
-  const [state, dispatch] = useTrackContext();
-
-  React.useEffect(() => {
-    if (trackId) {
-      api.get(`/tracks/${trackId}`).then(track => {
-        dispatch({
-          type: 'UPDATE_SINGLE',
-          data: track,
-        });
-      });
-    }
-  }, [trackId]);
-
-  return state.lookup[trackId];
 }
 
 export {Player, PlayerFullScreen};

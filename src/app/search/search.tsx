@@ -1,12 +1,12 @@
 import React from 'react';
 import {Stack, Route, Navigator, Header} from '../../earhart';
-import {usePlaylistContext} from '../../providers/playlist-provider';
 import {Playlist} from '../profiles/playlist';
 import {Categories} from './categories';
 import {Category} from './category';
+import {usePlaylists} from '../../providers/spotify-providers';
 
 function Search() {
-  const [state] = usePlaylistContext();
+  const lookup = usePlaylists((state) => state.lookup);
 
   return (
     <StackNavigator>
@@ -25,7 +25,7 @@ function Search() {
 
       <Route path="/search/:categoryId/:id">
         <Header
-          title={({params}) => state.lookup[params.id]?.name || ''}
+          title={({params}) => lookup[params.id]?.name || ''}
           largeTitle
         />
         <Playlist />

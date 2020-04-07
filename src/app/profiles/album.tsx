@@ -1,15 +1,14 @@
 import React from 'react';
 import {ScrollView, Text, View, Image, Pressable} from '../shared/tailwind';
 import {useNavigator} from '../../earhart';
-import {useTrackContext} from '../../providers/track-provider';
 import {api} from '../../services/api';
-import {useAlbumContext} from '../../providers/album-provider';
+import {useAlbums, useTracks} from '../../providers/spotify-providers';
 
 function Album() {
   const {params} = useNavigator();
-  const [state] = useAlbumContext();
+  const lookup = useAlbums((state) => state.lookup);
 
-  const album = state.lookup[params.id];
+  const album = lookup[params.id];
   const tracks = useAlbumTracks(params.id);
 
   if (!album) {
@@ -33,13 +32,13 @@ function Album() {
       </View>
 
       <View className="p-4">
-        {tracks.map(track => {
+        {tracks.map((track) => {
           return (
             <Pressable key={track.id} className="my-3">
               <Text className="text-xl font-semibold">{track.name}</Text>
 
               <Text className="mt-1 text-sm text-gray-700 font-medium">
-                {track.artists.map(artist => artist.name).join(', ')}
+                {track.artists.map((artist) => artist.name).join(', ')}
               </Text>
             </Pressable>
           );
@@ -50,31 +49,21 @@ function Album() {
 }
 
 function useAlbumTracks(albumId: string) {
-  const [state, dispatch] = useTrackContext();
+  const lookup = useTracks((state) => state.lookup);
+  const update = useTracks((state) => state.update);
   const [trackIds, setTrackIds] = React.useState<string[]>([]);
 
   React.useEffect(() => {
     if (albumId) {
-      api
-        .get(`/albums/${albumId}/tracks`)
-        .then((tracks: ITrack[]) => {
-          dispatch({
-            type: 'UPDATE_MANY',
-            data: tracks,
-          });
-
-          setTrackIds(tracks.map(track => track.id));
-        })
-        .catch(error => {
-          console.log({error});
-        });
+      api.get(`/albums/${albumId}/tracks`).then((tracks: ITrack[]) => {
+        update(tracks);
+        setTrackIds(tracks.map((track) => track.id));
+      });
     }
   }, [albumId]);
 
-  const tracks = trackIds.map(id => state.lookup[id]);
-
+  const tracks = trackIds.map((id) => lookup[id]);
   return tracks;
 }
-
 
 export {Album};

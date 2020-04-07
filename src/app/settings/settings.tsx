@@ -21,11 +21,11 @@ import {Playback} from './playback';
 import {Notifications} from './notifications';
 import {useUser} from '../../providers/user-provider';
 import {Playlist} from '../profiles/playlist';
-import {usePlaylistContext} from '../../providers/playlist-provider';
 import {SwitchRouter} from '../shared/switch-router';
+import { usePlaylists } from '../../providers/spotify-providers';
 
 function Settings({}) {
-  const [state] = usePlaylistContext();
+  const lookup = usePlaylists(state => state.lookup)
 
   return (
     <StackNavigator>
@@ -65,7 +65,7 @@ function Settings({}) {
 
       <Route path="/home/*/playlist/:id" stackPresentation="modal">
         <Header
-          title={({params}) => state.lookup[params.id]?.name || ''}
+          title={({params}) => lookup[params.id]?.name || ''}
           backgroundColor="white"
         />
         <Playlist />
@@ -95,7 +95,8 @@ function StackNavigator({children}) {
 }
 
 function Index() {
-  const {user} = useUser();
+  const user = useUser(state => state.user);
+
 
   if (!user) {
     return null;
@@ -107,11 +108,11 @@ function Index() {
         <View className="flex-row mb-12 mt-8">
           <Image
             style={{height: 80, width: 80, borderRadius: 40}}
-            source={{uri: user?.images[0].url}}
+            source={{uri: user.images[0]?.url}}
           />
 
           <View className="ml-4 justify-center">
-            <Text className="text-2xl font-semibold">{user?.display_name}</Text>
+            <Text className="text-2xl font-semibold">{user.display_name}</Text>
             <Text className="text-lg font-medium mt-2">View Profile</Text>
           </View>
         </View>

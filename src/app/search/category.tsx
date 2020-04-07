@@ -1,16 +1,15 @@
 import React from 'react';
-import {Link, useNavigator} from '../../earhart';
+import {Link, useParams} from '../../earhart';
 import {api} from '../../services/api';
-import {useCategoryContext} from '../../providers/category-provider';
 import {SafeAreaView, ScrollView, View, Image} from '../shared/tailwind';
-import {usePlaylistContext} from '../../providers/playlist-provider';
+import {usePlaylists, useCategories} from '../../providers/spotify-providers';
 
 function Category() {
-  const {params} = useNavigator();
-  const [state] = useCategoryContext();
+  const params = useParams<{ categoryId: string }>()
+  const lookup = useCategories(state => state.lookup)
 
-  const category = state.lookup[params.categoryId];
-  const playlists = useCategoryPlaylists(params.categoryId);
+  const category = lookup[params.categoryId || ''];
+  const playlists = useCategoryPlaylists(params.categoryId || '');
 
   if (!category) {
     return null;
@@ -20,7 +19,7 @@ function Category() {
     <SafeAreaView className="flex-1">
       <ScrollView className="flex-1 bg-white">
         <View className="flex-1 flex-wrap flex-row p-2">
-          {playlists.map(playlist => {
+          {playlists.map((playlist) => {
             return (
               <View key={playlist.id} className="w-1/3 p-2">
                 <Link to={`/search/${params.categoryId}/${playlist.id}`}>
@@ -40,24 +39,22 @@ function Category() {
 }
 
 function useCategoryPlaylists(categoryId: string) {
-  const [state, dispatch] = usePlaylistContext();
+  const lookup = usePlaylists((state) => state.lookup);
+  const update = usePlaylists((state) => state.update);
 
   const [playlistIds, setPlaylistIds] = React.useState([]);
 
   React.useEffect(() => {
     if (categoryId) {
-      api.get(`/playlists/${categoryId}`).then(playlists => {
-        dispatch({
-          type: 'UPDATE_MANY',
-          data: playlists,
-        });
-
-        setPlaylistIds(playlists.map(playlist => playlist.id));
+      api.get(`/playlists/${categoryId}`).then((playlists) => {
+        const playlistIds = playlists.map((p) => p.id);
+        update(playlists);
+        setPlaylistIds(playlistIds);
       });
     }
   }, [categoryId]);
 
-  return playlistIds.map(id => state.lookup[id]);
+  return playlistIds.map((id) => lookup[id]);
 }
 
 export {Category};

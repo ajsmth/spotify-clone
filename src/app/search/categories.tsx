@@ -1,8 +1,8 @@
 import React from 'react';
 import {api} from '../../services/api';
-import {useCategoryContext} from '../../providers/category-provider';
 import {SafeAreaView, ScrollView, View, Text, Image} from '../shared/tailwind';
 import {Link, useFocus} from '../../earhart';
+import {useCategories} from '../../providers/spotify-providers';
 
 function Categories() {
   const categories = useSearchCategories();
@@ -17,7 +17,7 @@ function Categories() {
         </View>
 
         <View className="flex-wrap flex-row">
-          {top.map(category => {
+          {top.map((category) => {
             return <CategoryItem key={category.id} category={category} />;
           })}
         </View>
@@ -27,7 +27,7 @@ function Categories() {
         </View>
 
         <View className="flex-wrap flex-row">
-          {all.map(category => {
+          {all.map((category) => {
             return <CategoryItem key={category.id} category={category} />;
           })}
         </View>
@@ -61,21 +61,22 @@ function CategoryItem({category}: ICategoryItem) {
 }
 
 function useSearchCategories() {
-  const [state, dispatch] = useCategoryContext();
+  const update = useCategories((state) => state.update);
+
   const focused = useFocus();
 
   React.useEffect(() => {
     if (focused) {
-      api.get(`/categories`).then(categories => {
-        dispatch({
-          type: 'UPDATE_MANY',
-          data: categories,
-        });
+      api.get(`/categories`).then((categories) => {
+        update(categories);
       });
     }
   }, [focused]);
 
-  const categories = state.ids.map(id => state.lookup[id]);
+  const categories = useCategories((state) =>
+    state.ids.map((id) => state.lookup[id]),
+  );
+  
   return categories;
 }
 
