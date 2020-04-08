@@ -46,8 +46,6 @@ const [useTracks, tracks] = createStore<ITrack>();
 const [useAlbums, albums] = createStore<IAlbum>();
 const [useArtists, artists] = createStore<IArtist>();
 const [useCategories, categories] = createStore<ICategory>();
-
-
 const [useCollections, collections] = createStore<ICollection>();
 
 export {

@@ -5,7 +5,12 @@ import {api} from './services/api';
 
 import {useUser} from './providers/user-provider';
 import {loadUserFromCache} from './services/caches/user';
-import {AppLoader, useAppLoader} from './app/shared/app-loader';
+import {useAppLoader} from './app/shared/app-loader';
+import {
+  loadPlaylistsFromCache,
+  loadCollectionsFromCache,
+  loadTracksFromCache,
+} from './services/caches/spotify-data';
 
 // load in necessary data for starting the app
 // this includes cached data from previous user sessions
@@ -20,16 +25,9 @@ async function startup() {
 
   await loadPlaylistsFromCache();
   await loadCollectionsFromCache();
+  await loadTracksFromCache();
 
   return user as IUser;
-}
-
-function loadPlaylistsFromCache() {
-  return Promise.resolve(null);
-}
-
-function loadCollectionsFromCache() {
-  return Promise.resolve(null);
 }
 
 function Startup({children}) {

@@ -129,3 +129,10 @@ interface ICategory {
   id: string;
   name: string;
 }
+
+
+interface IStore<T> {
+  ids: string[];
+  lookup: {[key: string]: T};
+  update: (items: T[]) => void;
+}
