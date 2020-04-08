@@ -2,7 +2,7 @@ import React from 'react';
 import {Link} from '../../earhart';
 import {View, Text, ScrollView, Image, SafeAreaView} from '../shared/tailwind';
 import {api} from '../../services/api';
-import {usePlaylistContext} from '../../providers/playlist-provider';
+import {usePlaylists, useCollections} from '../../providers/spotify-providers';
 
 function HomeFeed() {
   return (
@@ -32,7 +32,7 @@ function Playlists({feedId, title}: IPlaylists) {
     <View className="py-3">
       <Text className="px-4 text-3xl font-bold">{title}</Text>
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-        {playlists.map(playlist => {
+        {playlists.map((playlist) => {
           if (!playlist) {
             return null;
           }
@@ -67,24 +67,32 @@ function SettingsHeader() {
 }
 
 function useFeedPlaylists(feedId: string) {
-  const [state, dispatch] = usePlaylistContext();
-  const [playlistIds, setPlaylistIds] = React.useState([]);
+  const update = usePlaylists((state) => state.update);
+  const lookup = usePlaylists((state) => state.lookup);
+
+  const add = useCollections((state) => state.update);
 
   React.useEffect(() => {
     if (feedId) {
-      api.get(`/playlists/${feedId}`).then(playlists => {
-        dispatch({
-          type: 'UPDATE_MANY',
-          data: playlists,
-        });
+      api.get(`/playlists/${feedId}`).then((playlists) => {
+        update(playlists);
+        const playlistIds = playlists.map((p) => p.id);
 
-        setPlaylistIds(playlists.map(item => item.id));
+        const collection = {
+          id: feedId,
+          ids: playlistIds,
+        };
+
+        add([collection]);
       });
     }
   }, [feedId]);
 
-  const playlists = playlistIds.map(id => state.lookup[id]);
-  return playlists;
+  const playlistIds = useCollections(
+    (state) => state.lookup[feedId]?.ids || [],
+  );
+  
+  return playlistIds.map((id) => lookup[id]);
 }
 
 export {HomeFeed};

@@ -1,14 +1,14 @@
 import React from 'react';
 import {View, Text, ScrollView, Image} from '../shared/tailwind';
 import {Link, useFocusLazy} from '../../earhart';
-import {useArtistContext} from '../../providers/artist-provider';
 import {api} from '../../services/api';
+import {useArtists, useCollections} from '../../providers/spotify-providers';
 
 function Artists({to}) {
-  const artists = useArtists();
+  const artists = useLibraryArtists();
   return (
     <ScrollView className="p-4 flex-1 bg-white">
-      {artists.map(artist => {
+      {artists.map((artist) => {
         return (
           <ArtistRow
             key={artist.id}
@@ -42,26 +42,36 @@ function ArtistRow({artist, to}: IArtistRow) {
   );
 }
 
-function useArtists() {
-  const [state, dispatch] = useArtistContext();
-  const [artistIds, setArtistIds] = React.useState([]);
+const ARTIST_COLLECTION_ID = 'library-artists';
+
+function useLibraryArtists() {
+  const lookup = useArtists((state) => state.lookup);
+  const update = useArtists((state) => state.update);
+
+  const add = useCollections((state) => state.update);
+
   const focused = useFocusLazy();
 
   React.useEffect(() => {
     if (focused) {
-      api.get('/artists/me').then(artists => {
-        dispatch({
-          type: 'UPDATE_MANY',
-          data: artists,
-        });
+      api.get('/artists/me').then((artists) => {
+        update(artists);
 
-        setArtistIds(artists.map(item => item.id));
+        const collection = {
+          id: ARTIST_COLLECTION_ID,
+          ids: artists.map((a) => a.id),
+        };
+
+        add([collection]);
       });
     }
   }, [focused]);
 
-  const artists = artistIds.map(id => state.lookup[id]);
-  return artists;
+  const artistIds = useCollections(
+    (state) => state.lookup[ARTIST_COLLECTION_ID]?.ids || [],
+  );
+  
+  return artistIds.map((id) => lookup[id]);
 }
 
 export {Artists};

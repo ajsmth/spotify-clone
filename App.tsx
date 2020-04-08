@@ -4,48 +4,39 @@
 
 import React from 'react';
 import {Text} from 'react-native';
-import {
-  Router,
-  useDeepLinking,
-  useHistory,
-  Navigator,
-  Switch,
-  Route,
-} from './src/earhart';
+import {Router, useHistory, Navigator, Route} from './src/earhart';
 
 import {Main} from './src/main';
 import {AuthProvider} from './src/providers/auth-provider';
 import {enableScreens} from 'react-native-screens';
-import {PlaylistProvider} from './src/providers/playlist-provider';
-import {AlbumProvider} from './src/providers/album-provider';
-import {TrackProvider} from './src/providers/track-provider';
 import {PlayerProvider} from './src/providers/player-provider';
-import {CategoryProvider} from './src/providers/category-provider';
-import {ArtistProvider} from './src/providers/artist-provider';
 import {Login} from './src/app/auth/login';
 import {Startup} from './src/startup';
-import { UserProvider } from './src/providers/user-provider';
+import {AppLoader} from './src/app/shared/app-loader';
+import {SwitchRouter} from './src/app/shared/switch-router';
 
 enableScreens();
 
 function App() {
   return (
     <AppProviders>
-      <Navigator>
-        <Startup>
-          <Switch>
-            <Route path="/*">
-              <Main />
-            </Route>
+      <AppLoader>
+        <Navigator>
+          <Startup>
+            <SwitchRouter>
+              <Route path="/*">
+                <Main />
+              </Route>
 
-            <Route path="/auth/login">
-              <Login />
-            </Route>
-          </Switch>
-        </Startup>
-      </Navigator>
+              <Route path="/auth/login">
+                <Login />
+              </Route>
+            </SwitchRouter>
+          </Startup>
+        </Navigator>
 
-      <Location />
+        <Location />
+      </AppLoader>
     </AppProviders>
   );
 }
@@ -54,19 +45,7 @@ function AppProviders({children}) {
   return (
     <Router>
       <AuthProvider>
-        <UserProvider>
-          <PlaylistProvider>
-            <AlbumProvider>
-              <TrackProvider>
-                <PlayerProvider>
-                  <CategoryProvider>
-                    <ArtistProvider>{children}</ArtistProvider>
-                  </CategoryProvider>
-                </PlayerProvider>
-              </TrackProvider>
-            </AlbumProvider>
-          </PlaylistProvider>
-        </UserProvider>
+        <PlayerProvider>{children}</PlayerProvider>
       </AuthProvider>
     </Router>
   );
@@ -78,7 +57,7 @@ function Location() {
   const [location, setLocation] = React.useState(history.location.pathname);
 
   React.useEffect(() => {
-    return history.listen(location => {
+    return history.listen((location) => {
       setLocation(location.pathname);
     });
   }, [history]);

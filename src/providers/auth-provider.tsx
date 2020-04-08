@@ -1,5 +1,6 @@
 import React from 'react';
 import {api} from '../services/api';
+import {useUser} from './user-provider';
 
 interface IAuthContext {
   authorized: boolean;
@@ -20,26 +21,26 @@ function AuthProvider({children}) {
 
     return api
       .get('/auth/login')
-      .then(creds => {
+      .then((creds) => {
         setAuthorized(true);
         setLoading(false);
       })
-      .catch(error => {
+      .catch((error) => {
         setAuthorized(false);
         setLoading(false);
+        return Promise.reject(error)
       });
   }
 
   function logout() {
     setLoading(true);
-
     api
       .get('/auth/logout')
       .then(() => {
         setAuthorized(false);
         setLoading(false);
       })
-      .catch(error => {
+      .catch((error) => {
         setAuthorized(false);
         setLoading(false);
       });

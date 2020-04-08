@@ -8,16 +8,18 @@ import {Albums} from './albums';
 import {Playlist} from '../profiles/playlist';
 import {Artist} from '../profiles/artist';
 import {Album} from '../profiles/album';
-import {useArtistContext} from '../../providers/artist-provider';
-import {useAlbumContext} from '../../providers/album-provider';
-import {usePlaylistContext} from '../../providers/playlist-provider';
 import {interpolate} from '../shared/interpolate';
 import {SwitchRouter} from '../shared/switch-router';
+import {
+  usePlaylists,
+  useAlbums,
+  useArtists,
+} from '../../providers/spotify-providers';
 
 function Library() {
-  const [artists] = useArtistContext();
-  const [albums] = useAlbumContext();
-  const [playlists] = usePlaylistContext();
+  const artists = useArtists((state) => state.lookup);
+  const albums = useAlbums((state) => state.lookup);
+  const playlists = usePlaylists((state) => state.lookup);
 
   const lookup = {
     artist: artists,
@@ -39,7 +41,7 @@ function Library() {
           <Route path="/library/:profile/:id">
             <Header
               title={({params}) =>
-                lookup[params.profile]?.lookup[params.id]?.name || ''
+                lookup[params.profile][params.id]?.name || ''
               }
               largeTitle
               backgroundColor="white"

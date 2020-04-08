@@ -1,32 +1,16 @@
-import React from 'react';
+import AsyncStorage from '@react-native-community/async-storage';
+import create from 'zustand';
 
-interface IUserContext {
-  user: IUser | undefined;
-  setUser: (user: IUser | undefined) => void;
+interface IUserStore {
+  user: IUser | null;
+  update: (user: IUser | null) => void;
 }
 
-const UserContext = React.createContext<IUserContext>({
-  user: undefined,
-  setUser: () => {},
+const [useUser, user] = create<IUserStore>((set) => {
+  return {
+    user: null,
+    update: (user: IUser | null) => set({user}),
+  };
 });
 
-interface IUserProvider {
-  children: React.ReactNode;
-}
-
-function UserProvider({children}: IUserProvider) {
-  const [user, setUser] = React.useState<IUser | undefined>(undefined);
-
-  return (
-    <UserContext.Provider value={{user, setUser}}>
-      {children}
-    </UserContext.Provider>
-  );
-}
-
-function useUser(): IUserContext {
-  const context = React.useContext(UserContext);
-  return context
-}
-
-export {useUser, UserProvider};
+export {useUser, user};

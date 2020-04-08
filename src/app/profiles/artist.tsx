@@ -1,19 +1,22 @@
 import React from 'react';
-import {useNavigator} from '../../earhart';
+import {useParams} from '../../earhart';
 import {ScrollView, Text, View, Image, Pressable} from '../shared/tailwind';
-import {useArtistContext} from '../../providers/artist-provider';
-import {useTrackContext} from '../../providers/track-provider';
 import {api} from '../../services/api';
 import {useSetTrackId} from '../../providers/player-provider';
+import {
+  useTracks,
+  useArtists,
+  useCollections,
+} from '../../providers/spotify-providers';
 
 function Artist() {
-  const {params} = useNavigator();
-  const [state] = useArtistContext();
+  const params = useParams<{id: string}>();
+  const lookup = useArtists((state) => state.lookup);
 
   const setTrackId = useSetTrackId();
 
-  const tracks = useArtistTracks(params.id);
-  const artist = state.lookup[params.id];
+  const tracks = useArtistTracks(params.id || '');
+  const artist = lookup[params.id || ''];
 
   if (!artist) {
     return null;
@@ -32,7 +35,7 @@ function Artist() {
       </View>
 
       <View className="p-4">
-        {tracks.map(track => {
+        {tracks.map((track) => {
           return (
             <Pressable
               key={track.id}
@@ -41,7 +44,7 @@ function Artist() {
               <Text className="text-xl font-semibold">{track.name}</Text>
 
               <Text className="mt-1 text-sm text-gray-700 font-medium">
-                {track.artists.map(artist => artist.name).join(', ')}
+                {track.artists.map((artist) => artist.name).join(', ')}
               </Text>
             </Pressable>
           );
@@ -52,25 +55,28 @@ function Artist() {
 }
 
 function useArtistTracks(id: string) {
-  const [state, dispatch] = useTrackContext();
-  const [trackIds, setTrackIds] = React.useState([]);
+  const lookup = useTracks((state) => state.lookup);
+  const update = useTracks((state) => state.update);
+
+  const add = useCollections((state) => state.update);
 
   React.useEffect(() => {
     if (id) {
-      api.get(`/artists/${id}/tracks`).then(tracks => {
-        if (tracks) {
-          dispatch({
-            type: 'UPDATE_MANY',
-            data: tracks,
-          });
+      api.get(`/artists/${id}/tracks`).then((tracks) => {
+        update(tracks);
 
-          setTrackIds(tracks.map(track => track.id));
-        }
+        const collection = {
+          id: id,
+          ids: tracks.map((t) => t.id),
+        };
+
+        add([collection]);
       });
     }
   }, [id]);
 
-  return trackIds.map(id => state.lookup[id]);
+  const trackIds = useCollections((state) => state.lookup[id]?.ids || []);
+  return trackIds.map((id) => lookup[id]);
 }
 
 export {Artist};

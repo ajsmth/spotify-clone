@@ -1,11 +1,11 @@
 import React from 'react';
 import {Animated} from 'react-native';
 import {Stack, Navigator, Route, Header, useParams} from '../../earhart';
-import {usePlaylistContext} from '../../providers/playlist-provider';
 import {Playlist} from '../profiles/playlist';
 import {HomeFeed} from './home-feed';
 import {Settings} from '../settings/settings';
 import {interpolate} from '../shared/interpolate';
+import { usePlaylists } from '../../providers/spotify-providers';
 
 function Home() {
   const scrollY = React.useRef(new Animated.Value(0));
@@ -63,13 +63,13 @@ const fadeInHeader = {
 
 function FadeInHeader({scrollY}: IFadeInHeader) {
   const styles = interpolate(scrollY, fadeInHeader);
-  const [state] = usePlaylistContext();
+  const lookup = usePlaylists(state => state.lookup)
   const params = useParams();
 
   return (
     <Header.Center>
       <Animated.Text style={{fontSize: 24, fontWeight: '600', ...styles}}>
-        {state.lookup[params.id]?.name || ''}
+        {lookup[params.id]?.name || ''}
       </Animated.Text>
     </Header.Center>
   );

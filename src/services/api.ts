@@ -87,7 +87,7 @@ router.get('/users/:id/playlists', options => {
 
 // AUTH ===========================================================================
 router.get('/auth/login', () => {
-  return spotify.login();
+  return spotify.login()
 });
 
 router.get('/auth/logout', () => {

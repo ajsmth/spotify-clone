@@ -1,15 +1,15 @@
 import React from 'react';
 import {View, Text, ScrollView, Image} from '../shared/tailwind';
-import {Link, useFocus, useFocusLazy} from '../../earhart';
-import {useAlbumContext} from '../../providers/album-provider';
+import {Link, useFocusLazy} from '../../earhart';
 import {api} from '../../services/api';
+import {useAlbums, useCollections} from '../../providers/spotify-providers';
 
 function Albums({to}) {
-  const albums = useAlbums();
+  const albums = useLibraryAlbums();
 
   return (
     <ScrollView className="flex-1 bg-white p-4">
-      {albums.map(album => {
+      {albums.map((album) => {
         return (
           <AlbumRow key={album.id} to={`${to}/${album.id}`} album={album} />
         );
@@ -42,27 +42,35 @@ function AlbumRow({album, to}: IAlbumRow) {
   );
 }
 
-function useAlbums() {
-  const [state, dispatch] = useAlbumContext();
-  const [albumIds, setAlbumIds] = React.useState([]);
+const ALBUM_COLLECTION_ID = 'library-albums';
+
+function useLibraryAlbums() {
+  const lookup = useAlbums((state) => state.lookup);
+  const update = useAlbums((state) => state.update);
+
+  const add = useCollections((state) => state.update);
+
   const focused = useFocusLazy();
 
   React.useEffect(() => {
     if (focused) {
-      api.get('/albums/me').then(albums => {
-        dispatch({
-          type: 'UPDATE_MANY',
-          data: albums,
-        });
+      api.get('/albums/me').then((albums) => {
+        update(albums);
 
-        setAlbumIds(albums.map(album => album.id));
+        const collection = {
+          id: ALBUM_COLLECTION_ID,
+          ids: albums.map((a) => a.id),
+        };
+
+        add([collection]);
       });
     }
   }, [focused]);
 
-  const albums = albumIds.map(id => state.lookup[id]);
-
-  return albums;
+  const albumIds = useCollections(
+    (state) => state.lookup[ALBUM_COLLECTION_ID]?.ids || [],
+  );
+  return albumIds.map((id) => lookup[id]);
 }
 
 export {Albums};
