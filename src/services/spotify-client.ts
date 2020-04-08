@@ -27,7 +27,7 @@ const baseUrl = `https://api.spotify.com/v1`;
 
 function spotify() {
   function getOauthCredentials() {
-    return Keychain.getInternetCredentials(baseUrl).then(keychain => {
+    return Keychain.getInternetCredentials(baseUrl).then((keychain) => {
       if (keychain) {
         return JSON.parse(keychain.password);
       }
@@ -51,7 +51,7 @@ function spotify() {
         refreshToken: credentials.refreshToken,
       },
     )
-      .then(response => {
+      .then((response) => {
         Keychain.setInternetCredentials(
           baseUrl,
           baseUrl,
@@ -64,7 +64,7 @@ function spotify() {
 
         return response;
       })
-      .catch(error => {
+      .catch((error) => {
         console.log({error});
         Keychain.resetInternetCredentials(baseUrl);
       });
@@ -74,7 +74,7 @@ function spotify() {
     let credentials = await getOauthCredentials();
 
     if (!credentials) {
-      return Promise.reject({ error: 'No credentials '})
+      return Promise.reject({error: 'No credentials '});
     }
 
     const currentDate = new Date();
@@ -89,25 +89,21 @@ function spotify() {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${credentials.accessToken}`,
       },
-    }).then(response => response.json());
+    }).then((response) => response.json());
   }
 
   function login() {
-    return authorize(config)
-      .then(response => {
-        return Keychain.setInternetCredentials(
-          baseUrl,
-          baseUrl,
-          JSON.stringify({
-            accessToken: response.accessToken,
-            refreshToken: response.refreshToken,
-            accessTokenExpirationDate: response.accessTokenExpirationDate,
-          }),
-        ).then(() => response);
-      })
-      .catch(error => {
-        console.log({error});
-      });
+    return authorize(config).then((response) => {
+      return Keychain.setInternetCredentials(
+        baseUrl,
+        baseUrl,
+        JSON.stringify({
+          accessToken: response.accessToken,
+          refreshToken: response.refreshToken,
+          accessTokenExpirationDate: response.accessTokenExpirationDate,
+        }),
+      ).then(() => response);
+    });
   }
 
   async function logout() {

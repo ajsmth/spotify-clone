@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-community/async-storage';
 import create from 'zustand';
 
 interface IUserStore {
@@ -12,4 +13,4 @@ const [useUser, user] = create<IUserStore>((set) => {
   };
 });
 
-export { useUser, user }
+export {useUser, user};

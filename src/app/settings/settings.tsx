@@ -22,10 +22,10 @@ import {Notifications} from './notifications';
 import {useUser} from '../../providers/user-provider';
 import {Playlist} from '../profiles/playlist';
 import {SwitchRouter} from '../shared/switch-router';
-import { usePlaylists } from '../../providers/spotify-providers';
+import {usePlaylists} from '../../providers/spotify-providers';
 
 function Settings({}) {
-  const lookup = usePlaylists(state => state.lookup)
+  const lookup = usePlaylists((state) => state.lookup);
 
   return (
     <StackNavigator>
@@ -95,8 +95,7 @@ function StackNavigator({children}) {
 }
 
 function Index() {
-  const user = useUser(state => state.user);
-
+  const user = useUser((state) => state.user);
 
   if (!user) {
     return null;
@@ -145,6 +144,7 @@ function SettingsLink({to, title}: ISettingsLink) {
 function Logout() {
   const navigator = useNavigator();
   const {logout} = useAuth();
+  const updateUser = useUser((user) => user.update);
 
   return (
     <View style={{marginTop: 40, alignItems: 'center'}}>
@@ -152,6 +152,7 @@ function Logout() {
         className="px-6 py-3 border"
         onPress={() => {
           logout();
+          updateUser(null);
           navigator.navigate('/auth/login');
         }}
         style={{
