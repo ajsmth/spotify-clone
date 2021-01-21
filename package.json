@@ -22,7 +22,7 @@
     "earhart-native": "^0.1.2",
     "earhart-shared-element": "^0.1.7",
     "history": "4",
-    "immer": "^5.3.5",
+    "immer": "^8.0.1",
     "path-to-regexp": "^6.1.0",
     "react": "16.9.0",
     "react-native": "^0.62.0",
